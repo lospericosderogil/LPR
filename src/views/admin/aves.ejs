@@ -1,0 +1,124 @@
+<%- include('../partials/header') %>
+<div class="max-w-7xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
+    <div class="md:flex md:items-center md:justify-between mb-8">
+        <div class="flex-1 min-w-0">
+            <h2 class="text-2xl font-bold leading-7 text-gray-900 sm:text-3xl">Listado de Aves</h2>
+        </div>
+        <div class="mt-4 flex md:mt-0 md:ml-4">
+            <a href="/admin/aves/nuevo" class="ml-3 inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700">
+                Registrar Ave
+            </a>
+        </div>
+    </div>
+
+    <!-- Filters Block -->
+    <div class="bg-white shadow rounded-lg border border-gray-150 p-6 mb-8">
+        <form method="GET" action="/admin/aves" class="grid grid-cols-1 gap-4 sm:grid-cols-5">
+            <div>
+                <label for="search" class="block text-xs font-semibold text-gray-500 uppercase">Buscar</label>
+                <input type="text" name="search" id="search" value="<%= filters.search || '' %>" placeholder="Anilla o Código" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md text-sm">
+            </div>
+            <div>
+                <label for="sexo" class="block text-xs font-semibold text-gray-500 uppercase">Sexo</label>
+                <select name="sexo" id="sexo" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md text-sm">
+                    <option value="">Todos</option>
+                    <option value="M" <%= filters.sexo === 'M' ? 'selected' : '' %>>Macho</option>
+                    <option value="F" <%= filters.sexo === 'F' ? 'selected' : '' %>>Hembra</option>
+                    <option value="D" <%= filters.sexo === 'D' ? 'selected' : '' %>>Desconocido</option>
+                </select>
+            </div>
+            <div>
+                <label for="especie_id" class="block text-xs font-semibold text-gray-500 uppercase">Especie</label>
+                <select name="especie_id" id="especie_id" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md text-sm">
+                    <option value="">Todas</option>
+                    <% especies.forEach(e => { %>
+                        <option value="<%= e.id %>" <%= parseInt(filters.especie_id) === e.id ? 'selected' : '' %>><%= e.nombre %></option>
+                    <% }) %>
+                </select>
+            </div>
+            <div>
+                <label for="estado_biologico" class="block text-xs font-semibold text-gray-500 uppercase">Estado Biol.</label>
+                <select name="estado_biologico" id="estado_biologico" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md text-sm">
+                    <option value="">Todos</option>
+                    <option value="DISPONIBLE" <%= filters.estado_biologico === 'DISPONIBLE' ? 'selected' : '' %>>Disponible</option>
+                    <option value="VENDIDO" <%= filters.estado_biologico === 'VENDIDO' ? 'selected' : '' %>>Vendido</option>
+                    <option value="MUERTO" <%= filters.estado_biologico === 'MUERTO' ? 'selected' : '' %>>Muerto</option>
+                    <option value="PERDIDO" <%= filters.estado_biologico === 'PERDIDO' ? 'selected' : '' %>>Perdido</option>
+                </select>
+            </div>
+            <div class="flex items-end space-x-2">
+                <button type="submit" class="w-full bg-blue-600 text-white py-2 rounded-md font-semibold text-sm hover:bg-blue-700">Filtrar</button>
+                <a href="/admin/aves" class="w-full bg-gray-200 text-center text-gray-700 py-2 rounded-md font-semibold text-sm hover:bg-gray-300">Limpiar</a>
+            </div>
+        </form>
+    </div>
+
+    <!-- Table -->
+    <div class="bg-white shadow overflow-hidden sm:rounded-lg border border-gray-150">
+        <table class="min-w-full divide-y divide-gray-200">
+            <thead class="bg-gray-50">
+                <tr>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Identificador / Anilla</th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Foto</th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Sexo</th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Especie</th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Mutaciones</th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Estados</th>
+                    <th scope="col" class="relative px-6 py-3"><span class="sr-only">Editar</span></th>
+                </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-200">
+                <% if (aves.length === 0) { %>
+                    <tr>
+                        <td colspan="7" class="px-6 py-10 text-center text-sm text-gray-500">No se encontraron ejemplares registrados.</td>
+                    </tr>
+                <% } else { %>
+                    <% aves.forEach(a => { %>
+                        <tr>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="text-sm font-semibold text-gray-900"><%= a.identificador_interno %></div>
+                                <div class="text-xs text-gray-500">Anilla: <%= a.anilla || 'Sin anilla' %></div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <% if (a.imagenes && a.imagenes.length > 0) { %>
+                                    <img class="h-10 w-10 rounded-full object-cover border" src="<%= a.imagenes[0].url %>" alt="Ave">
+                                <% } else { %>
+                                    <div class="h-10 w-10 rounded-full bg-gray-200 border flex items-center justify-center text-xs text-gray-500">🦜</div>
+                                <% } %>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full <%= a.sexo === 'M' ? 'bg-blue-100 text-blue-800' : a.sexo === 'F' ? 'bg-pink-100 text-pink-800' : 'bg-gray-100 text-gray-800' %>">
+                                    <%= a.sexo === 'M' ? 'Macho' : a.sexo === 'F' ? 'Hembra' : 'Desconocido' %>
+                                </span>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><%= a.especie_nombre %></td>
+                            <td class="px-6 py-4 text-sm text-gray-500">
+                                <% if (a.mutaciones && a.mutaciones.length > 0) { %>
+                                    <div class="flex flex-wrap gap-1">
+                                        <% a.mutaciones.forEach(m => { %>
+                                            <span class="px-1.5 py-0.5 rounded bg-gray-100 text-xs font-medium text-gray-700 uppercase" title="<%= m.tipo %>">
+                                                <%= m.nombre %> (<%= m.tipo[0] %>)
+                                            </span>
+                                        <% }) %>
+                                    </div>
+                                <% } else { %>
+                                    <span class="text-xs text-gray-400">Sin registrar</span>
+                                <% } %>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-xs space-y-1">
+                                <div><strong class="text-gray-500">Biológico:</strong> <span class="font-semibold"><%= a.estado_biologico %></span></div>
+                                <div><strong class="text-gray-500">Comercial:</strong> <span class="font-semibold"><%= a.estado_comercial %></span></div>
+                                <div><strong class="text-gray-500">Publicado:</strong> <span class="font-semibold"><%= a.estado_publicacion %></span></div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium space-x-2">
+                                <a href="/admin/aves/<%= a.id %>/editar" class="text-blue-600 hover:text-blue-900 font-semibold">Editar</a>
+                                <a href="/admin/aves/<%= a.id %>/genealogia" class="text-green-600 hover:text-green-900 font-semibold">Genealogía</a>
+                            </td>
+                        </tr>
+                    <% }) %>
+                <% } %>
+            </tbody>
+        </table>
+    </div>
+</div>
+<%- include('../partials/footer') %>

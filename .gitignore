@@ -1,0 +1,21 @@
+# Dependencias de Node
+node_modules/
+
+# Variables de Entorno (Contiene credenciales confidenciales de DB y Supabase)
+.env
+.env*.local
+
+# Archivos de subida de imágenes locales (desarrollo)
+uploads/
+uploads/temp/
+
+# Logs del sistema
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+*.log
+
+# Archivos del Sistema Operativo
+.DS_Store
+Thumbs.db

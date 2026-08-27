@@ -1,0 +1,114 @@
+<%- include('../partials/header') %>
+<div class="max-w-4xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
+    <div class="mb-8">
+        <h2 class="text-3xl font-extrabold tracking-tight text-gray-900">Tu Carrito de Compra</h2>
+        <p class="text-sm text-gray-500 mt-1">Completa tu pago dentro del tiempo límite para garantizar tu reserva.</p>
+    </div>
+
+    <% if (reservas.length === 0) { %>
+        <div class="bg-white shadow rounded-lg p-12 text-center text-gray-500 border">
+            <p class="text-lg">Tu carrito está vacío.</p>
+            <a href="/catalogo" class="mt-4 inline-block bg-blue-600 text-white px-6 py-2 rounded-md font-semibold text-sm hover:bg-blue-700">Ver Catálogo</a>
+        </div>
+    <% } else { %>
+        <div class="grid grid-cols-1 gap-6 lg:grid-cols-3">
+            
+            <!-- Items list -->
+            <div class="lg:col-span-2 space-y-4">
+                <% reservas.forEach(r => { %>
+                    <div class="bg-white shadow rounded-lg border p-4 flex items-center justify-between" id="item-<%= r.ave_id %>">
+                        <div class="flex items-center space-x-4">
+                            <% if (r.foto) { %>
+                                <img src="<%= r.foto %>" class="h-16 w-16 object-cover rounded-md border">
+                            <% } else { %>
+                                <div class="h-16 w-16 bg-gray-100 flex items-center justify-center rounded-md border text-2xl">🦜</div>
+                            <% } %>
+                            <div>
+                                <h4 class="font-bold text-gray-900"><%= r.identificador_interno %></h4>
+                                <p class="text-xs text-gray-500">Anilla: <%= r.anilla || 'Sin anilla' %></p>
+                                
+                                <!-- Temporizador -->
+                                <div class="mt-1 flex items-center text-xs text-red-600 font-semibold">
+                                    <span class="mr-1">⏳</span>
+                                    <span class="countdown" data-expire="<%= new Date(r.expira_at).getTime() %>">Cargando...</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <span class="font-bold text-gray-900 block">S/. <%= r.precio_venta %></span>
+                            <button onclick="quitarDelCarrito(<%= r.ave_id %>)" class="text-xs text-red-500 hover:text-red-700 mt-1 block">Quitar</button>
+                        </div>
+                    </div>
+                <% }) %>
+            </div>
+
+            <!-- Checkout Form / Summary -->
+            <div class="bg-white shadow rounded-lg border p-6 flex flex-col justify-between h-fit">
+                <div>
+                    <h3 class="text-lg font-bold text-gray-900 border-b pb-2 mb-4">Resumen</h3>
+                    <div class="flex justify-between text-base font-bold text-gray-900 mb-6">
+                        <span>Total:</span>
+                        <span>S/. <%= total.toFixed(2) %></span>
+                    </div>
+                </div>
+
+                <form method="POST" action="/checkout" class="space-y-4">
+                    <div>
+                        <label for="referencia_pago" class="block text-xs font-semibold text-gray-500 uppercase mb-1">Referencia de Pago *</label>
+                        <input type="text" name="referencia_pago" id="referencia_pago" required placeholder="Nro de Operación Yape/Plin/Transferencia" class="block w-full px-3 py-2 border rounded-md text-sm">
+                    </div>
+                    <button type="submit" class="w-full bg-green-600 text-white py-3 rounded-md font-bold text-sm hover:bg-green-700">
+                        Confirmar y Finalizar Compra
+                    </button>
+                </form>
+            </div>
+
+        </div>
+    <% } %>
+</div>
+
+<script>
+    async function quitarDelCarrito(id) {
+        if (!confirm('¿Deseas liberar la reserva de este ejemplar?')) return;
+        try {
+            const response = await fetch('/carrito/quitar', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ aveId: id })
+            });
+            const res = await response.json();
+            if (res.success) {
+                window.location.reload();
+            } else {
+                alert('Error al quitar: ' + res.error);
+            }
+        } catch(e) {
+            alert('Error de conexión.');
+        }
+    }
+
+    // Temporizador de Cuenta Regresiva
+    function updateCountdowns() {
+        const timers = document.querySelectorAll('.countdown');
+        timers.forEach(t => {
+            const expire = parseInt(t.getAttribute('data-expire'));
+            const now = Date.now();
+            const diff = expire - now;
+
+            if (diff <= 0) {
+                t.textContent = "Reserva Expirada";
+                t.classList.add('text-gray-400');
+                // Auto recargar después de unos segundos
+                setTimeout(() => window.location.reload(), 1500);
+            } else {
+                const minutes = Math.floor(diff / 60000);
+                const seconds = Math.floor((diff % 60000) / 1000);
+                t.textContent = `Tiempo restante: ${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+            }
+        });
+    }
+
+    setInterval(updateCountdowns, 1000);
+    updateCountdowns();
+</script>
+<%- include('../partials/footer') %>

@@ -1,0 +1,65 @@
+<%- include('../partials/header') %>
+<div class="max-w-2xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
+    <div class="mb-8">
+        <h2 class="text-2xl font-bold leading-7 text-gray-900 sm:text-3xl">Crear Pareja Reproductiva</h2>
+        <p class="text-sm text-gray-500 mt-1">El sistema solo mostrará ejemplares machos y hembras que no se encuentren en parejas activas.</p>
+    </div>
+
+    <% if (error) { %>
+        <div class="bg-red-50 border-l-4 border-red-400 p-4 text-sm text-red-700 mb-6"><%= error %></div>
+    <% } %>
+
+    <form class="space-y-6 bg-white p-8 rounded-lg shadow-md border border-gray-150" method="POST" action="/admin/parejas/nuevo">
+        <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
+            <div>
+                <label for="macho_id" class="block text-sm font-semibold text-gray-700">Macho (Sexo M) *</label>
+                <select name="macho_id" id="macho_id" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md text-sm">
+                    <option value="">Seleccione ejemplar</option>
+                    <% machos.forEach(m => { %>
+                        <option value="<%= m.id %>"><%= m.identificador_interno %> (Anilla: <%= m.anilla || 'Sin anilla' %>)</option>
+                    <% }) %>
+                </select>
+            </div>
+            
+            <div>
+                <label for="hembra_id" class="block text-sm font-semibold text-gray-700">Hembra (Sexo F) *</label>
+                <select name="hembra_id" id="hembra_id" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md text-sm">
+                    <option value="">Seleccione ejemplar</option>
+                    <% hembras.forEach(f => { %>
+                        <option value="<%= f.id %>"><%= f.identificador_interno %> (Anilla: <%= f.anilla || 'Sin anilla' %>)</option>
+                    <% }) %>
+                </select>
+            </div>
+
+            <div>
+                <label for="fecha_inicio" class="block text-sm font-semibold text-gray-700">Fecha de Unión *</label>
+                <input type="date" name="fecha_inicio" id="fecha_inicio" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md text-sm">
+            </div>
+
+            <div>
+                <label for="jaula" class="block text-sm font-semibold text-gray-700">Jaula (Ubicación)</label>
+                <input type="text" name="jaula" id="jaula" placeholder="e.g. J-05, Voladora" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md text-sm">
+            </div>
+
+            <div>
+                <label for="nido" class="block text-sm font-semibold text-gray-700">Nido (Tipo/ID)</label>
+                <input type="text" name="nido" id="nido" placeholder="e.g. Nido Madera A" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md text-sm">
+            </div>
+        </div>
+
+        <div>
+            <label for="comentario" class="block text-sm font-semibold text-gray-700">Comentarios / Notas</label>
+            <textarea name="comentario" id="comentario" rows="3" placeholder="Observaciones de temperamento, preparación, etc." class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md text-sm"></textarea>
+        </div>
+
+        <div class="pt-5 border-t border-gray-200 flex justify-end space-x-3">
+            <a href="/admin/parejas" class="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50">Cancelar</a>
+            <button type="submit" class="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700">Crear Unión</button>
+        </div>
+    </form>
+</div>
+
+<script>
+    document.getElementById('fecha_inicio').value = new Date().toISOString().split('T')[0];
+</script>
+<%- include('../partials/footer') %>
