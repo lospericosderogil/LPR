@@ -34,6 +34,11 @@ app.use(morgan('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// Trust proxy para entornos detrás de proxies inversos (Render, Heroku, etc.)
+if (process.env.NODE_ENV === 'production' || process.env.RENDER) {
+    app.set('trust proxy', 1);
+}
+
 // Session con persistencia
 app.use(session({
     store: new pgSession({
@@ -47,7 +52,7 @@ app.use(session({
     cookie: {
         maxAge: 30 * 24 * 60 * 60 * 1000,
         httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
+        secure: process.env.NODE_ENV === 'production' || !!process.env.RENDER,
         sameSite: 'lax'
     }
 }));
