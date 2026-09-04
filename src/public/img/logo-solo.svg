@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" fill="none" class="w-full h-full">
+  <!-- Ala verde estilizada -->
+  <path d="M48 65 C40 68 28 65 20 54 C16 48 14 38 18 28 C20 24 24 28 26 33 C25 24 29 18 34 14 C36 12 38 15 38 21 C41 15 47 10 50 8 C52 7 53 11 51 18 C56 22 59 28 60 36 C61 44 58 54 53 60 C51 62 49 64 48 65 Z" fill="#0EA5E9" style="display:none;" />
+  
+  <!-- Ala Verde (Verde Esmeralda) -->
+  <path d="M48 62 C43 65 33 63 26 53 C22 47 19 38 22 28 C23 25 26 27 27 33 C28 25 32 19 37 15 C39 13 41 16 41 22 C44 16 49 11 52 9 C54 8 55 12 53 19 C57 24 60 30 61 38 C62 46 59 54 54 59 C52 61 50 62 48 62 Z" fill="#059669" />
+  
+  <!-- Cuerpo del Ave (Rojo Vivo) -->
+  <path d="M52 62 C55 58 58 50 59 40 C60 32 61 25 64 20 C67 15 72 13 77 14 C82 15 86 18 89 23 C90 24 93 24 95 23 C93 26 90 28 88 29 C87 34 85 41 83 48 C80 58 76 68 70 76 C66 82 60 88 53 92 C51 93 49 91 50 89 C55 83 60 76 63 68 C61 70 58 71 56 71 C53 71 52 68 53 66 C53 65 52 63 52 62 Z" fill="#DC2626" />
+  
+  <!-- Detalle Cabeza / Pico -->
+  <path d="M88 23 C91 23 94 22 96 21 C95 24 92 26 89 27 C88 25 88 24 88 23 Z" fill="#DC2626" />
+  
+  <!-- Patas -->
+  <path d="M60 74 L55 87 M55 87 L51 90 M55 87 L58 90 M67 71 L64 84 M64 84 L60 87 M64 84 L66 87" stroke="#DC2626" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
+</svg>

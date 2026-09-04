@@ -15,7 +15,7 @@ class AdminController {
                     COUNT(CASE WHEN sexo = 'M' THEN 1 END) as machos,
                     COUNT(CASE WHEN sexo = 'F' THEN 1 END) as hembras,
                     COUNT(CASE WHEN estado_biologico = 'DISPONIBLE' THEN 1 END) as disponibles,
-                    COUNT(CASE WHEN estado_comercial = 'EN_VENTA' THEN 1 END) as en_venta,
+                    COUNT(CASE WHEN estado_biologico = 'EN_VENTA' THEN 1 END) as en_venta,
                     COUNT(CASE WHEN estado_biologico = 'VENDIDO' THEN 1 END) as vendidos
                 FROM aves
             `);
@@ -45,14 +45,13 @@ class AdminController {
             next(err);
         }
     }
-
     async formNuevaAve(req, res, next) {
         try {
             const especies = await catalogoRepository.getEspecies();
             const mutaciones = await catalogoRepository.getMutaciones();
             
-            const resM = await db.query("SELECT id, identificador_interno, anilla FROM aves WHERE sexo = 'M' AND estado_biologico = 'DISPONIBLE'");
-            const resF = await db.query("SELECT id, identificador_interno, anilla FROM aves WHERE sexo = 'F' AND estado_biologico = 'DISPONIBLE'");
+            const resM = await db.query("SELECT id, anilla FROM aves WHERE sexo = 'M' AND estado_biologico = 'DISPONIBLE'");
+            const resF = await db.query("SELECT id, anilla FROM aves WHERE sexo = 'F' AND estado_biologico = 'DISPONIBLE'");
             
             res.render('admin/form_ave', { 
                 title: 'Registrar Nueva Ave', 
@@ -60,7 +59,7 @@ class AdminController {
                 especies, 
                 mutaciones, 
                 machos: resM.rows, 
-                hembras: resF.rows,
+                hembras: resF.rows, 
                 error: null 
             });
         } catch (err) {
@@ -71,11 +70,20 @@ class AdminController {
     async registrarAve(req, res, next) {
         try {
             const { 
-                anilla, identificador_interno, sexo, especie_id, 
+                anilla, sexo, especie_id, 
                 fecha_nacimiento, fecha_anillado, padre_id, madre_id, 
                 procedencia, criador_origen, costo_compra, fecha_compra,
-                estado_biologico, estado_publicacion, estado_comercial, precio_venta, 
-                observaciones_comerciales 
+                estado_biologico,
+                precio_venta, fecha_venta,
+                fecha_fallecimiento, motivo_fallecimiento,
+                fecha_cambio, motivo_cambio, cambiado_con,
+                fecha_perdida, detalles_perdida,
+                fecha_donacion, donado_a,
+                comentario_otro,
+                genotipo, fenotipo,
+                foto_predeterminada,
+                apunte_titulo, apunte_contenido,
+                concurso_nombre, concurso_fecha, concurso_puntuacion, concurso_premio, concurso_comentario
             } = req.body;
 
             const mutacionesBody = req.body.mutaciones || [];
@@ -85,18 +93,61 @@ class AdminController {
                 tipo: mutacionesTipos[mid] || 'FENOTIPO'
             })) : [];
 
+            // Fotos subidas
             const urlsImagenes = [];
             if (req.files && req.files.length > 0) {
-                for (const file of req.files) {
+                const principalIdx = parseInt(foto_predeterminada) || 0;
+                for (let i = 0; i < req.files.length; i++) {
+                    const file = req.files[i];
                     const url = await storageConfig.uploadToSupabase(file);
-                    urlsImagenes.push(url);
+                    urlsImagenes.push({
+                        url,
+                        es_principal: (i === principalIdx)
+                    });
                     fs.unlinkSync(file.path);
                 }
             }
 
+            // Construir estado_detalles según el estado seleccionado
+            const estadoDetalles = {};
+            if (estado_biologico === 'VENDIDO') {
+                if (fecha_venta) estadoDetalles.fecha_venta = fecha_venta;
+            } else if (estado_biologico === 'INTERCAMBIADO') {
+                if (fecha_cambio) estadoDetalles.fecha_cambio = fecha_cambio;
+                if (motivo_cambio) estadoDetalles.motivo_cambio = motivo_cambio;
+                if (cambiado_con) estadoDetalles.cambiado_con = cambiado_con;
+            } else if (estado_biologico === 'PERDIDO') {
+                if (fecha_perdida) estadoDetalles.fecha_perdida = fecha_perdida;
+                if (detalles_perdida) estadoDetalles.detalles_perdida = detalles_perdida;
+            } else if (estado_biologico === 'DONADO') {
+                if (fecha_donacion) estadoDetalles.fecha_donacion = fecha_donacion;
+                if (donado_a) estadoDetalles.donado_a = donado_a;
+            } else if (estado_biologico === 'OTRO') {
+                if (comentario_otro) estadoDetalles.comentario = comentario_otro;
+            }
+
+            // Construir procedencia_detalles
+            let procedenciaDetalles = null;
+            if (procedencia === 'COMPRA') {
+                procedenciaDetalles = {
+                    criador: criador_origen || null,
+                    costo: costo_compra ? parseFloat(costo_compra) : null,
+                    fecha_compra: fecha_compra || null
+                };
+            } else if (procedencia === 'OTRO') {
+                procedenciaDetalles = {
+                    criador: criador_origen || null
+                };
+            }
+
+            const finalAnilla = anilla ? anilla.trim() : null;
+            const publicadoWeb = req.body.publicado_web === '1' || req.body.publicado_web === 'on' || req.body.publicado_web === 'true' || req.body.publicado_web === true;
+            const estado_biologico_val = estado_biologico || 'DISPONIBLE';
+            const estado_publicacion = publicadoWeb ? 'EXHIBICION' : 'NO_PUBLICADA';
+            const estado_comercial = estado_biologico_val === 'EN_VENTA' ? 'EN_VENTA' : 'NO_VENTA';
+
             const aveData = {
-                anilla,
-                identificador_interno,
+                anilla: finalAnilla,
                 sexo,
                 especie_id: parseInt(especie_id),
                 fecha_nacimiento,
@@ -104,28 +155,61 @@ class AdminController {
                 padre_id: padre_id ? parseInt(padre_id) : null,
                 madre_id: madre_id ? parseInt(madre_id) : null,
                 procedencia,
-                procedencia_detalles: procedencia === 'COMPRA' ? {
-                    criador: criador_origen,
-                    costo: costo_compra ? parseFloat(costo_compra) : null,
-                    fecha_compra: fecha_compra || null
-                } : null,
-                estado_biologico,
+                procedencia_detalles: procedenciaDetalles,
+                estado_biologico: estado_biologico_val,
                 estado_publicacion,
                 estado_comercial,
-                precio_venta: precio_venta ? parseFloat(precio_venta) : null,
-                observaciones_comerciales,
+                precio_venta: (estado_biologico_val === 'EN_VENTA' || estado_biologico_val === 'VENDIDO') && precio_venta ? parseFloat(precio_venta) : null,
+                observaciones_comerciales: null,
+                fecha_fallecimiento: estado_biologico_val === 'MUERTO' && fecha_fallecimiento ? fecha_fallecimiento : null,
+                motivo_fallecimiento: estado_biologico_val === 'MUERTO' && motivo_fallecimiento ? motivo_fallecimiento : null,
+                genotipo: genotipo ? genotipo.trim() : null,
+                fenotipo: fenotipo ? fenotipo.trim() : null,
+                estado_detalles: Object.keys(estadoDetalles).length > 0 ? estadoDetalles : null,
                 usuario_ejecutor_id: req.session.user.id
             };
 
-            await aveService.registrarAve(aveData, mutacionesList, urlsImagenes);
+            const apunteData = (apunte_titulo && apunte_contenido) ? {
+                titulo: apunte_titulo.trim(),
+                contenido: apunte_contenido.trim()
+            } : null;
+
+            const concursoData = (concurso_nombre && concurso_fecha) ? {
+                nombre_concurso: concurso_nombre.trim(),
+                fecha: concurso_fecha,
+                puntuacion: concurso_puntuacion ? parseInt(concurso_puntuacion) : null,
+                premio: concurso_premio ? concurso_premio.trim() : null,
+                comentarios: concurso_comentario ? concurso_comentario.trim() : null
+            } : null;
+
+            const nuevaAve = await aveService.registrarAve(aveData, mutacionesList, urlsImagenes, apunteData, concursoData);
+            
+            const isJson = req.xhr || (req.headers.accept && req.headers.accept.includes('application/json')) || req.headers['x-requested-with'] === 'XMLHttpRequest';
+            if (isJson) {
+                return res.json({
+                    success: true,
+                    isEdit: false,
+                    message: '¡El ave ha sido registrada exitosamente!',
+                    aveId: nuevaAve.id,
+                    anilla: nuevaAve.anilla || ('ID #' + nuevaAve.id),
+                    redirectUrl: '/admin/aves'
+                });
+            }
             res.redirect('/admin/aves');
         } catch (err) {
             console.error('❌ Error registrando ave:', err.message);
+            const isJson = req.xhr || (req.headers.accept && req.headers.accept.includes('application/json')) || req.headers['x-requested-with'] === 'XMLHttpRequest';
+            if (isJson) {
+                return res.status(400).json({
+                    success: false,
+                    message: err.message || 'Error al registrar el ave'
+                });
+            }
             try {
                 const especies = await catalogoRepository.getEspecies();
                 const mutaciones = await catalogoRepository.getMutaciones();
-                const resM = await db.query("SELECT id, identificador_interno, anilla FROM aves WHERE sexo = 'M' AND estado_biologico = 'DISPONIBLE'");
-                const resF = await db.query("SELECT id, identificador_interno, anilla FROM aves WHERE sexo = 'F' AND estado_biologico = 'DISPONIBLE'");
+                const resM = await db.query("SELECT id, anilla FROM aves WHERE sexo = 'M' AND estado_biologico = 'DISPONIBLE'");
+                const resF = await db.query("SELECT id, anilla FROM aves WHERE sexo = 'F' AND estado_biologico = 'DISPONIBLE'");
                 res.render('admin/form_ave', { 
                     title: 'Registrar Nueva Ave', 
                     ave: null, 
@@ -152,8 +236,8 @@ class AdminController {
             const especies = await catalogoRepository.getEspecies();
             const mutaciones = await catalogoRepository.getMutaciones();
             
-            const resM = await db.query("SELECT id, identificador_interno, anilla FROM aves WHERE sexo = 'M' AND estado_biologico = 'DISPONIBLE' AND id <> $1", [id]);
-            const resF = await db.query("SELECT id, identificador_interno, anilla FROM aves WHERE sexo = 'F' AND estado_biologico = 'DISPONIBLE' AND id <> $1", [id]);
+            const resM = await db.query("SELECT id, anilla FROM aves WHERE sexo = 'M' AND estado_biologico = 'DISPONIBLE' AND id <> $1", [id]);
+            const resF = await db.query("SELECT id, anilla FROM aves WHERE sexo = 'F' AND estado_biologico = 'DISPONIBLE' AND id <> $1", [id]);
             
             res.render('admin/form_ave', { 
                 title: 'Editar Ave', 
@@ -173,11 +257,21 @@ class AdminController {
         try {
             const { id } = req.params;
             const { 
-                anilla, identificador_interno, sexo, especie_id, 
+                anilla, sexo, especie_id, 
                 fecha_nacimiento, fecha_anillado, padre_id, madre_id, 
                 procedencia, criador_origen, costo_compra, fecha_compra,
-                estado_biologico, estado_publicacion, estado_comercial, precio_venta, 
-                observaciones_comerciales, fecha_fallecimiento, motivo_fallecimiento
+                estado_biologico,
+                precio_venta, fecha_venta,
+                fecha_fallecimiento, motivo_fallecimiento,
+                fecha_cambio, motivo_cambio, cambiado_con,
+                fecha_perdida, detalles_perdida,
+                fecha_donacion, donado_a,
+                comentario_otro,
+                genotipo, fenotipo,
+                foto_predeterminada,
+                apunte_titulo, apunte_contenido,
+                concurso_nombre, concurso_fecha, concurso_puntuacion, concurso_premio, concurso_comentario,
+                imagenes_conservar
             } = req.body;
 
             const mutacionesBody = req.body.mutaciones || [];
@@ -187,18 +281,75 @@ class AdminController {
                 tipo: mutacionesTipos[mid] || 'FENOTIPO'
             })) : [];
 
-            const urlsImagenes = [];
+            // Manejo de imágenes conservadas y nuevas
+            let conservar = [];
+            if (imagenes_conservar) {
+                conservar = Array.isArray(imagenes_conservar) ? imagenes_conservar : [imagenes_conservar];
+            }
+
+            const imagenesExistentes = conservar.map(url => ({
+                url,
+                es_principal: (foto_predeterminada === url)
+            }));
+
+            const imagenesNuevas = [];
             if (req.files && req.files.length > 0) {
-                for (const file of req.files) {
+                for (let i = 0; i < req.files.length; i++) {
+                    const file = req.files[i];
                     const url = await storageConfig.uploadToSupabase(file);
-                    urlsImagenes.push(url);
+                    const isPrincipal = (foto_predeterminada === `nueva_${i}`) || (imagenesExistentes.length === 0 && i === 0 && !foto_predeterminada);
+                    imagenesNuevas.push({
+                        url,
+                        es_principal: isPrincipal
+                    });
                     fs.unlinkSync(file.path);
                 }
             }
 
+            const totalFotos = [...imagenesExistentes, ...imagenesNuevas];
+            if (totalFotos.length > 0 && !totalFotos.some(f => f.es_principal)) {
+                if (imagenesExistentes.length > 0) imagenesExistentes[0].es_principal = true;
+                else if (imagenesNuevas.length > 0) imagenesNuevas[0].es_principal = true;
+            }
+
+            const estadoDetalles = {};
+            if (estado_biologico === 'VENDIDO') {
+                if (fecha_venta) estadoDetalles.fecha_venta = fecha_venta;
+            } else if (estado_biologico === 'INTERCAMBIADO') {
+                if (fecha_cambio) estadoDetalles.fecha_cambio = fecha_cambio;
+                if (motivo_cambio) estadoDetalles.motivo_cambio = motivo_cambio;
+                if (cambiado_con) estadoDetalles.cambiado_con = cambiado_con;
+            } else if (estado_biologico === 'PERDIDO') {
+                if (fecha_perdida) estadoDetalles.fecha_perdida = fecha_perdida;
+                if (detalles_perdida) estadoDetalles.detalles_perdida = detalles_perdida;
+            } else if (estado_biologico === 'DONADO') {
+                if (fecha_donacion) estadoDetalles.fecha_donacion = fecha_donacion;
+                if (donado_a) estadoDetalles.donado_a = donado_a;
+            } else if (estado_biologico === 'OTRO') {
+                if (comentario_otro) estadoDetalles.comentario = comentario_otro;
+            }
+
+            let procedenciaDetalles = null;
+            if (procedencia === 'COMPRA') {
+                procedenciaDetalles = {
+                    criador: criador_origen || null,
+                    costo: costo_compra ? parseFloat(costo_compra) : null,
+                    fecha_compra: fecha_compra || null
+                };
+            } else if (procedencia === 'OTRO') {
+                procedenciaDetalles = {
+                    criador: criador_origen || null
+                };
+            }
+
+            const finalAnilla = anilla ? anilla.trim() : null;
+            const publicadoWeb = req.body.publicado_web === '1' || req.body.publicado_web === 'on' || req.body.publicado_web === 'true' || req.body.publicado_web === true;
+            const estado_biologico_val = estado_biologico || 'DISPONIBLE';
+            const estado_publicacion = publicadoWeb ? 'EXHIBICION' : 'NO_PUBLICADA';
+            const estado_comercial = estado_biologico_val === 'EN_VENTA' ? 'EN_VENTA' : 'NO_VENTA';
+
             const aveData = {
-                anilla,
-                identificador_interno,
+                anilla: finalAnilla,
                 sexo,
                 especie_id: parseInt(especie_id),
                 fecha_nacimiento,
@@ -206,32 +357,63 @@ class AdminController {
                 padre_id: padre_id ? parseInt(padre_id) : null,
                 madre_id: madre_id ? parseInt(madre_id) : null,
                 procedencia,
-                procedencia_detalles: procedencia === 'COMPRA' ? {
-                    criador: criador_origen,
-                    costo: costo_compra ? parseFloat(costo_compra) : null,
-                    fecha_compra: fecha_compra || null
-                } : null,
-                estado_biologico,
+                procedencia_detalles: procedenciaDetalles,
+                estado_biologico: estado_biologico_val,
                 estado_publicacion,
                 estado_comercial,
-                precio_venta: precio_venta ? parseFloat(precio_venta) : null,
-                observaciones_comerciales,
-                fecha_fallecimiento: fecha_fallecimiento || null,
-                motivo_fallecimiento: motivo_fallecimiento || null,
+                precio_venta: (estado_biologico_val === 'EN_VENTA' || estado_biologico_val === 'VENDIDO') && precio_venta ? parseFloat(precio_venta) : null,
+                observaciones_comerciales: null,
+                fecha_fallecimiento: estado_biologico_val === 'MUERTO' && fecha_fallecimiento ? fecha_fallecimiento : null,
+                motivo_fallecimiento: estado_biologico_val === 'MUERTO' && motivo_fallecimiento ? motivo_fallecimiento : null,
+                genotipo: genotipo ? genotipo.trim() : null,
+                fenotipo: fenotipo ? fenotipo.trim() : null,
+                estado_detalles: Object.keys(estadoDetalles).length > 0 ? estadoDetalles : null,
                 usuario_ejecutor_id: req.session.user.id
             };
 
-            await aveService.actualizarAve(id, aveData, mutacionesList, urlsImagenes);
+            const apunteData = (apunte_titulo && apunte_contenido) ? {
+                titulo: apunte_titulo.trim(),
+                contenido: apunte_contenido.trim()
+            } : null;
+
+            const concursoData = (concurso_nombre && concurso_fecha) ? {
+                nombre_concurso: concurso_nombre.trim(),
+                fecha: concurso_fecha,
+                puntuacion: concurso_puntuacion ? parseInt(concurso_puntuacion) : null,
+                premio: concurso_premio ? concurso_premio.trim() : null,
+                comentarios: concurso_comentario ? concurso_comentario.trim() : null
+            } : null;
+
+            const aveActualizada = await aveService.actualizarAve(id, aveData, mutacionesList, imagenesNuevas, imagenesExistentes, apunteData, concursoData);
+            
+            const isJson = req.xhr || (req.headers.accept && req.headers.accept.includes('application/json')) || req.headers['x-requested-with'] === 'XMLHttpRequest';
+            if (isJson) {
+                return res.json({
+                    success: true,
+                    isEdit: true,
+                    message: '¡El ave ha sido actualizada exitosamente!',
+                    aveId: id,
+                    anilla: aveActualizada.anilla || ('ID #' + id),
+                    redirectUrl: '/admin/aves'
+                });
+            }
             res.redirect('/admin/aves');
         } catch (err) {
             console.error('❌ Error actualizando ave:', err.message);
+            const isJson = req.xhr || (req.headers.accept && req.headers.accept.includes('application/json')) || req.headers['x-requested-with'] === 'XMLHttpRequest';
+            if (isJson) {
+                return res.status(400).json({
+                    success: false,
+                    message: err.message || 'Error al actualizar el ave'
+                });
+            }
             try {
                 const { id } = req.params;
                 const ave = await aveService.obtenerAveConDetalles(id);
                 const especies = await catalogoRepository.getEspecies();
                 const mutaciones = await catalogoRepository.getMutaciones();
-                const resM = await db.query("SELECT id, identificador_interno, anilla FROM aves WHERE sexo = 'M' AND estado_biologico = 'DISPONIBLE' AND id <> $1", [id]);
-                const resF = await db.query("SELECT id, identificador_interno, anilla FROM aves WHERE sexo = 'F' AND estado_biologico = 'DISPONIBLE' AND id <> $1", [id]);
+                const resM = await db.query("SELECT id, anilla FROM aves WHERE sexo = 'M' AND estado_biologico = 'DISPONIBLE' AND id <> $1", [id]);
+                const resF = await db.query("SELECT id, anilla FROM aves WHERE sexo = 'F' AND estado_biologico = 'DISPONIBLE' AND id <> $1", [id]);
                 
                 res.render('admin/form_ave', { 
                     title: 'Editar Ave', 
@@ -239,7 +421,7 @@ class AdminController {
                     especies, 
                     mutaciones, 
                     machos: resM.rows, 
-                    hembras: resF.rows,
+                    hembras: resF.rows, 
                     error: err.message 
                 });
             } catch (err2) {
@@ -266,14 +448,14 @@ class AdminController {
         try {
             // Cargar machos y hembras sin parejas activas actualmente
             const resM = await db.query(`
-                SELECT id, identificador_interno, anilla FROM aves 
+                SELECT id, anilla FROM aves 
                 WHERE sexo = 'M' AND estado_biologico = 'DISPONIBLE'
                   AND id NOT IN (
                       SELECT macho_id FROM parejas WHERE activo = true AND fecha_fin IS NULL
                   )
             `);
             const resF = await db.query(`
-                SELECT id, identificador_interno, anilla FROM aves 
+                SELECT id, anilla FROM aves 
                 WHERE sexo = 'F' AND estado_biologico = 'DISPONIBLE'
                   AND id NOT IN (
                       SELECT hembra_id FROM parejas WHERE activo = true AND fecha_fin IS NULL
@@ -309,8 +491,8 @@ class AdminController {
         } catch (err) {
             console.error('❌ Error creando pareja:', err.message);
             try {
-                const resM = await db.query("SELECT id, identificador_interno, anilla FROM aves WHERE sexo = 'M' AND estado_biologico = 'DISPONIBLE' AND id NOT IN (SELECT macho_id FROM parejas WHERE activo = true AND fecha_fin IS NULL)");
-                const resF = await db.query("SELECT id, identificador_interno, anilla FROM aves WHERE sexo = 'F' AND estado_biologico = 'DISPONIBLE' AND id NOT IN (SELECT hembra_id FROM parejas WHERE activo = true AND fecha_fin IS NULL)");
+                const resM = await db.query("SELECT id, anilla FROM aves WHERE sexo = 'M' AND estado_biologico = 'DISPONIBLE' AND id NOT IN (SELECT macho_id FROM parejas WHERE activo = true AND fecha_fin IS NULL)");
+                const resF = await db.query("SELECT id, anilla FROM aves WHERE sexo = 'F' AND estado_biologico = 'DISPONIBLE' AND id NOT IN (SELECT hembra_id FROM parejas WHERE activo = true AND fecha_fin IS NULL)");
                 res.render('admin/form_pareja', { 
                     title: 'Crear Pareja Reproductiva', 
                     machos: resM.rows, 

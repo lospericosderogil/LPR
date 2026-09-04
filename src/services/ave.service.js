@@ -2,7 +2,7 @@ const db = require('../config/db');
 const aveRepository = require('../repositories/ave.repository');
 
 class AveService {
-    async registrarAve(aveData, mutaciones = [], imagenes = []) {
+    async registrarAve(aveData, mutaciones = [], imagenes = [], apunte = null, concurso = null) {
         const client = await db.getClient();
         try {
             await client.query('BEGIN');
@@ -20,13 +20,24 @@ class AveService {
 
             // Asignar imágenes
             if (imagenes && imagenes.length > 0) {
-                for (let i = 0; i < imagenes.length; i++) {
-                    const isPrincipal = i === 0;
+                for (const img of imagenes) {
+                    const url = typeof img === 'string' ? img : img.url;
+                    const isPrincipal = typeof img === 'object' && 'es_principal' in img ? img.es_principal : false;
                     await client.query(
                         'INSERT INTO imagenes_ave (ave_id, url, es_principal) VALUES ($1, $2, $3)',
-                        [nuevaAve.id, imagenes[i], isPrincipal]
+                        [nuevaAve.id, url, isPrincipal]
                     );
                 }
+            }
+
+            // Asignar apunte inicial si fue completado
+            if (apunte && apunte.titulo && apunte.contenido) {
+                await aveRepository.addApunte(nuevaAve.id, apunte.titulo, apunte.contenido, client);
+            }
+
+            // Asignar concurso inicial si fue completado
+            if (concurso && concurso.nombre_concurso && concurso.fecha) {
+                await aveRepository.addConcurso(nuevaAve.id, concurso, client);
             }
 
             await client.query('COMMIT');
@@ -39,7 +50,7 @@ class AveService {
         }
     }
 
-    async actualizarAve(id, aveData, mutaciones = [], imagenes = []) {
+    async actualizarAve(id, aveData, mutaciones = [], imagenesNuevas = [], imagenesExistentes = [], apunte = null, concurso = null) {
         const client = await db.getClient();
         try {
             await client.query('BEGIN');
@@ -56,16 +67,33 @@ class AveService {
                 await aveRepository.addMutation(id, item.mutacion_id, item.tipo, client);
             }
 
-            // Si se subieron nuevas imágenes, limpiar anteriores y guardar nuevas
-            if (imagenes && imagenes.length > 0) {
+            // Gestión de imágenes si hay cambios (existentes preservadas o nuevas añadidas)
+            if (imagenesExistentes.length > 0 || imagenesNuevas.length > 0) {
                 await client.query('DELETE FROM imagenes_ave WHERE ave_id = $1', [id]);
-                for (let i = 0; i < imagenes.length; i++) {
-                    const isPrincipal = i === 0;
+                for (const img of imagenesExistentes) {
                     await client.query(
                         'INSERT INTO imagenes_ave (ave_id, url, es_principal) VALUES ($1, $2, $3)',
-                        [id, imagenes[i], isPrincipal]
+                        [id, img.url, img.es_principal || false]
                     );
                 }
+                for (const img of imagenesNuevas) {
+                    const url = typeof img === 'string' ? img : img.url;
+                    const isPrincipal = typeof img === 'object' && 'es_principal' in img ? img.es_principal : false;
+                    await client.query(
+                        'INSERT INTO imagenes_ave (ave_id, url, es_principal) VALUES ($1, $2, $3)',
+                        [id, url, isPrincipal]
+                    );
+                }
+            }
+
+            // Guardar apunte nuevo si se ingresó
+            if (apunte && apunte.titulo && apunte.contenido) {
+                await aveRepository.addApunte(id, apunte.titulo, apunte.contenido, client);
+            }
+
+            // Guardar concurso nuevo si se ingresó
+            if (concurso && concurso.nombre_concurso && concurso.fecha) {
+                await aveRepository.addConcurso(id, concurso, client);
             }
 
             await client.query('COMMIT');
@@ -83,9 +111,16 @@ class AveService {
         if (!ave) return null;
         
         ave.mutaciones = await aveRepository.getMutations(id);
+        
         // Cargar imágenes
-        const resImg = await db.query('SELECT * FROM imagenes_ave WHERE ave_id = $1 ORDER BY es_principal DESC', [id]);
+        const resImg = await db.query('SELECT * FROM imagenes_ave WHERE ave_id = $1 ORDER BY es_principal DESC, id ASC', [id]);
         ave.imagenes = resImg.rows;
+
+        // Cargar apuntes
+        ave.apuntes = await aveRepository.getApuntes(id);
+
+        // Cargar concursos
+        ave.concursos = await aveRepository.getConcursos(id);
         
         return ave;
     }

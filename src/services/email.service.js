@@ -26,7 +26,7 @@ class EmailService {
     }
 
     async sendEmail({ to, subject, html }) {
-        const from = process.env.SMTP_FROM || '"Prompt Maestro" <no-reply@promptmaestro.com>';
+        const from = process.env.SMTP_FROM || '"AviPeru" <no-reply@aviperu.com>';
         
         if (this.isConfigured) {
             try {
@@ -54,13 +54,14 @@ class EmailService {
     }
 
     async enviarConfirmacionCompra(usuario, pedido, detalles) {
-        const subject = `Confirmación de Pedido #${pedido.id} - Prompt Maestro`;
+        const subject = `Confirmación de Pedido #${pedido.id} - AviPeru`;
         
         let itemsHtml = '';
         detalles.forEach(d => {
+            const ref = d.anilla ? `Anilla ${d.anilla}` : `Ave #${d.ave_id || d.id}`;
             itemsHtml += `
                 <tr>
-                    <td style="padding: 10px; border-bottom: 1px solid #ddd;">${d.identificador_interno} (${d.anilla || 'Sin anilla'})</td>
+                    <td style="padding: 10px; border-bottom: 1px solid #ddd;">${ref}</td>
                     <td style="padding: 10px; border-bottom: 1px solid #ddd; text-align: right;">S/. ${d.precio_venta}</td>
                 </tr>
             `;
@@ -98,7 +99,7 @@ class EmailService {
 
                 <p style="font-size: 12px; color: #777; margin-top: 30px; text-align: center;">
                     Este es un correo automático. Por favor no lo respondas.<br>
-                    Prompt Maestro - Crianza y Gestión de Aves Finas.
+                    AviPeru - Crianza y Gestión de Aves Finas.
                 </p>
             </div>
         `;
@@ -107,14 +108,15 @@ class EmailService {
     }
 
     async enviarNotificacionReserva(usuario, ave, expiraAt) {
-        const subject = `Reserva Temporal Confirmada: ${ave.identificador_interno} - Prompt Maestro`;
+        const aveRef = ave.anilla ? `Anilla ${ave.anilla}` : `Ave #${ave.id}`;
+        const subject = `Reserva Temporal Confirmada: ${aveRef} - AviPeru`;
         const timeString = new Date(expiraAt).toLocaleTimeString('es', { hour: '2-digit', minute: '2-digit' });
         
         const html = `
             <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; padding: 20px; border: 1px solid #eee; border-radius: 8px;">
                 <h2 style="color: #2563eb;">Reserva Temporal Confirmada</h2>
                 <p>Hola **${usuario.nombre}**,</p>
-                <p>Hemos bloqueado el ejemplar **${ave.identificador_interno}** (Anilla: &nbsp;${ave.anilla || 'Sin anilla'}) en tu carrito.</p>
+                <p>Hemos bloqueado el ejemplar **${aveRef}** en tu carrito.</p>
                 
                 <div style="margin: 20px 0; padding: 15px; background-color: #eff6ff; border-left: 4px solid #2563eb; border-radius: 4px;">
                     <strong>Tiempo límite de reserva:</strong> 10 minutos.<br>
@@ -124,7 +126,7 @@ class EmailService {
                 <p>Por favor, completa tu checkout antes del tiempo indicado para evitar que el ejemplar sea liberado para la venta a otros clientes.</p>
 
                 <p style="font-size: 12px; color: #777; margin-top: 30px; text-align: center;">
-                    Prompt Maestro - Crianza y Gestión de Aves Finas.
+                    AviPeru - Crianza y Gestión de Aves Finas.
                 </p>
             </div>
         `;

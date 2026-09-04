@@ -9,24 +9,28 @@ require('dotenv').config();
 
 const db = require('./src/config/db');
 const errorMiddleware = require('./src/middlewares/error.middleware');
+const aveService = require('./src/services/ave.service');
 
 const app = express();
 const PORT = process.env.PORT || 3010;
 
 // Security Middlewares
-app.use(helmet({
-    contentSecurityPolicy: {
-        directives: {
-            defaultSrc: ["'self'"],
-            scriptSrc: ["'self'", "'unsafe-inline'", "https://cdn.jsdelivr.net"],
-            scriptSrcAttr: ["'unsafe-inline'"],
-            styleSrc: ["'self'", "'unsafe-inline'", "https://cdn.jsdelivr.net", "https://fonts.googleapis.com"],
-            fontSrc: ["'self'", "https://fonts.gstatic.com"],
-            imgSrc: ["'self'", "data:", "https://*.supabase.co"],
-            connectSrc: ["'self'", "https://*.supabase.co"]
-        }
-    }
-}));
+if (process.env.NODE_ENV === 'production') {
+    app.use(helmet({
+        contentSecurityPolicy: false,
+        crossOriginEmbedderPolicy: false
+    }));
+} else {
+    // En desarrollo local (localhost), desactivamos CSP y HSTS para evitar ERR_SSL_PROTOCOL_ERROR
+    app.use(helmet({
+        contentSecurityPolicy: false,
+        hsts: false
+    }));
+    app.use((req, res, next) => {
+        res.setHeader('Strict-Transport-Security', 'max-age=0');
+        next();
+    });
+}
 app.use(cors());
 app.use(morgan('dev'));
 
@@ -46,7 +50,7 @@ app.use(session({
         tableName: 'session',
         createTableIfMissing: true
     }),
-    secret: process.env.SESSION_SECRET || 'prompt_maestro_super_secret_session_key',
+    secret: process.env.SESSION_SECRET || 'aviperu_super_secret_session_key',
     resave: false,
     saveUninitialized: false,
     cookie: {
@@ -80,9 +84,17 @@ app.use('/', authRoutes);
 app.use('/admin', adminRoutes);
 app.use('/', shopRoutes);
 
-// Home temporal
-app.get('/', (req, res) => {
-    res.render('shop/home', { title: 'Inicio - Prompt Maestro' });
+// Home principal con ejemplares destacados
+app.get('/', async (req, res) => {
+    try {
+        const aves = await aveService.listarAves({ catalogo_publico: true });
+        // Tomar las últimas 3 aves registradas y en exhibición
+        const destacadas = aves.slice(0, 3);
+        res.render('shop/home', { title: 'Inicio - AviPeru', aves: destacadas });
+    } catch (err) {
+        console.error('❌ Error cargando aves para la home:', err.message);
+        res.render('shop/home', { title: 'Inicio - AviPeru', aves: [] });
+    }
 });
 
 // Cron Job: Liberación automática de reservas expiradas (cada minuto)
@@ -102,11 +114,11 @@ cron.schedule('* * * * *', async () => {
         if (resExpired.rows.length > 0) {
             const aveIds = resExpired.rows.map(r => r.ave_id);
             
-            // Retornar aves a EN_VENTA si siguen DISPONIBLES
+            // Retornar aves a EN_VENTA si siguen en estado EN_VENTA
             await client.query(`
                 UPDATE aves 
                 SET estado_comercial = 'EN_VENTA' 
-                WHERE id = ANY($1) AND estado_biologico = 'DISPONIBLE'
+                WHERE id = ANY($1) AND estado_biologico = 'EN_VENTA'
             `, [aveIds]);
 
             // Desactivar las reservas
@@ -132,5 +144,5 @@ cron.schedule('* * * * *', async () => {
 app.use(errorMiddleware);
 
 app.listen(PORT, () => {
-    console.log(`🚀 [Server]: Plataforma Prompt Maestro activa en http://localhost:${PORT}`);
+    console.log(`🚀 [Server]: Plataforma AviPeru activa en http://localhost:${PORT}`);
 });

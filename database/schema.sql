@@ -1,5 +1,5 @@
 -- ============================================================================
--- SCRIPT DE CREACIÓN DE BASE DE DATOS (DDL) - PROMPT MAESTRO
+-- SCRIPT DE CREACIÓN DE BASE DE DATOS (DDL) - AVIPERU
 -- ============================================================================
 
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
@@ -31,8 +31,13 @@ CREATE TABLE especies (
 -- 4. TABLA DE MUTACIONES
 CREATE TABLE mutaciones (
     id SERIAL PRIMARY KEY,
+    categoria VARCHAR(50) NOT NULL,
     nombre VARCHAR(100) UNIQUE NOT NULL,
     descripcion TEXT,
+    herencia VARCHAR(50),
+    cromosoma VARCHAR(30),
+    codigo_genetico VARCHAR(30),
+    regla_cruce TEXT,
     activo BOOLEAN DEFAULT TRUE
 );
 
@@ -40,7 +45,6 @@ CREATE TABLE mutaciones (
 CREATE TABLE aves (
     id SERIAL PRIMARY KEY,
     anilla VARCHAR(50) UNIQUE,
-    identificador_interno VARCHAR(50) UNIQUE NOT NULL,
     sexo CHAR(1) NOT NULL CHECK (sexo IN ('M', 'F', 'D')),
     especie_id INTEGER NOT NULL REFERENCES especies(id),
     fecha_nacimiento DATE NOT NULL CHECK (fecha_nacimiento <= CURRENT_DATE),
@@ -49,13 +53,16 @@ CREATE TABLE aves (
     madre_id INTEGER REFERENCES aves(id) ON DELETE SET NULL,
     procedencia VARCHAR(20) NOT NULL CHECK (procedencia IN ('YO', 'COMPRA', 'OTRO')),
     procedencia_detalles JSONB, -- Estructura: {"criador": "...", "costo": 120.00, "fecha_compra": "YYYY-MM-DD"}
-    estado_biologico VARCHAR(30) DEFAULT 'DISPONIBLE' CHECK (estado_biologico IN ('DISPONIBLE', 'VENDIDO', 'MUERTO', 'PERDIDO', 'DONADO', 'INTERCAMBIADO')),
+    estado_biologico VARCHAR(30) DEFAULT 'DISPONIBLE' CHECK (estado_biologico IN ('DISPONIBLE', 'EN_VENTA', 'VENDIDO', 'MUERTO', 'PERDIDO', 'DONADO', 'INTERCAMBIADO', 'OTRO')),
     estado_publicacion VARCHAR(30) DEFAULT 'NO_PUBLICADA' CHECK (estado_publicacion IN ('NO_PUBLICADA', 'EXHIBICION', 'OCULTA')),
     estado_comercial VARCHAR(30) DEFAULT 'NO_VENTA' CHECK (estado_comercial IN ('NO_VENTA', 'EN_VENTA', 'RESERVADA')),
     precio_venta DECIMAL(10,2) CHECK (precio_venta >= 0),
     observaciones_comerciales TEXT,
     fecha_fallecimiento DATE CHECK (fecha_fallecimiento >= fecha_nacimiento),
     motivo_fallecimiento VARCHAR(150),
+    genotipo TEXT,
+    fenotipo TEXT,
+    estado_detalles JSONB,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -344,9 +351,8 @@ CREATE TRIGGER trg_audit_pedidos AFTER INSERT OR UPDATE OR DELETE ON pedidos FOR
 CREATE OR REPLACE FUNCTION fn_manejar_ausencia_ave()
 RETURNS TRIGGER AS $$
 BEGIN
-    -- Si el ave deja de estar disponible en el criadero, forzar retiro de venta y desactivar sus reservas/parejas
-    IF NEW.estado_biologico IN ('MUERTO', 'PERDIDO', 'DONADO', 'INTERCAMBIADO') THEN
-        NEW.estado_publicacion := 'OCULTA';
+    -- Si el ave deja de estar disponible en el criadero, forzar retiro de venta comercial y desactivar reservas/parejas
+    IF NEW.estado_biologico IN ('MUERTO', 'PERDIDO', 'DONADO', 'INTERCAMBIADO', 'VENDIDO') THEN
         NEW.estado_comercial := 'NO_VENTA';
 
         -- Desactivar reservas temporales asociadas
@@ -354,7 +360,7 @@ BEGIN
 
         -- Cerrar parejas reproductivas activas de este ejemplar
         UPDATE parejas 
-        SET activo = FALSE, fecha_fin = CURRENT_DATE, comentario = CONCAT(comentario, ' | Cerrada automáticamente por cambio de estado del ejemplar a: ', NEW.estado_biologico)
+        SET activo = FALSE, fecha_fin = CURRENT_DATE, comentario = CONCAT(COALESCE(comentario, ''), ' | Cerrada automáticamente por cambio de estado del ejemplar a: ', NEW.estado_biologico)
         WHERE (macho_id = NEW.id OR hembra_id = NEW.id) AND activo = TRUE;
     END IF;
     RETURN NEW;

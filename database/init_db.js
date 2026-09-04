@@ -18,18 +18,18 @@ async function init() {
     try {
         await defaultClient.connect();
         
-        // 1. Eliminar base de datos anterior 'prompt_maestro' si existe (para limpiar)
+        // 1. Eliminar base de datos anterior 'prompt_maestro' o 'aviperu' si existe (para limpiar)
         try {
             const resCheckOld = await defaultClient.query(
-                "SELECT 1 FROM pg_database WHERE datname = 'prompt_maestro'"
+                "SELECT datname FROM pg_database WHERE datname IN ('prompt_maestro', 'aviperu')"
             );
-            if (resCheckOld.rows.length > 0) {
-                console.log('DROP DATABASE: Eliminando base de datos obsoleta "prompt_maestro"...');
-                await defaultClient.query('DROP DATABASE prompt_maestro');
-                console.log('✔ Base de datos anterior eliminada.');
+            for (const row of resCheckOld.rows) {
+                console.log(`DROP DATABASE: Eliminando base de datos obsoleta "${row.datname}"...`);
+                await defaultClient.query(`DROP DATABASE ${row.datname}`);
+                console.log(`✔ Base de datos anterior "${row.datname}" eliminada.`);
             }
         } catch (e) {
-            console.log('ℹ No se pudo eliminar "prompt_maestro" (probablemente conexiones activas). continuando...');
+            console.log('ℹ No se pudo eliminar base de datos anterior (probablemente conexiones activas). continuando...');
         }
 
         // 2. Crear nueva base de datos 'db_lpr'
@@ -130,7 +130,7 @@ async function init() {
         const envPath = path.join(__dirname, '../.env');
         const envContent = `PORT=3010
 DATABASE_URL=postgresql://postgres@localhost:5432/db_lpr
-SESSION_SECRET=PROMPT_MAESTRO_SECURE_SESSION_SECRET_KEY_2026!
+SESSION_SECRET=AVIPERU_SECURE_SESSION_SECRET_KEY_2026!
 SUPABASE_URL=https://your-project.supabase.co
 SUPABASE_KEY=your-supabase-service-role-key
 MAIL_HOST=smtp.gmail.com

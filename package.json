@@ -1,11 +1,12 @@
 {
-  "name": "prompt-maestro",
+  "name": "aviperu",
   "version": "1.0.0",
   "description": "Plataforma de gestión y e-commerce de aves",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "dev": "node --watch server.js"
+    "dev": "node --watch server.js",
+    "deploy:panel": "node scripts/git-panel.js"
   },
   "dependencies": {
     "bcrypt": "^5.1.1",

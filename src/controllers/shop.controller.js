@@ -7,7 +7,7 @@ class ShopController {
     async listarCatalogo(req, res, next) {
         try {
             const filters = {
-                estado_publicacion: 'EXHIBICION',
+                catalogo_publico: true,
                 sexo: req.query.sexo || null,
                 especie_id: req.query.especie_id || null,
                 search: req.query.search || null
@@ -16,7 +16,7 @@ class ShopController {
             const aves = await aveService.listarAves(filters);
             const especies = await db.query('SELECT * FROM especies WHERE activo = true');
             
-            res.render('shop/catalogo', { title: 'Catálogo de Aves', aves, especies: especies.rows, query: req.query });
+            res.render('shop/catalogo', { title: 'Catálogo', aves, especies: especies.rows, query: req.query });
         } catch (err) {
             next(err);
         }
@@ -26,11 +26,28 @@ class ShopController {
         try {
             const { id } = req.params;
             const ave = await aveService.obtenerAveConDetalles(id);
-            if (!ave || ave.estado_publicacion !== 'EXHIBICION') {
-                return res.status(404).render('error', { title: 'No Encontrada', message: 'El ave no está disponible para visualización pública.', statusCode: 404 });
+
+            // Validar visibilidad pública según las reglas de catálogo
+            let esPublicable = false;
+            if (ave && ave.estado_publicacion === 'EXHIBICION') {
+                if (!['VENDIDO', 'INTERCAMBIADO'].includes(ave.estado_biologico)) {
+                    esPublicable = true;
+                } else if (ave.estado_biologico === 'VENDIDO') {
+                    const fVentaStr = (ave.estado_detalles && ave.estado_detalles.fecha_venta) ? ave.estado_detalles.fecha_venta : ave.created_at;
+                    const diffDias = (new Date() - new Date(fVentaStr)) / (1000 * 60 * 60 * 24);
+                    esPublicable = diffDias <= 10;
+                } else if (ave.estado_biologico === 'INTERCAMBIADO') {
+                    const fCambioStr = (ave.estado_detalles && ave.estado_detalles.fecha_cambio) ? ave.estado_detalles.fecha_cambio : ave.created_at;
+                    const diffDias = (new Date() - new Date(fCambioStr)) / (1000 * 60 * 60 * 24);
+                    esPublicable = diffDias <= 10;
+                }
             }
 
-            res.render('shop/detalle', { title: `Ave ${ave.identificador_interno}`, ave });
+            if (!esPublicable) {
+                return res.status(404).render('error', { title: 'No Encontrada', message: 'El ave no está disponible para visualización pública en el catálogo.', statusCode: 404 });
+            }
+
+            res.render('shop/detalle', { title: ave.anilla || `Ave #${ave.id}`, ave });
         } catch (err) {
             next(err);
         }
@@ -78,7 +95,7 @@ class ShopController {
             const usuarioId = req.session.user.id;
             
             const queryText = `
-                SELECT r.*, a.identificador_interno, a.anilla, a.precio_venta, 
+                SELECT r.*, a.anilla, a.precio_venta, 
                        (SELECT url FROM imagenes_ave WHERE ave_id = a.id AND es_principal = true LIMIT 1) as foto
                 FROM reservas_temporales r
                 JOIN aves a ON r.ave_id = a.id
@@ -137,7 +154,7 @@ class ShopController {
                 );
 
                 await client.query(
-                    "UPDATE aves SET estado_biologico = 'VENDIDO', estado_comercial = 'NO_VENTA', estado_publicacion = 'OCULTA' WHERE id = $1",
+                    "UPDATE aves SET estado_biologico = 'VENDIDO', estado_comercial = 'NO_VENTA', estado_detalles = jsonb_set(COALESCE(estado_detalles, '{}'::jsonb), '{fecha_venta}', to_jsonb(CURRENT_DATE::text)), estado_publicacion = 'EXHIBICION' WHERE id = $1",
                     [resv.ave_id]
                 );
 

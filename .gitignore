@@ -19,3 +19,6 @@ yarn-error.log*
 # Archivos del Sistema Operativo
 .DS_Store
 Thumbs.db
+
+# Capturas y temporales de diseño
+Screenshot_32.png

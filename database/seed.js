@@ -42,7 +42,7 @@ async function seed() {
         console.log('✔ Mutaciones creadas.');
 
         // 4. Crear Administrador
-        const email = 'admin@promptmaestro.com';
+        const email = 'admin@aviperu.com';
         const password = 'admin123';
         const name = 'Administrador Principal';
         

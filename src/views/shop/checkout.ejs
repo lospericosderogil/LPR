@@ -24,8 +24,7 @@
                                 <div class="h-16 w-16 bg-gray-100 flex items-center justify-center rounded-md border text-2xl">🦜</div>
                             <% } %>
                             <div>
-                                <h4 class="font-bold text-gray-900"><%= r.identificador_interno %></h4>
-                                <p class="text-xs text-gray-500">Anilla: <%= r.anilla || 'Sin anilla' %></p>
+                                <h4 class="font-bold text-gray-900"><%= r.anilla ? 'Anilla ' + r.anilla : 'Ave #' + r.ave_id %></h4>
                                 
                                 <!-- Temporizador -->
                                 <div class="mt-1 flex items-center text-xs text-red-600 font-semibold">

@@ -55,8 +55,8 @@ class ParejaRepository {
     async findById(id) {
         const queryText = `
             SELECT p.*,
-                   m.identificador_interno as macho_identificador, m.anilla as macho_anilla,
-                   h.identificador_interno as hembra_identificador, h.anilla as hembra_anilla
+                   m.anilla as macho_anilla,
+                   h.anilla as hembra_anilla
             FROM parejas p
             JOIN aves m ON p.macho_id = m.id
             JOIN aves h ON p.hembra_id = h.id
@@ -69,8 +69,8 @@ class ParejaRepository {
     async findAll(filters = {}) {
         let queryText = `
             SELECT p.*,
-                   m.identificador_interno as macho_identificador, m.anilla as macho_anilla,
-                   h.identificador_interno as hembra_identificador, h.anilla as hembra_anilla
+                   m.anilla as macho_anilla,
+                   h.anilla as hembra_anilla
             FROM parejas p
             JOIN aves m ON p.macho_id = m.id
             JOIN aves h ON p.hembra_id = h.id

@@ -18,11 +18,11 @@ class ReservaService {
 
             const ave = resAve.rows[0];
 
-            if (ave.estado_biologico !== 'DISPONIBLE') {
-                throw new Error('El ejemplar ya no está disponible (vendido o ausente).');
+            if (ave.estado_biologico !== 'EN_VENTA') {
+                throw new Error('El ejemplar no se encuentra disponible para la venta.');
             }
 
-            if (ave.estado_comercial !== 'EN_VENTA') {
+            if (ave.estado_comercial === 'RESERVADA') {
                 // Verificar si está reservada por el mismo usuario
                 const resActive = await client.query(
                     'SELECT expira_at FROM reservas_temporales WHERE ave_id = $1 AND usuario_id = $2 AND expira_at > NOW() AND activo = true',
@@ -33,7 +33,7 @@ class ReservaService {
                     await client.query('COMMIT');
                     return resActive.rows[0].expira_at;
                 }
-                throw new Error('El ave ya se encuentra reservada o no está a la venta.');
+                throw new Error('El ave ya se encuentra reservada por otro usuario.');
             }
 
             // 2. Crear la reserva de 10 minutos
@@ -75,7 +75,7 @@ class ReservaService {
                     [aveId]
                 );
                 await client.query(
-                    "UPDATE aves SET estado_comercial = 'EN_VENTA' WHERE id = $1 AND estado_biologico = 'DISPONIBLE'",
+                    "UPDATE aves SET estado_comercial = 'EN_VENTA' WHERE id = $1 AND estado_biologico = 'EN_VENTA'",
                     [aveId]
                 );
             }

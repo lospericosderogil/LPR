@@ -41,14 +41,12 @@
                         <div class="flex items-center justify-around bg-gray-50 p-4 rounded-lg mb-4">
                             <div class="text-center">
                                 <span class="text-2xl">♂</span>
-                                <h4 class="font-bold text-gray-900"><%= p.macho_identificador %></h4>
-                                <p class="text-xs text-gray-500">Anilla: <%= p.macho_anilla || '-' %></p>
+                                <h4 class="font-bold text-gray-900"><%= p.macho_anilla ? 'Anilla ' + p.macho_anilla : 'Macho #' + p.macho_id %></h4>
                             </div>
                             <div class="text-gray-300 text-xl font-bold">X</div>
                             <div class="text-center">
                                 <span class="text-2xl text-pink-500">♀</span>
-                                <h4 class="font-bold text-gray-900"><%= p.hembra_identificador %></h4>
-                                <p class="text-xs text-gray-500">Anilla: <%= p.hembra_anilla || '-' %></p>
+                                <h4 class="font-bold text-gray-900"><%= p.hembra_anilla ? 'Anilla ' + p.hembra_anilla : 'Hembra #' + p.hembra_id %></h4>
                             </div>
                         </div>
 
