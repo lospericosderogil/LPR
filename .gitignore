@@ -5,8 +5,7 @@ node_modules/
 .env
 .env*.local
 
-# Archivos de subida de imágenes locales (desarrollo)
-uploads/
+# Archivos de subida de imágenes temporales
 uploads/temp/
 
 # Logs del sistema
