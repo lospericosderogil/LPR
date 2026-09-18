@@ -2,17 +2,47 @@
 <div class="max-w-7xl mx-auto px-4 py-10 sm:px-6 lg:px-8 space-y-8">
     <div class="border-b border-slate-800 pb-6 flex flex-col sm:flex-row sm:items-end justify-between gap-4">
         <div>
-            <span class="text-xs font-bold text-cyan-400 tracking-widest uppercase block mb-1">Inventario & Pie de Cría</span>
-            <h2 class="text-3xl sm:text-4xl font-extrabold tracking-tight text-white font-display">Catálogo de Ejemplares</h2>
-            <p class="text-sm text-slate-400 mt-1">Explora nuestras aves con genética certificada, disponibles para adquisición y exhibición</p>
+            <span class="text-xs font-bold text-cyan-400 tracking-widest uppercase block mb-1">Marketplace Aviar & Pie de Cría</span>
+            <h2 class="text-3xl sm:text-4xl font-extrabold tracking-tight text-white font-display">Catálogo Comercial Unificado</h2>
+            <p class="text-sm text-slate-400 mt-1">Explora ejemplares con genética certificada, kits de iniciación, nutrición y accesorios para criadores</p>
         </div>
         <div class="text-xs text-slate-400 font-medium">
-            <span class="text-cyan-300 font-bold"><%= aves.length %></span> ejemplares encontrados
+            <span id="items-counter" class="text-cyan-300 font-bold"><%= aves.length + 12 %></span> artículos encontrados
         </div>
     </div>
 
-    <!-- Filtros Tecnológicos -->
-    <div class="bg-[#0C152E]/90 shadow-2xl rounded-3xl border border-cyan-500/25 p-6 backdrop-blur-xl">
+    <!-- PESTAÑAS DE CATEGORÍA MULTI-RUBRO -->
+    <div class="overflow-x-auto pb-2">
+        <div class="flex items-center gap-2 p-1.5 bg-[#0C152E]/90 border border-slate-800 rounded-2xl w-max">
+            <button type="button" onclick="filtrarCategoria('todos')" data-tab="todos" class="cat-tab px-4 py-2 rounded-xl text-xs font-bold transition flex items-center gap-2 bg-cyan-500/20 text-cyan-300 border border-cyan-400/40">
+                <span>🌐 Todos</span>
+                <span class="px-1.5 py-0.2 rounded-full text-[10px] bg-[#070D1E] text-slate-300"><%= aves.length + 12 %></span>
+            </button>
+            <button type="button" onclick="filtrarCategoria('aves')" data-tab="aves" class="cat-tab px-4 py-2 rounded-xl text-xs font-bold text-slate-400 hover:text-white transition flex items-center gap-2 border border-transparent">
+                <span>🦜 Aves con Pedigrí</span>
+                <span class="px-1.5 py-0.2 rounded-full text-[10px] bg-[#070D1E] text-slate-400"><%= aves.length %></span>
+            </button>
+            <button type="button" onclick="filtrarCategoria('kits')" data-tab="kits" class="cat-tab px-4 py-2 rounded-xl text-xs font-bold text-slate-400 hover:text-white transition flex items-center gap-2 border border-transparent">
+                <span>🎁 Kits de Bienvenida</span>
+                <span class="px-1.5 py-0.2 rounded-full text-[10px] bg-[#070D1E] text-slate-400">3</span>
+            </button>
+            <button type="button" onclick="filtrarCategoria('alimentos')" data-tab="alimentos" class="cat-tab px-4 py-2 rounded-xl text-xs font-bold text-slate-400 hover:text-white transition flex items-center gap-2 border border-transparent">
+                <span>🌾 Semillas & Alimentos</span>
+                <span class="px-1.5 py-0.2 rounded-full text-[10px] bg-[#070D1E] text-slate-400">3</span>
+            </button>
+            <button type="button" onclick="filtrarCategoria('suplementos')" data-tab="suplementos" class="cat-tab px-4 py-2 rounded-xl text-xs font-bold text-slate-400 hover:text-white transition flex items-center gap-2 border border-transparent">
+                <span>🧪 Vitaminas & Salud</span>
+                <span class="px-1.5 py-0.2 rounded-full text-[10px] bg-[#070D1E] text-slate-400">3</span>
+            </button>
+            <button type="button" onclick="filtrarCategoria('accesorios')" data-tab="accesorios" class="cat-tab px-4 py-2 rounded-xl text-xs font-bold text-slate-400 hover:text-white transition flex items-center gap-2 border border-transparent">
+                <span>🪵 Accesorios & Forrajeo</span>
+                <span class="px-1.5 py-0.2 rounded-full text-[10px] bg-[#070D1E] text-slate-400">3</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Filtros Tecnológicos para Aves -->
+    <div id="filtros-aves-box" class="bg-[#0C152E]/90 shadow-2xl rounded-3xl border border-cyan-500/25 p-6 backdrop-blur-xl">
         <form method="GET" action="/catalogo" class="grid grid-cols-1 gap-4 sm:grid-cols-4 items-end">
             <div>
                 <label for="search" class="block text-[11px] font-bold text-cyan-400 uppercase tracking-wider mb-1.5">Buscar por Anilla / Código</label>
@@ -37,7 +67,7 @@
             </div>
             <div class="flex items-center space-x-2">
                 <button type="submit" class="w-full bg-gradient-to-r from-cyan-400 to-teal-400 hover:from-cyan-300 hover:to-teal-300 text-slate-950 py-2.5 rounded-2xl font-bold text-sm shadow-md shadow-cyan-500/20 transition duration-200">
-                    Filtrar
+                    Filtrar Aves
                 </button>
                 <a href="/catalogo" class="w-full bg-[#080E1E] text-center text-slate-400 hover:text-white border border-slate-800 py-2.5 rounded-2xl font-semibold text-sm transition">
                     Limpiar
@@ -46,18 +76,13 @@
         </form>
     </div>
 
-    <!-- Catálogo Grid -->
-    <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-        <% if (aves.length === 0) { %>
-            <div class="col-span-full bg-[#0C152E]/60 rounded-3xl p-12 text-center text-slate-400 border border-dashed border-slate-800 space-y-3">
-                <span class="text-4xl">🦜</span>
-                <h3 class="text-lg font-bold text-white font-display">Sin ejemplares coincidentes</h3>
-                <p class="text-sm text-slate-400">No se encontraron aves con los criterios seleccionados. Prueba limpiando los filtros.</p>
-                <a href="/catalogo" class="inline-block mt-3 px-4 py-2 rounded-xl bg-cyan-400 text-slate-950 font-bold text-xs uppercase">Ver todo el catálogo</a>
-            </div>
-        <% } else { %>
+    <!-- GRID DE PRODUCTOS DEL CATÁLOGO -->
+    <div id="catalog-grid" class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+
+        <!-- 1. AVES REGISTRADAS EN BASE DE DATOS -->
+        <% if (aves && aves.length > 0) { %>
             <% aves.forEach(a => { %>
-                <div class="group relative bg-[#0C152E]/90 border border-slate-800 hover:border-cyan-500/50 rounded-3xl overflow-hidden flex flex-col justify-between shadow-xl transition-all duration-300 transform hover:-translate-y-1">
+                <div class="catalog-item group relative bg-[#0C152E]/90 border border-slate-800 hover:border-cyan-500/50 rounded-3xl overflow-hidden flex flex-col justify-between shadow-xl transition-all duration-300 transform hover:-translate-y-1" data-categoria="aves">
                     <div class="relative w-full h-56 bg-[#070D1E] overflow-hidden flex items-center justify-center border-b border-slate-800">
                         <% if (a.imagenes && a.imagenes.length > 0) { %>
                             <img src="<%= a.imagenes[0].url %>" alt="Ave <%= a.anilla || a.id %>" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
@@ -145,6 +170,327 @@
                 </div>
             <% }) %>
         <% } %>
+
+        <!-- 2. KITS DE BIENVENIDA (INTEGRADOS DESDE LA HOME) -->
+        <!-- Kit 1 -->
+        <div class="catalog-item bg-[#0C152E]/90 border border-slate-800 hover:border-cyan-500/40 rounded-3xl p-6 shadow-xl flex flex-col justify-between transition" data-categoria="kits">
+            <div>
+                <div class="w-full h-44 bg-[#070D1E] rounded-2xl flex items-center justify-center text-6xl mb-4 border border-slate-800">
+                    🌾
+                </div>
+                <span class="text-[10px] font-bold text-teal-300 uppercase tracking-widest block mb-1">Kit Nutrición</span>
+                <h4 class="text-base font-bold text-white font-display mb-1.5">Mezcla Semillas Premium (1 kg)</h4>
+                <p class="text-xs text-slate-400 leading-relaxed mb-4">
+                    Mezcla ventilada 0% polvo con alpiste canadiense, mijo blanco, perilla y chía para mantenimiento y brillo del plumaje.
+                </p>
+            </div>
+            <div class="pt-4 border-t border-slate-800/80 flex items-center justify-between">
+                <div>
+                    <span class="text-[10px] text-slate-400 uppercase block font-semibold">Precio</span>
+                    <span class="text-lg font-black text-white font-display">S/. 35.00</span>
+                </div>
+                <button type="button" class="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-cyan-950 text-cyan-300 border border-cyan-500/30 hover:bg-cyan-900 transition">
+                    + Al Carrito
+                </button>
+            </div>
+        </div>
+
+        <!-- Kit 2 -->
+        <div class="catalog-item bg-[#0C152E]/90 border border-cyan-500/40 rounded-3xl p-6 shadow-xl flex flex-col justify-between transition glow-cyan-sm" data-categoria="kits">
+            <div>
+                <div class="w-full h-44 bg-[#070D1E] rounded-2xl flex items-center justify-center text-6xl mb-4 border border-slate-800">
+                    🧪
+                </div>
+                <span class="text-[10px] font-bold text-cyan-400 uppercase tracking-widest block mb-1">Kit Suplementación</span>
+                <h4 class="text-base font-bold text-white font-display mb-1.5">Pack Vitaminas & Calcio Orgánico</h4>
+                <p class="text-xs text-slate-400 leading-relaxed mb-4">
+                    Complejo multivitamínico con aminoácidos esenciales y bloque mineral de ostra para época de muda y preparación reproductiva.
+                </p>
+            </div>
+            <div class="pt-4 border-t border-slate-800/80 flex items-center justify-between">
+                <div>
+                    <span class="text-[10px] text-slate-400 uppercase block font-semibold">Precio</span>
+                    <span class="text-lg font-black text-cyan-300 font-display">S/. 45.00</span>
+                </div>
+                <button type="button" class="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-cyan-400 hover:bg-cyan-300 text-slate-950 transition">
+                    + Al Carrito
+                </button>
+            </div>
+        </div>
+
+        <!-- Kit 3 -->
+        <div class="catalog-item bg-[#0C152E]/90 border border-slate-800 hover:border-cyan-500/40 rounded-3xl p-6 shadow-xl flex flex-col justify-between transition" data-categoria="kits">
+            <div>
+                <div class="w-full h-44 bg-[#070D1E] rounded-2xl flex items-center justify-center text-6xl mb-4 border border-slate-800">
+                    🪵
+                </div>
+                <span class="text-[10px] font-bold text-amber-300 uppercase tracking-widest block mb-1">Kit Enriquecimiento</span>
+                <h4 class="text-base font-bold text-white font-display mb-1.5">Pack Forrajeo & Estimulación</h4>
+                <p class="text-xs text-slate-400 leading-relaxed mb-4">
+                    Perchas ergonómicas de ramas naturales y juguetes de madera sin tintes químicos para ejercitar patas y pico saludablemente.
+                </p>
+            </div>
+            <div class="pt-4 border-t border-slate-800/80 flex items-center justify-between">
+                <div>
+                    <span class="text-[10px] text-slate-400 uppercase block font-semibold">Precio</span>
+                    <span class="text-lg font-black text-white font-display">S/. 40.00</span>
+                </div>
+                <button type="button" class="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-cyan-950 text-cyan-300 border border-cyan-500/30 hover:bg-cyan-900 transition">
+                    + Al Carrito
+                </button>
+            </div>
+        </div>
+
+        <!-- 3. ALIMENTOS & SEMILLAS -->
+        <div class="catalog-item bg-[#0C152E]/90 border border-slate-800 hover:border-cyan-500/40 rounded-3xl p-6 shadow-xl flex flex-col justify-between transition" data-categoria="alimentos">
+            <div>
+                <div class="w-full h-44 bg-[#070D1E] rounded-2xl flex items-center justify-center text-6xl mb-4 border border-slate-800">
+                    🥣
+                </div>
+                <span class="text-[10px] font-bold text-teal-400 uppercase tracking-widest block mb-1">Semillas Puras</span>
+                <h4 class="text-base font-bold text-white font-display mb-1.5">Alpiste Canadiense Ventilado (1 kg)</h4>
+                <p class="text-xs text-slate-400 leading-relaxed mb-4">
+                    Granos seleccionados con triple aspiración de polvo, base indispensable para la dieta diaria de pericos australianos e ingleses.
+                </p>
+            </div>
+            <div class="pt-4 border-t border-slate-800/80 flex items-center justify-between">
+                <div>
+                    <span class="text-[10px] text-slate-400 uppercase block font-semibold">Precio</span>
+                    <span class="text-lg font-black text-white font-display">S/. 22.00</span>
+                </div>
+                <button type="button" class="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-cyan-950 text-cyan-300 border border-cyan-500/30 hover:bg-cyan-900 transition">
+                    + Al Carrito
+                </button>
+            </div>
+        </div>
+
+        <div class="catalog-item bg-[#0C152E]/90 border border-slate-800 hover:border-cyan-500/40 rounded-3xl p-6 shadow-xl flex flex-col justify-between transition" data-categoria="alimentos">
+            <div>
+                <div class="w-full h-44 bg-[#070D1E] rounded-2xl flex items-center justify-center text-6xl mb-4 border border-slate-800">
+                    🌽
+                </div>
+                <span class="text-[10px] font-bold text-teal-400 uppercase tracking-widest block mb-1">Semillas Puras</span>
+                <h4 class="text-base font-bold text-white font-display mb-1.5">Mijo Blanco Extra Seleccionado (1 kg)</h4>
+                <p class="text-xs text-slate-400 leading-relaxed mb-4">
+                    Mijo blanco de alta digestibilidad con alto contenido de carbohidratos saludables para pichones en fase de destete y voladera.
+                </p>
+            </div>
+            <div class="pt-4 border-t border-slate-800/80 flex items-center justify-between">
+                <div>
+                    <span class="text-[10px] text-slate-400 uppercase block font-semibold">Precio</span>
+                    <span class="text-lg font-black text-white font-display">S/. 18.00</span>
+                </div>
+                <button type="button" class="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-cyan-950 text-cyan-300 border border-cyan-500/30 hover:bg-cyan-900 transition">
+                    + Al Carrito
+                </button>
+            </div>
+        </div>
+
+        <div class="catalog-item bg-[#0C152E]/90 border border-slate-800 hover:border-cyan-500/40 rounded-3xl p-6 shadow-xl flex flex-col justify-between transition" data-categoria="alimentos">
+            <div>
+                <div class="w-full h-44 bg-[#070D1E] rounded-2xl flex items-center justify-center text-6xl mb-4 border border-slate-800">
+                    🍯
+                </div>
+                <span class="text-[10px] font-bold text-teal-400 uppercase tracking-widest block mb-1">Crianza & Muda</span>
+                <h4 class="text-base font-bold text-white font-display mb-1.5">Pasta de Cría con Huevo y Miel (500 g)</h4>
+                <p class="text-xs text-slate-400 leading-relaxed mb-4">
+                    Fórmula húmeda hiperproteica con aminoácidos ramificados para el embuche natural de los padres a los pichones en nido.
+                </p>
+            </div>
+            <div class="pt-4 border-t border-slate-800/80 flex items-center justify-between">
+                <div>
+                    <span class="text-[10px] text-slate-400 uppercase block font-semibold">Precio</span>
+                    <span class="text-lg font-black text-white font-display">S/. 28.00</span>
+                </div>
+                <button type="button" class="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-cyan-950 text-cyan-300 border border-cyan-500/30 hover:bg-cyan-900 transition">
+                    + Al Carrito
+                </button>
+            </div>
+        </div>
+
+        <!-- 4. VITAMINAS & SALUD PREVENTIVA -->
+        <div class="catalog-item bg-[#0C152E]/90 border border-slate-800 hover:border-cyan-500/40 rounded-3xl p-6 shadow-xl flex flex-col justify-between transition" data-categoria="suplementos">
+            <div>
+                <div class="w-full h-44 bg-[#070D1E] rounded-2xl flex items-center justify-center text-6xl mb-4 border border-slate-800">
+                    🍏
+                </div>
+                <span class="text-[10px] font-bold text-cyan-400 uppercase tracking-widest block mb-1">Bioseguridad Hídrica</span>
+                <h4 class="text-base font-bold text-white font-display mb-1.5">Vinagre de Sidra de Manzana Crudo (250 ml)</h4>
+                <p class="text-xs text-slate-400 leading-relaxed mb-4">
+                    Con 'la madre' intacta y gotero dosificador para acidificar el agua a pH 4.5-5.0 y prevenir megabacterias gastrointestinales.
+                </p>
+            </div>
+            <div class="pt-4 border-t border-slate-800/80 flex items-center justify-between">
+                <div>
+                    <span class="text-[10px] text-slate-400 uppercase block font-semibold">Precio</span>
+                    <span class="text-lg font-black text-white font-display">S/. 25.00</span>
+                </div>
+                <button type="button" class="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-cyan-950 text-cyan-300 border border-cyan-500/30 hover:bg-cyan-900 transition">
+                    + Al Carrito
+                </button>
+            </div>
+        </div>
+
+        <div class="catalog-item bg-[#0C152E]/90 border border-slate-800 hover:border-cyan-500/40 rounded-3xl p-6 shadow-xl flex flex-col justify-between transition" data-categoria="suplementos">
+            <div>
+                <div class="w-full h-44 bg-[#070D1E] rounded-2xl flex items-center justify-center text-6xl mb-4 border border-slate-800">
+                    🦠
+                </div>
+                <span class="text-[10px] font-bold text-cyan-400 uppercase tracking-widest block mb-1">Microbiota Aviar</span>
+                <h4 class="text-base font-bold text-white font-display mb-1.5">Probiótico Multicepa en Polvo (100 g)</h4>
+                <p class="text-xs text-slate-400 leading-relaxed mb-4">
+                    Bacterias beneficiosas específicas de psitácidas para restaurar la flora intestinal post-desparasitación o situaciones de estrés.
+                </p>
+            </div>
+            <div class="pt-4 border-t border-slate-800/80 flex items-center justify-between">
+                <div>
+                    <span class="text-[10px] text-slate-400 uppercase block font-semibold">Precio</span>
+                    <span class="text-lg font-black text-white font-display">S/. 38.00</span>
+                </div>
+                <button type="button" class="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-cyan-950 text-cyan-300 border border-cyan-500/30 hover:bg-cyan-900 transition">
+                    + Al Carrito
+                </button>
+            </div>
+        </div>
+
+        <div class="catalog-item bg-[#0C152E]/90 border border-slate-800 hover:border-cyan-500/40 rounded-3xl p-6 shadow-xl flex flex-col justify-between transition" data-categoria="suplementos">
+            <div>
+                <div class="w-full h-44 bg-[#070D1E] rounded-2xl flex items-center justify-center text-6xl mb-4 border border-slate-800">
+                    🌿
+                </div>
+                <span class="text-[10px] font-bold text-cyan-400 uppercase tracking-widest block mb-1">Protección Hepática</span>
+                <h4 class="text-base font-bold text-white font-display mb-1.5">Extracto de Silimarina / Cardo Mariano (60 ml)</h4>
+                <p class="text-xs text-slate-400 leading-relaxed mb-4">
+                    Protector y regenerador hepático natural, esencial para pericos ingleses propensos a esteatosis y acumulación de lípidos.
+                </p>
+            </div>
+            <div class="pt-4 border-t border-slate-800/80 flex items-center justify-between">
+                <div>
+                    <span class="text-[10px] text-slate-400 uppercase block font-semibold">Precio</span>
+                    <span class="text-lg font-black text-white font-display">S/. 32.00</span>
+                </div>
+                <button type="button" class="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-cyan-950 text-cyan-300 border border-cyan-500/30 hover:bg-cyan-900 transition">
+                    + Al Carrito
+                </button>
+            </div>
+        </div>
+
+        <!-- 5. ACCESORIOS & FORRAJEO -->
+        <div class="catalog-item bg-[#0C152E]/90 border border-slate-800 hover:border-cyan-500/40 rounded-3xl p-6 shadow-xl flex flex-col justify-between transition" data-categoria="accesorios">
+            <div>
+                <div class="w-full h-44 bg-[#070D1E] rounded-2xl flex items-center justify-center text-6xl mb-4 border border-slate-800">
+                    🌳
+                </div>
+                <span class="text-[10px] font-bold text-amber-400 uppercase tracking-widest block mb-1">Bienestar Podal</span>
+                <h4 class="text-base font-bold text-white font-display mb-1.5">Perchas Ergonómicas Naturales (Set x 3)</h4>
+                <p class="text-xs text-slate-400 leading-relaxed mb-4">
+                    Ramas con diámetros variables desinfectadas térmicamente, ideales para ejercitar articulaciones y prevenir pododermatitis.
+                </p>
+            </div>
+            <div class="pt-4 border-t border-slate-800/80 flex items-center justify-between">
+                <div>
+                    <span class="text-[10px] text-slate-400 uppercase block font-semibold">Precio</span>
+                    <span class="text-lg font-black text-white font-display">S/. 26.00</span>
+                </div>
+                <button type="button" class="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-cyan-950 text-cyan-300 border border-cyan-500/30 hover:bg-cyan-900 transition">
+                    + Al Carrito
+                </button>
+            </div>
+        </div>
+
+        <div class="catalog-item bg-[#0C152E]/90 border border-slate-800 hover:border-cyan-500/40 rounded-3xl p-6 shadow-xl flex flex-col justify-between transition" data-categoria="accesorios">
+            <div>
+                <div class="w-full h-44 bg-[#070D1E] rounded-2xl flex items-center justify-center text-6xl mb-4 border border-slate-800">
+                    🏠
+                </div>
+                <span class="text-[10px] font-bold text-amber-400 uppercase tracking-widest block mb-1">Equipamiento de Cría</span>
+                <h4 class="text-base font-bold text-white font-display mb-1.5">Nido de Madera Especial con Cubeta Cóncava</h4>
+                <p class="text-xs text-slate-400 leading-relaxed mb-4">
+                    Nido con fondo ahuecado anti-patas de rana, tapa de inspección superior ventilada y percha de entrada anatómica.
+                </p>
+            </div>
+            <div class="pt-4 border-t border-slate-800/80 flex items-center justify-between">
+                <div>
+                    <span class="text-[10px] text-slate-400 uppercase block font-semibold">Precio</span>
+                    <span class="text-lg font-black text-white font-display">S/. 48.00</span>
+                </div>
+                <button type="button" class="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-cyan-950 text-cyan-300 border border-cyan-500/30 hover:bg-cyan-900 transition">
+                    + Al Carrito
+                </button>
+            </div>
+        </div>
+
+        <div class="catalog-item bg-[#0C152E]/90 border border-slate-800 hover:border-cyan-500/40 rounded-3xl p-6 shadow-xl flex flex-col justify-between transition" data-categoria="accesorios">
+            <div>
+                <div class="w-full h-44 bg-[#070D1E] rounded-2xl flex items-center justify-center text-6xl mb-4 border border-slate-800">
+                    🦜
+                </div>
+                <span class="text-[10px] font-bold text-amber-400 uppercase tracking-widest block mb-1">Alimentación Limpia</span>
+                <h4 class="text-base font-bold text-white font-display mb-1.5">Comedero Tolva Anti-Desperdicio</h4>
+                <p class="text-xs text-slate-400 leading-relaxed mb-4">
+                    Tolva acrílica transparente con cajón recolector de cáscaras, mantiene el alimento limpio y libre de excrementos.
+                </p>
+            </div>
+            <div class="pt-4 border-t border-slate-800/80 flex items-center justify-between">
+                <div>
+                    <span class="text-[10px] text-slate-400 uppercase block font-semibold">Precio</span>
+                    <span class="text-lg font-black text-white font-display">S/. 19.00</span>
+                </div>
+                <button type="button" class="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-cyan-950 text-cyan-300 border border-cyan-500/30 hover:bg-cyan-900 transition">
+                    + Al Carrito
+                </button>
+            </div>
+        </div>
+
     </div>
 </div>
+
+<script>
+    function filtrarCategoria(cat) {
+        // Actualizar pestañas activas
+        document.querySelectorAll('.cat-tab').forEach(btn => {
+            if (btn.getAttribute('data-tab') === cat) {
+                btn.className = 'cat-tab px-4 py-2 rounded-xl text-xs font-bold transition flex items-center gap-2 bg-cyan-500/20 text-cyan-300 border border-cyan-400/40';
+            } else {
+                btn.className = 'cat-tab px-4 py-2 rounded-xl text-xs font-bold text-slate-400 hover:text-white transition flex items-center gap-2 border border-transparent';
+            }
+        });
+
+        // Ocultar / Mostrar caja de filtros específicos de aves
+        const filtrosBox = document.getElementById('filtros-aves-box');
+        if (cat === 'todos' || cat === 'aves') {
+            filtrosBox.classList.remove('hidden');
+        } else {
+            filtrosBox.classList.add('hidden');
+        }
+
+        // Filtrar elementos de la cuadrícula
+        let visibles = 0;
+        document.querySelectorAll('.catalog-item').forEach(item => {
+            const itemCat = item.getAttribute('data-categoria');
+            if (cat === 'todos' || itemCat === cat) {
+                item.classList.remove('hidden');
+                visibles++;
+            } else {
+                item.classList.add('hidden');
+            }
+        });
+
+        // Actualizar contador
+        const counter = document.getElementById('items-counter');
+        if (counter) {
+            counter.innerText = visibles;
+        }
+    }
+
+    // Activar pestaña según parámetro URL al cargar
+    document.addEventListener('DOMContentLoaded', () => {
+        const urlParams = new URLSearchParams(window.location.search);
+        const catParam = urlParams.get('categoria');
+        if (catParam) {
+            filtrarCategoria(catParam);
+        }
+    });
+</script>
+
 <%- include('../partials/footer') %>
