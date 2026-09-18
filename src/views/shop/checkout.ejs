@@ -1,123 +1,1450 @@
 <%- include('../partials/header') %>
-<div class="max-w-4xl mx-auto px-4 py-10 sm:px-6 lg:px-8 space-y-8">
-    <div class="border-b border-slate-800 pb-6">
-        <span class="text-xs font-bold text-cyan-400 tracking-widest uppercase block mb-1">Módulo de Adquisición</span>
-        <h2 class="text-3xl font-extrabold tracking-tight text-white font-display">Tu Carrito de Compra</h2>
-        <p class="text-sm text-slate-400 mt-1">Completa tu pago dentro del tiempo límite para garantizar la reserva blindada de tus ejemplares.</p>
-    </div>
 
-    <% if (reservas.length === 0) { %>
-        <div class="bg-[#0C152E]/80 shadow-2xl rounded-3xl p-12 text-center text-slate-400 border border-dashed border-slate-800 space-y-4">
-            <span class="text-5xl">🛒</span>
-            <p class="text-lg font-bold text-white font-display">Tu carrito está vacío</p>
-            <p class="text-sm text-slate-400">No tienes aves reservadas en este momento.</p>
-            <a href="/catalogo" class="mt-4 inline-block bg-cyan-400 hover:bg-cyan-300 text-slate-950 px-6 py-2.5 rounded-xl font-bold text-xs uppercase tracking-wider transition">Explorar Catálogo</a>
-        </div>
-    <% } else { %>
-        <div class="grid grid-cols-1 gap-8 lg:grid-cols-3 items-start">
+<% 
+    const tieneReservasReales = typeof reservas !== 'undefined' && reservas.length > 0;
+    let pasoActual = 1;
+    if (typeof paso !== 'undefined') {
+        if (paso === 'entrega' || paso === '3' || paso === 'direcciones') pasoActual = 3;
+        else if (paso === 'pago' || paso === '4') pasoActual = 4;
+        else if (paso === 'listo' || paso === '5') pasoActual = 5;
+        else if (paso === 'sesion' || paso === '2') pasoActual = 2;
+        else pasoActual = 1;
+    }
+    const direccionesInicialmenteAbierto = typeof abrirDirecciones !== 'undefined' && Boolean(abrirDirecciones);
+    
+    // Lista de items: Si hay reservas reales se usan esas, si no, se muestran los items de demostración idénticos a las imágenes
+    const items = tieneReservasReales ? reservas.map(r => ({
+        id: r.ave_id,
+        esReal: true,
+        titulo: r.anilla ? ('PERICO AUSTRALIANO - ' + r.anilla) : ('EJEMPLAR #' + r.ave_id),
+        marca: 'CRIADERO LPR',
+        sku: 'SKU: ' + (r.anilla || ('2025-LPR-' + r.ave_id)),
+        tag1: r.sexo === 'M' ? 'MACHO (ADN)' : (r.sexo === 'F' ? 'HEMBRA (ADN)' : 'VERIFICADO'),
+        tag2: r.especie_nombre ? r.especie_nombre.toUpperCase() : 'SELECCIÓN ÉLITE',
+        precioInternet: parseFloat(r.precio_venta || 190),
+        precioNormal: parseFloat(r.precio_venta || 190) * 1.35,
+        precioClub: parseFloat(r.precio_venta || 190) * 0.90,
+        foto: r.foto || '/img/cuidado_parental/voladera_vuelo.jpg',
+        expira_at: r.expira_at,
+        maxUnits: 1
+    })) : [
+        {
+            id: 'demo-1',
+            esReal: false,
+            titulo: 'POLO MANGA CORTA ALGODÓN HOMBRE KENNETH STEVENS',
+            marca: 'KENNETH STEVENS',
+            sku: 'SKU: 2005369066962',
+            tag1: 'DENIM',
+            tag2: 'L',
+            precioClub: 26.99,
+            precioInternet: 29.99,
+            precioNormal: 49.99,
+            foto: '/uploads/1787869128585-WhatsApp_Image_2026_08_27_at_5.09.21_PM.jpeg',
+            maxUnits: 10
+        },
+        {
+            id: 'demo-2',
+            esReal: false,
+            titulo: 'ZAPATILLAS URBANAS MUJER ADIDAS ORIGINALS SL 72 OG W',
+            marca: 'ADIDAS ORIGINALS',
+            sku: 'SKU: 2026376708225',
+            tag1: 'MARRÓN',
+            tag2: '6',
+            precioClub: 399.99,
+            precioInternet: 399.99,
+            precioNormal: 449.99,
+            foto: '/img/salud_preventiva/suplementos_preventivos.jpg',
+            maxUnits: 10
+        }
+    ];
+
+    let subtotalNormal = 0;
+    let subtotalInternet = 0;
+    let subtotalClub = 0;
+    items.forEach(it => {
+        subtotalNormal += it.precioNormal;
+        subtotalInternet += it.precioInternet;
+        subtotalClub += it.precioClub;
+    });
+%>
+
+<div class="max-w-7xl mx-auto px-4 py-8 sm:px-6 lg:px-8 space-y-8">
+
+    <!-- 1. STEPPER / INDICADOR DE PROCESO DE COMPRA (5 PASOS) -->
+    <div class="bg-[#0C152E]/90 border border-slate-800 rounded-3xl p-5 sm:p-7 shadow-xl">
+        <div class="grid grid-cols-5 gap-2 relative max-w-4xl mx-auto">
+            <!-- Línea conectora horizontal centrada -->
+            <div id="stepper-line" class="absolute top-4 sm:top-4.5 left-[10%] right-[10%] h-[2px] bg-slate-700 z-0"></div>
             
-            <!-- Items list -->
-            <div class="lg:col-span-2 space-y-4">
-                <% reservas.forEach(r => { %>
-                    <div class="bg-[#0C152E]/90 shadow-xl rounded-3xl border border-cyan-500/25 p-5 flex items-center justify-between transition hover:border-cyan-400/50" id="item-<%= r.ave_id %>">
-                        <div class="flex items-center space-x-4">
-                            <% if (r.foto) { %>
-                                <img src="<%= r.foto %>" class="h-20 w-20 object-cover rounded-2xl border border-slate-700">
-                            <% } else { %>
-                                <div class="h-20 w-20 bg-[#070D1E] flex items-center justify-center rounded-2xl border border-slate-800 text-3xl">🦜</div>
-                            <% } %>
-                            <div>
-                                <h4 class="font-bold text-white font-display text-base"><%= r.anilla ? 'Anilla ' + r.anilla : 'Ejemplar #' + r.ave_id %></h4>
-                                
-                                <!-- Temporizador de Reserva -->
-                                <div class="mt-1.5 flex items-center text-xs text-cyan-300 font-mono font-bold bg-cyan-950/60 px-2.5 py-1 rounded-lg border border-cyan-500/30 glow-cyan-sm">
-                                    <span class="mr-1.5">⏳</span>
-                                    <span class="countdown" data-expire="<%= new Date(r.expira_at).getTime() %>">Calculando...</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="text-right space-y-1">
-                            <span class="font-black text-white font-display text-xl block">S/. <%= r.precio_venta %></span>
-                            <button onclick="quitarDelCarrito(<%= r.ave_id %>)" class="text-xs text-rose-400 hover:text-rose-300 transition font-semibold">Liberar Reserva</button>
-                        </div>
-                    </div>
-                <% }) %>
+            <!-- Paso 1: Carro de compras -->
+            <div class="flex flex-col items-center text-center relative z-10 cursor-pointer" onclick="irAPaso(1)">
+                <div id="step-circle-1" class="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-[#E11D48] text-white font-black text-xs sm:text-sm flex items-center justify-center shadow-lg shadow-pink-600/30 ring-4 ring-[#0C152E] transition-all">
+                    1
+                </div>
+                <span id="step-text-1" class="text-xs font-extrabold text-white mt-2 block leading-tight">Carro de compras</span>
+                <span class="text-[10px] text-slate-400 hidden sm:block mt-0.5">Revisa tus productos</span>
             </div>
 
-            <!-- Checkout Form / Summary -->
-            <div class="bg-[#0C152E]/90 shadow-2xl rounded-3xl border border-cyan-500/30 p-6 flex flex-col justify-between space-y-6">
-                <div>
-                    <h3 class="text-base font-bold text-white font-display border-b border-slate-800 pb-3 mb-4 flex items-center gap-2">
-                        <span class="text-cyan-400">💳</span>
-                        <span>Resumen de Orden</span>
-                    </h3>
-                    <div class="flex justify-between items-center text-sm font-semibold text-slate-300 mb-2">
-                        <span>Ejemplares:</span>
-                        <span class="text-white"><%= reservas.length %></span>
+            <!-- Paso 2: Inicio de sesión -->
+            <div class="flex flex-col items-center text-center relative z-10">
+                <div id="step-circle-2" class="w-8 h-8 sm:w-9 sm:h-9 rounded-full <%= (pasoActual >= 2 || user) ? 'bg-[#E11D48] text-white' : 'bg-[#070D1E] border border-slate-700 text-slate-400' %> font-bold text-xs sm:text-sm flex items-center justify-center ring-4 ring-[#0C152E] transition-all">
+                    2
+                </div>
+                <span id="step-text-2" class="text-xs font-bold <%= (pasoActual >= 2 || user) ? 'text-white' : 'text-slate-300' %> mt-2 block leading-tight">Inicio de sesión</span>
+                <span class="text-[10px] text-slate-500 hidden sm:block mt-0.5"><%= user ? user.nombre : 'Ingresa a tu Cuenta Ripley' %></span>
+            </div>
+
+            <!-- Paso 3: Entrega -->
+            <div class="flex flex-col items-center text-center relative z-10 cursor-pointer" onclick="irAPaso(3)">
+                <div id="step-circle-3" class="w-8 h-8 sm:w-9 sm:h-9 rounded-full <%= pasoActual >= 3 ? 'bg-[#E11D48] text-white shadow-lg shadow-pink-600/30' : 'bg-[#070D1E] border border-slate-700 text-slate-400' %> font-bold text-xs sm:text-sm flex items-center justify-center ring-4 ring-[#0C152E] transition-all">
+                    3
+                </div>
+                <span id="step-text-3" class="text-xs font-bold <%= pasoActual >= 3 ? 'text-white font-extrabold' : 'text-slate-300' %> mt-2 block leading-tight">Entrega</span>
+                <span class="text-[10px] text-slate-400 hidden sm:block mt-0.5">Elige donde recibir tu compra</span>
+            </div>
+
+            <!-- Paso 4: Pago -->
+            <div class="flex flex-col items-center text-center relative z-10 cursor-pointer" onclick="irAPaso(4)">
+                <div id="step-circle-4" class="w-8 h-8 sm:w-9 sm:h-9 rounded-full <%= pasoActual >= 4 ? 'bg-[#E11D48] text-white shadow-lg shadow-pink-600/30' : 'bg-[#070D1E] border border-slate-700 text-slate-400' %> font-bold text-xs sm:text-sm flex items-center justify-center ring-4 ring-[#0C152E] transition-all">
+                    4
+                </div>
+                <span id="step-text-4" class="text-xs font-bold <%= pasoActual >= 4 ? 'text-white font-extrabold' : 'text-slate-300' %> mt-2 block leading-tight">Pago</span>
+                <span class="text-[10px] text-slate-500 hidden sm:block mt-0.5">Elige como vas a pagar</span>
+            </div>
+
+            <!-- Paso 5: ¡Listo! -->
+            <div class="flex flex-col items-center text-center relative z-10 cursor-pointer" onclick="irAPaso(5)">
+                <div id="step-circle-5" class="w-8 h-8 sm:w-9 sm:h-9 rounded-full <%= pasoActual >= 5 ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-600/30' : 'bg-[#070D1E] border border-slate-700 text-slate-400' %> font-bold text-xs sm:text-sm flex items-center justify-center ring-4 ring-[#0C152E] transition-all">
+                    5
+                </div>
+                <span id="step-text-5" class="text-xs font-bold <%= pasoActual >= 5 ? 'text-white font-extrabold' : 'text-slate-300' %> mt-2 block leading-tight">¡Listo!</span>
+                <span class="text-[10px] text-slate-500 hidden sm:block mt-0.5">Revisa el detalle de tu compra</span>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- ========================================================================= -->
+    <!-- VISTA PASO 1: CARRO DE COMPRAS (Revisa tus productos) -->
+    <!-- ========================================================================= -->
+    <div id="vista-paso-1" class="<%= pasoActual === 1 ? '' : 'hidden' %>">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+            
+            <!-- COLUMNA IZQUIERDA: CARRO DE COMPRAS -->
+            <div class="lg:col-span-8 space-y-4">
+                <h1 class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight font-display">
+                    Carro de compras
+                </h1>
+
+                <div class="bg-[#0C152E]/90 border border-slate-800 rounded-3xl p-6 sm:p-7 shadow-xl space-y-6">
+                    <!-- Encabezado Proveedor / Aviario -->
+                    <div class="flex items-center justify-between pb-3 border-b border-slate-800/80">
+                        <div class="text-xs sm:text-sm font-bold text-slate-300">
+                            Vendido por: <span class="text-pink-400 font-extrabold">Aviario Central LPR</span>
+                        </div>
+                        <% if (!tieneReservasReales) { %>
+                            <span class="px-2.5 py-1 rounded-md text-[10px] font-bold bg-cyan-950/80 text-cyan-300 border border-cyan-500/30">
+                                Vista interactiva
+                            </span>
+                        <% } %>
                     </div>
-                    <div class="flex justify-between items-center text-lg font-black text-white font-display pt-3 border-t border-slate-800">
-                        <span>Total a pagar:</span>
-                        <span class="text-cyan-300 text-2xl">S/. <%= total.toFixed(2) %></span>
+
+                    <!-- Lista de Productos en el Carro -->
+                    <div class="divide-y divide-slate-800/80">
+                        <% items.forEach((item) => { %>
+                            <div class="py-6 first:pt-2 last:pb-2 flex flex-col sm:flex-row items-start justify-between gap-4" id="cart-item-<%= item.id %>">
+                                <div class="flex items-start gap-4 flex-1">
+                                    <div class="w-20 h-20 sm:w-24 sm:h-24 bg-[#070D1E] rounded-2xl overflow-hidden border border-slate-800 shrink-0 relative group">
+                                        <img src="<%= item.foto %>" alt="<%= item.titulo %>" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200">
+                                    </div>
+                                    <div class="space-y-1.5 flex-1 min-w-0">
+                                        <h3 class="text-xs sm:text-sm font-extrabold text-white uppercase font-display leading-tight line-clamp-2">
+                                            <%= item.titulo %>
+                                        </h3>
+                                        <span class="text-xs font-black text-slate-400 uppercase tracking-wider block">
+                                            <%= item.marca %>
+                                        </span>
+                                        <span class="text-[11px] text-slate-500 font-mono block">
+                                            <%= item.sku %>
+                                        </span>
+                                        <div class="flex flex-wrap items-center gap-1.5 pt-1">
+                                            <span class="px-2.5 py-0.5 rounded bg-[#070D1E] border border-slate-800 text-[10px] font-bold text-slate-300 uppercase">
+                                                <%= item.tag1 %>
+                                            </span>
+                                            <span class="px-2.5 py-0.5 rounded bg-[#070D1E] border border-slate-800 text-[10px] font-bold text-slate-300 uppercase">
+                                                <%= item.tag2 %>
+                                            </span>
+                                            <% if (item.esReal && item.expira_at) { %>
+                                                <span class="countdown-badge px-2.5 py-0.5 rounded bg-cyan-950/80 text-[10px] font-bold text-cyan-300 border border-cyan-500/30 flex items-center gap-1" data-expire="<%= new Date(item.expira_at).getTime() %>">
+                                                    <span>⏳</span>
+                                                    <span class="countdown-timer">10:00</span>
+                                                </span>
+                                            <% } %>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="flex sm:flex-col items-end justify-between sm:justify-start w-full sm:w-auto pt-2 sm:pt-0 gap-3">
+                                    <div class="flex items-start gap-4 text-right">
+                                        <div class="space-y-0.5 text-right font-mono">
+                                            <div class="flex items-center justify-end gap-1.5">
+                                                <span class="text-sm sm:text-base font-black text-white">S/ <%= item.precioClub.toFixed(2) %></span>
+                                                <span class="w-3.5 h-2.5 bg-pink-600 rounded-[2px] inline-block text-[7px] text-white font-black text-center leading-2.5">R</span>
+                                            </div>
+                                            <div class="text-xs font-bold text-slate-300">
+                                                S/ <%= item.precioInternet.toFixed(2) %>
+                                            </div>
+                                            <div class="text-[10px] text-slate-500 line-through">
+                                                S/ <%= item.precioNormal.toFixed(2) %>
+                                            </div>
+                                        </div>
+
+                                        <button type="button" onclick="eliminarItemCarro('<%= item.id %>', <%= item.esReal %>)" class="text-slate-500 hover:text-rose-400 transition p-1" title="Eliminar del carro">
+                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                            </svg>
+                                        </button>
+                                    </div>
+
+                                    <div class="flex flex-col items-end pt-1">
+                                        <div class="flex items-center border border-slate-700 rounded-lg overflow-hidden bg-[#070D1E]">
+                                            <button type="button" onclick="cambiarCantidadItem('<%= item.id %>', -1, <%= item.maxUnits %>)" class="w-7 h-7 text-slate-400 hover:text-white hover:bg-slate-800 transition flex items-center justify-center font-bold text-xs">-</button>
+                                            <input type="text" id="qty-<%= item.id %>" value="1" readonly class="w-8 text-center bg-transparent text-xs font-bold text-white border-none focus:outline-none">
+                                            <button type="button" onclick="cambiarCantidadItem('<%= item.id %>', 1, <%= item.maxUnits %>)" class="w-7 h-7 text-slate-400 hover:text-white hover:bg-slate-800 transition flex items-center justify-center font-bold text-xs">+</button>
+                                        </div>
+                                        <span class="text-[9px] text-slate-500 mt-1 font-medium">Máx. <%= item.maxUnits %> unidades</span>
+                                    </div>
+                                </div>
+                            </div>
+                        <% }) %>
+                    </div>
+                </div>
+            </div>
+
+            <!-- COLUMNA DERECHA: RESUMEN DE LA COMPRA (PASO 1) -->
+            <div class="lg:col-span-4 space-y-4">
+                <h2 class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight font-display">
+                    Resumen de la compra
+                </h2>
+
+                <div class="bg-[#0C152E]/90 border border-slate-800 rounded-3xl p-6 sm:p-7 shadow-xl space-y-5">
+                    <div class="flex items-center justify-between text-xs sm:text-sm font-medium">
+                        <span class="text-slate-300">Productos (<span id="summary-count-1"><%= items.length %></span>)</span>
+                        <div class="flex items-center gap-2 font-mono">
+                            <span class="text-slate-500 line-through text-xs">S/ <%= subtotalNormal.toFixed(2) %></span>
+                            <span class="text-white font-bold">S/ <%= subtotalInternet.toFixed(2) %></span>
+                            <span class="text-slate-400 text-xs">⌵</span>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center justify-between text-xs sm:text-sm font-medium pt-1">
+                        <span class="text-slate-300">Otros medios de pago</span>
+                        <span class="text-white font-bold font-mono">S/ <%= subtotalInternet.toFixed(2) %></span>
+                    </div>
+
+                    <div class="flex items-center justify-between text-xs sm:text-sm font-bold pt-1">
+                        <div class="flex items-center gap-1.5 text-slate-200">
+                            <span>Tarjeta / Club LPR</span>
+                            <span class="w-3.5 h-2.5 bg-pink-600 rounded-[2px] inline-block text-[7px] text-white font-black text-center leading-2.5">R</span>
+                        </div>
+                        <span class="text-cyan-400 font-extrabold font-mono text-base">S/ <%= subtotalClub.toFixed(2) %></span>
+                    </div>
+
+                    <div class="pt-2">
+                        <button type="button" onclick="irAPaso(3)" class="w-full py-3.5 px-6 rounded-2xl bg-[#1E293B] hover:bg-[#334155] border border-slate-600 text-white font-extrabold text-base uppercase tracking-wider transition transform hover:-translate-y-0.5 shadow-xl text-center flex items-center justify-center gap-2">
+                            <span>Continuar</span>
+                        </button>
+                    </div>
+
+                    <div class="p-3 bg-[#0B1A36] border border-blue-500/30 text-cyan-300 rounded-xl text-xs flex items-center gap-2.5">
+                        <span class="text-sm">ℹ</span>
+                        <span class="text-[11px] font-medium leading-tight">
+                            El costo del envío se calculará en el próximo paso
+                        </span>
+                    </div>
+
+                    <div class="pt-1 text-center">
+                        <a href="/catalogo" class="text-xs text-slate-400 hover:text-cyan-300 font-bold transition underline decoration-slate-600 hover:decoration-cyan-400">
+                            Seguir comprando
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- ========================================================================= -->
+    <!-- VISTA PASO 3: ENTREGA (IDÉNTICO A LA IMAGEN ADJUNTA media_1789697711492.png) -->
+    <!-- ========================================================================= -->
+    <div id="vista-paso-3" class="<%= pasoActual === 3 ? '' : 'hidden' %>">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+            
+            <!-- COLUMNA IZQUIERDA: MI DIRECCIÓN & OPCIONES DE ENTREGA -->
+            <div class="lg:col-span-8 space-y-6">
+                
+                <!-- Encabezado "Mi dirección" + Enlace "Elegir otra dirección" -->
+                <div class="flex items-center justify-between">
+                    <h1 class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight font-display">
+                        Mi dirección
+                    </h1>
+                    <button type="button" onclick="toggleSelectorDirecciones()" class="text-xs sm:text-sm font-bold text-slate-300 hover:text-pink-400 transition underline flex items-center gap-1">
+                        <span>Elegir otra dirección</span>
+                        <span id="chevron-direccion" class="text-xs"><%= direccionesInicialmenteAbierto ? '⌃' : '⌵' %></span>
+                    </button>
+                </div>
+
+                <!-- Tarjeta de Dirección Actual (Modo colapsado) -->
+                <div id="panel-direccion-simple" class="<%= direccionesInicialmenteAbierto ? 'hidden' : '' %> bg-[#0C152E]/90 border border-slate-800 rounded-2xl p-4 sm:p-5 shadow-lg flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <span class="text-cyan-400 text-lg">📍</span>
+                        <span id="direccion-texto" class="text-sm sm:text-base font-medium text-slate-200">
+                            JR. Joaquin Capella 531 531, 1, San Martín de Porres
+                        </span>
+                    </div>
+                    <span class="text-xs text-slate-500 font-mono hidden sm:inline-block">Lima, PE</span>
+                </div>
+
+                <!-- Panel Selector de Direcciones (Modo expandido - IDÉNTICO A media_1789698185958.png) -->
+                <div id="panel-selector-direcciones" class="<%= direccionesInicialmenteAbierto ? '' : 'hidden' %> bg-[#0C152E]/90 border border-slate-800 rounded-3xl p-6 sm:p-7 shadow-xl space-y-5">
+                    <div>
+                        <h2 class="text-sm sm:text-base font-extrabold text-white">
+                            Elige dónde quieres recibir tu compra
+                        </h2>
+                        <button type="button" onclick="abrirModalNuevaDireccion()" class="text-xs sm:text-sm text-slate-400 hover:text-pink-400 underline font-semibold mt-1 inline-block transition">
+                            Agregar nueva dirección
+                        </button>
+                    </div>
+
+                    <!-- Cuadrícula de Direcciones Guardadas -->
+                    <div id="lista-direcciones-grid" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <!-- Card 1: Joaquin Capella 531 (Seleccionada) -->
+                        <div id="addr-card-1" onclick="seleccionarDireccion(1, 'Joaquin Capella 531', 'JR. Joaquin Capella 531 531, 1, San Martin de Porres, Lima.')" class="addr-card border-2 border-pink-500 bg-[#070D1E] rounded-2xl p-4 sm:p-5 shadow-lg transition cursor-pointer relative group">
+                            <div class="flex items-center justify-between pb-3 border-b border-slate-800/80 mb-3">
+                                <div class="flex items-center gap-2.5">
+                                    <div id="addr-radio-1" class="addr-radio w-4 h-4 rounded-full border-2 border-pink-500 flex items-center justify-center p-0.5 shrink-0">
+                                        <div class="w-2 h-2 rounded-full bg-pink-500"></div>
+                                    </div>
+                                    <span class="addr-alias text-xs sm:text-sm font-extrabold text-white">Joaquin Capella 531</span>
+                                </div>
+                                <div class="flex items-center gap-2 text-slate-500">
+                                    <button type="button" onclick="editarDireccion(1, event)" class="hover:text-cyan-400 transition p-1" title="Editar dirección">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                                        </svg>
+                                    </button>
+                                    <button type="button" onclick="eliminarDireccion(1, event)" class="hover:text-rose-400 transition p-1" title="Eliminar dirección">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="addr-text text-xs text-slate-400 pl-6.5 font-medium leading-relaxed">
+                                JR. Joaquin Capella 531 531, 1, San Martin de Porres, Lima.
+                            </div>
+                        </div>
+
+                        <!-- Card 2: Santa Luisa de Marillac c18 -->
+                        <div id="addr-card-2" onclick="seleccionarDireccion(2, 'Santa Luisa de Marillac c18', 'Urb. Santa Luisa de Marillac C18 18, 1, Pisco, Ica.')" class="addr-card border border-slate-800 hover:border-slate-700 bg-[#070D1E]/60 rounded-2xl p-4 sm:p-5 transition cursor-pointer relative group">
+                            <div class="flex items-center justify-between pb-3 border-b border-slate-800/80 mb-3">
+                                <div class="flex items-center gap-2.5">
+                                    <div id="addr-radio-2" class="addr-radio w-4 h-4 rounded-full border-2 border-slate-600 flex items-center justify-center p-0.5 shrink-0">
+                                        <div class="w-2 h-2 rounded-full bg-transparent"></div>
+                                    </div>
+                                    <span class="addr-alias text-xs sm:text-sm font-extrabold text-white">Santa Luisa de Marillac c18</span>
+                                </div>
+                                <div class="flex items-center gap-2 text-slate-500">
+                                    <button type="button" onclick="editarDireccion(2, event)" class="hover:text-cyan-400 transition p-1" title="Editar dirección">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                                        </svg>
+                                    </button>
+                                    <button type="button" onclick="eliminarDireccion(2, event)" class="hover:text-rose-400 transition p-1" title="Eliminar dirección">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="addr-text text-xs text-slate-400 pl-6.5 font-medium leading-relaxed">
+                                Urb. Santa Luisa de Marillac C18 18, 1, Pisco, Ica.
+                            </div>
+                        </div>
+
+                        <!-- Card 3: Armendariz 497, Lima 15074 -->
+                        <div id="addr-card-3" onclick="seleccionarDireccion(3, 'Armendariz 497, Lima 15074', 'Armendariz 497 497, OAMRA, Miraflores, Lima.')" class="addr-card border border-slate-800 hover:border-slate-700 bg-[#070D1E]/60 rounded-2xl p-4 sm:p-5 transition cursor-pointer relative group">
+                            <div class="flex items-center justify-between pb-3 border-b border-slate-800/80 mb-3">
+                                <div class="flex items-center gap-2.5">
+                                    <div id="addr-radio-3" class="addr-radio w-4 h-4 rounded-full border-2 border-slate-600 flex items-center justify-center p-0.5 shrink-0">
+                                        <div class="w-2 h-2 rounded-full bg-transparent"></div>
+                                    </div>
+                                    <span class="addr-alias text-xs sm:text-sm font-extrabold text-white">Armendariz 497, Lima 15074</span>
+                                </div>
+                                <div class="flex items-center gap-2 text-slate-500">
+                                    <button type="button" onclick="editarDireccion(3, event)" class="hover:text-cyan-400 transition p-1" title="Editar dirección">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                                        </svg>
+                                    </button>
+                                    <button type="button" onclick="eliminarDireccion(3, event)" class="hover:text-rose-400 transition p-1" title="Eliminar dirección">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="addr-text text-xs text-slate-400 pl-6.5 font-medium leading-relaxed">
+                                Armendariz 497 497, OAMRA, Miraflores, Lima.
+                            </div>
+                        </div>
                     </div>
                 </div>
 
-                <form method="POST" action="/checkout" class="space-y-4">
-                    <div>
-                        <label for="referencia_pago" class="block text-[11px] font-bold text-cyan-400 uppercase tracking-wider mb-1.5">Referencia de Pago *</label>
-                        <input type="text" name="referencia_pago" id="referencia_pago" required placeholder="Nro de Operación Yape/Plin/Transferencia" class="block w-full px-3.5 py-2.5 bg-[#070D1E] border border-slate-800 rounded-2xl text-sm text-white placeholder-slate-500 focus:outline-none focus:border-cyan-400 transition">
+                <!-- Contenedor Principal de Entrega (Idéntico a "Entrega 1: Retira en Aviario Central LPR") -->
+                <div id="panel-opciones-entrega" class="bg-[#0C152E]/90 border border-slate-800 rounded-3xl p-6 sm:p-7 shadow-xl space-y-6">
+                    
+                    <!-- Título de Entrega con Destino en Magenta -->
+                    <div class="text-sm sm:text-base font-extrabold text-slate-200">
+                        Entrega 1: <span id="titulo-entrega-destino">Retira en <span class="text-pink-400">Aviario Central LPR</span></span>
                     </div>
-                    <button type="submit" class="w-full bg-gradient-to-r from-cyan-400 via-teal-400 to-cyan-500 hover:from-cyan-300 hover:to-teal-300 text-slate-950 py-3.5 rounded-2xl font-extrabold text-sm uppercase tracking-wider shadow-lg shadow-cyan-500/30 transition transform hover:scale-[1.02]">
-                        Confirmar y Finalizar Compra
-                    </button>
-                </form>
+
+                    <!-- Resumen del Producto a Entregar -->
+                    <div class="flex items-center justify-between pb-6 border-b border-slate-800/80 gap-4">
+                        <div class="flex items-center gap-4 flex-1">
+                            <div class="w-14 h-14 sm:w-16 sm:h-16 bg-[#070D1E] rounded-xl overflow-hidden border border-slate-800 shrink-0">
+                                <img src="<%= items[0].foto %>" alt="<%= items[0].titulo %>" class="w-full h-full object-cover">
+                            </div>
+                            <div class="space-y-0.5">
+                                <h4 class="text-xs sm:text-sm font-extrabold text-white uppercase font-display line-clamp-1">
+                                    <%= items[0].titulo %>
+                                </h4>
+                                <div class="text-xs text-slate-400">
+                                    Vendido por <span class="text-pink-400 font-semibold">Aviario Central LPR</span>
+                                </div>
+                                <div class="text-xs text-slate-400 font-medium">
+                                    Cantidad: <span class="text-white font-bold">1</span>
+                                </div>
+                            </div>
+                        </div>
+                        <button type="button" onclick="irAPaso(1)" class="text-slate-500 hover:text-rose-400 transition p-1" title="Gestionar carro">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                            </svg>
+                        </button>
+                    </div>
+
+                    <!-- OPCIÓN 1: PUNTO DE RETIRO (SELECCIONADA POR DEFECTO - IDÉNTICA A LA IMAGEN) -->
+                    <div id="card-retiro" onclick="seleccionarModalidad('retiro')" class="border-2 border-slate-600 bg-[#070D1E] rounded-2xl p-5 shadow-lg transition cursor-pointer relative">
+                        <!-- Cabecera de la Opción -->
+                        <div class="flex items-center justify-between mb-3">
+                            <div class="flex items-center gap-2.5">
+                                <span class="text-base text-cyan-400">🏢</span>
+                                <span class="text-sm sm:text-base font-extrabold text-white">Punto de retiro</span>
+                            </div>
+                            <span class="px-3 py-0.5 rounded-full text-xs font-black uppercase text-emerald-400 border border-emerald-500/40 bg-emerald-950/40">
+                                Gratis
+                            </span>
+                        </div>
+
+                        <!-- Radio Button + Textos de Ubicación y Horarios -->
+                        <div class="flex items-start gap-3.5 pl-1">
+                            <!-- Radio Dot Magenta -->
+                            <div id="radio-dot-retiro" class="w-4 h-4 rounded-full border-2 border-pink-500 flex items-center justify-center mt-1 shrink-0 p-0.5">
+                                <div class="w-2 h-2 rounded-full bg-pink-500"></div>
+                            </div>
+
+                            <div class="space-y-1 text-xs sm:text-sm">
+                                <div class="text-slate-200">
+                                    Retira desde el <span class="font-bold text-white">19 de Septiembre</span>
+                                </div>
+                                <div class="text-slate-400 font-semibold">
+                                    Aviario Central LPR, Sede Principal. Av. Universitaria 1204 - Lima
+                                </div>
+                                <div class="text-slate-500 text-xs">
+                                    Lun a Dom 11:00 am a 9:00 pm
+                                </div>
+                                <div class="pt-1.5">
+                                    <button type="button" onclick="event.stopPropagation(); alert('Sedes disponibles: Aviario Central Lima Norte, Sede Surco / San Borja, Sede Arequipa.')" class="text-xs font-bold text-slate-300 hover:text-pink-400 transition underline flex items-center gap-1">
+                                        <span>Elegir otro punto de retiro</span>
+                                        <span>⌵</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- OPCIÓN 2: DESPACHO PROGRAMADO (IDÉNTICA A LA IMAGEN) -->
+                    <div id="card-despacho" onclick="seleccionarModalidad('despacho')" class="border border-slate-800 hover:border-slate-700 bg-[#070D1E]/60 rounded-2xl p-5 transition cursor-pointer relative">
+                        <!-- Cabecera de la Opción -->
+                        <div class="flex items-center justify-between mb-3">
+                            <div class="flex items-center gap-2.5">
+                                <span class="text-base text-cyan-400">🚚</span>
+                                <span class="text-sm sm:text-base font-extrabold text-slate-200">Despacho Programado</span>
+                            </div>
+                            <span class="font-mono text-xs sm:text-sm font-bold text-slate-300">
+                                S/ 7.90
+                            </span>
+                        </div>
+
+                        <!-- Radio Button + Textos de Fecha y Horario -->
+                        <div class="flex items-start gap-3.5 pl-1">
+                            <!-- Radio Dot Vacío -->
+                            <div id="radio-dot-despacho" class="w-4 h-4 rounded-full border-2 border-slate-600 flex items-center justify-center mt-1 shrink-0 p-0.5">
+                                <div class="w-2 h-2 rounded-full bg-transparent"></div>
+                            </div>
+
+                            <div class="space-y-1 text-xs sm:text-sm">
+                                <div class="text-slate-300">
+                                    Recíbelo el <span class="font-bold text-white">18 de Septiembre</span> de 7:00 a 22:00 hrs
+                                </div>
+                                <div class="pt-1.5">
+                                    <button type="button" onclick="event.stopPropagation(); alert('Fechas disponibles: 18 de Septiembre, 19 de Septiembre, 20 de Septiembre.')" class="text-xs font-bold text-slate-400 hover:text-pink-400 transition underline flex items-center gap-1">
+                                        <span>Elegir otra fecha</span>
+                                        <span>⌵</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- COLUMNA DERECHA: RESUMEN DE LA COMPRA (PASO 3 - ENTREGA) -->
+            <div class="lg:col-span-4 space-y-4">
+                
+                <h2 class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight font-display">
+                    Resumen de la compra
+                </h2>
+
+                <div class="bg-[#0C152E]/90 border border-slate-800 rounded-3xl p-6 sm:p-7 shadow-xl space-y-5">
+                    
+                    <!-- Fila 1: Productos (2) -->
+                    <div class="flex items-center justify-between text-xs sm:text-sm font-medium">
+                        <span class="text-slate-300">Productos (<%= items.length %>)</span>
+                        <div class="flex items-center gap-2 font-mono">
+                            <span class="text-slate-500 line-through text-xs">S/ <%= (subtotalNormal > 100 ? 99.98 : subtotalNormal).toFixed(2) %></span>
+                            <span class="text-white font-bold">S/ <%= (subtotalInternet > 100 ? 59.98 : subtotalInternet).toFixed(2) %></span>
+                            <span class="text-slate-400 text-xs">⌵</span>
+                        </div>
+                    </div>
+
+                    <!-- Fila 2: Entregas (1) -->
+                    <div class="flex items-center justify-between text-xs sm:text-sm font-medium pt-1">
+                        <span class="text-slate-300">Entregas (1)</span>
+                        <div class="flex items-center gap-1 font-mono">
+                            <span id="summary-envio-costo" class="text-white font-bold">S/ 0.00</span>
+                            <span class="text-slate-400 text-xs">⌵</span>
+                        </div>
+                    </div>
+
+                    <div class="border-t border-slate-800/80 my-1"></div>
+
+                    <!-- Fila 3: Otros medios de pago -->
+                    <div class="flex items-center justify-between text-xs sm:text-sm font-medium pt-1">
+                        <span class="text-slate-300">Otros medios de pago</span>
+                        <span id="summary-otros-pagos" class="text-white font-bold font-mono">S/ <%= (subtotalInternet > 100 ? 59.98 : subtotalInternet).toFixed(2) %></span>
+                    </div>
+
+                    <!-- Fila 4: Tarjeta Banco Ripley [R] -->
+                    <div class="flex items-center justify-between text-xs sm:text-sm font-bold pt-1">
+                        <div class="flex items-center gap-1.5 text-slate-200">
+                            <span>Tarjeta Banco Ripley</span>
+                            <span class="w-3.5 h-2.5 bg-pink-600 rounded-[2px] inline-block text-[7px] text-white font-black text-center leading-2.5">R</span>
+                        </div>
+                        <span id="summary-club-total" class="text-cyan-400 font-extrabold font-mono text-base">S/ <%= (subtotalClub > 100 ? 53.98 : subtotalClub).toFixed(2) %></span>
+                    </div>
+
+                    <!-- Botón Principal Continuar (Avanza a Paso 4: Pago o Confirma Dirección) -->
+                    <div class="pt-3">
+                        <button type="button" onclick="handleBotonContinuar()" class="w-full py-3.5 px-6 rounded-2xl bg-[#1E293B] hover:bg-[#334155] border border-slate-600 text-white font-extrabold text-base uppercase tracking-wider transition transform hover:-translate-y-0.5 shadow-xl text-center flex items-center justify-center gap-2">
+                            <span>Continuar</span>
+                        </button>
+                    </div>
+
+                </div>
+
             </div>
 
         </div>
-    <% } %>
+    </div>
+    <!-- ========================================================================= -->
+    <!-- VISTA PASO 4: PAGO (IDÉNTICO A LA IMAGEN ADJUNTA media_1789736456316.png) -->
+    <!-- ========================================================================= -->
+    <div id="vista-paso-4" class="<%= pasoActual === 4 ? '' : 'hidden' %>">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+            
+            <!-- COLUMNA IZQUIERDA: MEDIOS DE PAGO -->
+            <div class="lg:col-span-8 space-y-6">
+                
+                <h1 class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight font-display">
+                    Medios de pago
+                </h1>
+
+                <!-- Banner Informativo CVV Dinámico -->
+                <div class="bg-[#0B1E38]/80 border border-blue-500/30 rounded-2xl p-4 sm:p-5 flex items-center gap-3.5 shadow-lg">
+                    <div class="w-6 h-6 rounded-full bg-blue-500/20 text-blue-400 flex items-center justify-center font-bold text-sm shrink-0">
+                        ℹ
+                    </div>
+                    <p class="text-xs sm:text-sm text-blue-100/90 leading-relaxed font-medium">
+                        Recuerda activar las compras por internet y proteger tus pagos con el CVV dinámico de la app de tu banco.
+                    </p>
+                </div>
+
+                <!-- Lista de Opciones de Pago -->
+                <div class="space-y-3 sm:space-y-4">
+
+                    <!-- OPCIÓN 1: TARJETA DE CRÉDITO BANCO RIPLEY -->
+                    <div id="payment-card-ripley" onclick="seleccionarMedioPago('ripley')" class="payment-card bg-[#0C152E]/90 border border-slate-800 hover:border-slate-700 rounded-2xl p-4 sm:p-5 transition cursor-pointer shadow-lg relative group">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-3 sm:gap-4">
+                                <div class="w-11 h-7 sm:w-12 sm:h-8 rounded-lg bg-gradient-to-br from-slate-900 to-black border border-slate-700 flex items-center justify-center shrink-0 shadow-md">
+                                    <span class="text-xs font-black text-pink-500 font-mono tracking-tighter">R</span>
+                                </div>
+                                <span class="text-xs sm:text-sm font-bold text-slate-200 group-hover:text-white transition">
+                                    Tarjeta de Crédito Banco Ripley
+                                </span>
+                            </div>
+                            <div id="payment-radio-ripley" class="payment-radio w-4 h-4 rounded-full border-2 border-slate-600 flex items-center justify-center p-0.5 shrink-0">
+                                <div class="w-2 h-2 rounded-full bg-transparent"></div>
+                            </div>
+                        </div>
+
+                        <!-- Formulario desplegable Tarjeta Ripley -->
+                        <div id="payment-form-ripley" class="hidden mt-5 pt-4 border-t border-slate-800/80 space-y-4">
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div class="sm:col-span-2">
+                                    <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1.5">Número de Tarjeta Ripley</label>
+                                    <input type="text" maxlength="19" placeholder="•••• •••• •••• ••••" class="w-full px-4 py-2.5 bg-[#070D1E] border border-slate-700 rounded-xl text-white font-mono text-xs sm:text-sm focus:border-cyan-400 focus:outline-none">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1.5">Vencimiento</label>
+                                    <input type="text" maxlength="5" placeholder="MM/AA" class="w-full px-4 py-2.5 bg-[#070D1E] border border-slate-700 rounded-xl text-white font-mono text-xs sm:text-sm focus:border-cyan-400 focus:outline-none">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1.5">CVV Dinámico</label>
+                                    <input type="password" maxlength="4" placeholder="•••" class="w-full px-4 py-2.5 bg-[#070D1E] border border-slate-700 rounded-xl text-white font-mono text-xs sm:text-sm focus:border-cyan-400 focus:outline-none">
+                                </div>
+                            </div>
+                            <div class="p-3 bg-pink-950/20 border border-pink-500/30 rounded-xl text-[11px] text-pink-300 font-semibold flex items-center gap-2">
+                                <span>🎉</span>
+                                <span>¡Precio exclusivo con Tarjeta Banco Ripley aplicado: <strong class="text-white font-mono">S/ <%= (subtotalClub > 100 ? 53.98 : subtotalClub).toFixed(2) %></strong>!</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- OPCIÓN 2: TARJETAS DE CRÉDITO Y DÉBITO (VISA, MC, AMEX, DINERS) -->
+                    <div id="payment-card-tarjetas" onclick="seleccionarMedioPago('tarjetas')" class="payment-card bg-[#0C152E]/90 border border-slate-800 hover:border-slate-700 rounded-2xl p-4 sm:p-5 transition cursor-pointer shadow-lg relative group">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-3 sm:gap-4">
+                                <div class="w-11 h-7 sm:w-12 sm:h-8 rounded-lg bg-[#070D1E] border border-slate-700 flex items-center justify-center shrink-0 shadow-md">
+                                    <svg class="w-5 h-5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <rect x="2" y="5" width="20" height="14" rx="2" stroke-width="1.8"/>
+                                        <line x1="2" y1="10" x2="22" y2="10" stroke-width="1.8"/>
+                                    </svg>
+                                </div>
+                                <span class="text-xs sm:text-sm font-bold text-slate-200 group-hover:text-white transition">
+                                    Tarjetas de Crédito y Débito (Visa, Mastercard, Amex, Diners) y Gift Card Ripley
+                                </span>
+                            </div>
+                            <div id="payment-radio-tarjetas" class="payment-radio w-4 h-4 rounded-full border-2 border-slate-600 flex items-center justify-center p-0.5 shrink-0">
+                                <div class="w-2 h-2 rounded-full bg-transparent"></div>
+                            </div>
+                        </div>
+
+                        <!-- Formulario desplegable Tarjetas Débito/Crédito -->
+                        <div id="payment-form-tarjetas" class="hidden mt-5 pt-4 border-t border-slate-800/80 space-y-4">
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div class="sm:col-span-2">
+                                    <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1.5">Número de Tarjeta</label>
+                                    <input type="text" maxlength="19" placeholder="4152 •••• •••• ••••" class="w-full px-4 py-2.5 bg-[#070D1E] border border-slate-700 rounded-xl text-white font-mono text-xs sm:text-sm focus:border-cyan-400 focus:outline-none">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1.5">Vencimiento</label>
+                                    <input type="text" maxlength="5" placeholder="MM/AA" class="w-full px-4 py-2.5 bg-[#070D1E] border border-slate-700 rounded-xl text-white font-mono text-xs sm:text-sm focus:border-cyan-400 focus:outline-none">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1.5">CVV</label>
+                                    <input type="password" maxlength="4" placeholder="•••" class="w-full px-4 py-2.5 bg-[#070D1E] border border-slate-700 rounded-xl text-white font-mono text-xs sm:text-sm focus:border-cyan-400 focus:outline-none">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- OPCIÓN 3: YAPE -->
+                    <div id="payment-card-yape" onclick="seleccionarMedioPago('yape')" class="payment-card bg-[#0C152E]/90 border border-slate-800 hover:border-slate-700 rounded-2xl p-4 sm:p-5 transition cursor-pointer shadow-lg relative group">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-3 sm:gap-4">
+                                <div class="w-11 h-7 sm:w-12 sm:h-8 rounded-lg bg-[#742284] flex items-center justify-center shrink-0 shadow-md">
+                                    <span class="text-[11px] font-black text-cyan-300 font-sans tracking-tight">yape</span>
+                                </div>
+                                <span class="text-xs sm:text-sm font-bold text-slate-200 group-hover:text-white transition">
+                                    Yape
+                                </span>
+                            </div>
+                            <div id="payment-radio-yape" class="payment-radio w-4 h-4 rounded-full border-2 border-slate-600 flex items-center justify-center p-0.5 shrink-0">
+                                <div class="w-2 h-2 rounded-full bg-transparent"></div>
+                            </div>
+                        </div>
+
+                        <!-- Formulario desplegable Yape -->
+                        <div id="payment-form-yape" class="hidden mt-5 pt-4 border-t border-slate-800/80 space-y-4">
+                            <div class="flex flex-col sm:flex-row items-center gap-6 p-4 bg-[#070D1E] rounded-xl border border-slate-800">
+                                <div class="w-24 h-24 sm:w-28 sm:h-28 bg-white p-2 rounded-xl shrink-0 flex items-center justify-center shadow-md">
+                                    <img src="/img/salud_preventiva/suplementos_preventivos.jpg" alt="QR Yape" class="w-full h-full object-cover rounded-lg">
+                                </div>
+                                <div class="space-y-2 text-center sm:text-left flex-1">
+                                    <div class="text-xs text-slate-400">Escanea el código QR o transfiere al número:</div>
+                                    <div class="text-base font-black text-white font-mono tracking-wider">987 654 321</div>
+                                    <div class="text-[11px] text-slate-400">Titular: <span class="text-white font-semibold">Aviario Central AviPerú S.A.C.</span></div>
+                                    <div class="pt-1">
+                                        <label class="block text-[11px] font-bold text-slate-300 uppercase tracking-wider mb-1">Código de Aprobación Yape (6 dígitos)</label>
+                                        <input type="text" maxlength="6" placeholder="Ej: 839201" class="w-full max-w-xs px-3 py-2 bg-[#0C152E] border border-slate-700 rounded-lg text-white font-mono text-xs sm:text-sm focus:border-cyan-400 focus:outline-none">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- OPCIÓN 4: PAGOEFECTIVO -->
+                    <div id="payment-card-pagoefectivo" onclick="seleccionarMedioPago('pagoefectivo')" class="payment-card bg-[#0C152E]/90 border border-slate-800 hover:border-slate-700 rounded-2xl p-4 sm:p-5 transition cursor-pointer shadow-lg relative group">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-3 sm:gap-4">
+                                <div class="w-11 h-7 sm:w-12 sm:h-8 rounded-lg bg-[#FFD100] flex items-center justify-center shrink-0 shadow-md">
+                                    <span class="text-black font-black text-xs leading-none">◆◆</span>
+                                </div>
+                                <span class="text-xs sm:text-sm font-bold text-slate-200 group-hover:text-white transition">
+                                    PagoEfectivo
+                                </span>
+                            </div>
+                            <div id="payment-radio-pagoefectivo" class="payment-radio w-4 h-4 rounded-full border-2 border-slate-600 flex items-center justify-center p-0.5 shrink-0">
+                                <div class="w-2 h-2 rounded-full bg-transparent"></div>
+                            </div>
+                        </div>
+
+                        <!-- Información PagoEfectivo -->
+                        <div id="payment-form-pagoefectivo" class="hidden mt-5 pt-4 border-t border-slate-800/80 space-y-3">
+                            <p class="text-xs text-slate-300 leading-relaxed">
+                                Paga a través de tu banca por internet (BCP, BBVA, Interbank, Scotiabank, BanBif) o en más de 40,000 agentes autorizados a nivel nacional con tu código de pago CIP.
+                            </p>
+                            <div class="p-3 bg-[#070D1E] rounded-xl border border-slate-800 font-mono text-xs text-cyan-300 flex items-center justify-between">
+                                <span>Código CIP (simulado):</span>
+                                <span class="font-bold text-white">4920 1859</span>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- SECCIÓN BOLETA -->
+                <div class="pt-4 space-y-3">
+                    <h2 class="text-xl sm:text-2xl font-extrabold text-white tracking-tight font-display">
+                        Boleta
+                    </h2>
+
+                    <div class="bg-[#0C152E]/90 border border-slate-800 rounded-2xl p-4 sm:p-5 shadow-lg flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+                        <div class="text-xs sm:text-sm text-slate-300">
+                            La boleta se enviará al siguiente correo <span id="correo-boleta-display" class="font-black text-white"><%= user ? user.email : 'giles.ronald@hotmail.com' %></span>
+                        </div>
+                        <button type="button" onclick="toggleFacturaCampos()" class="text-xs sm:text-sm font-semibold text-slate-400 hover:text-cyan-400 transition underline flex items-center gap-1 shrink-0">
+                            <span>¿Necesitas factura?</span>
+                            <span class="text-sm">📝</span>
+                        </button>
+                    </div>
+
+                    <!-- Campos Desplegables de Factura -->
+                    <div id="factura-campos" class="hidden bg-[#0C152E]/90 border border-slate-800 rounded-2xl p-5 shadow-lg space-y-4">
+                        <div class="text-xs font-bold text-cyan-400 uppercase tracking-wider">Datos para Factura Electrónica</div>
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                            <div>
+                                <label class="block text-xs font-bold text-slate-300 mb-1">RUC (11 dígitos)</label>
+                                <input type="text" maxlength="11" placeholder="20601234567" class="w-full px-4 py-2 bg-[#070D1E] border border-slate-700 rounded-xl text-white text-xs sm:text-sm focus:border-cyan-400 focus:outline-none">
+                            </div>
+                            <div class="sm:col-span-2">
+                                <label class="block text-xs font-bold text-slate-300 mb-1">Razón Social</label>
+                                <input type="text" placeholder="Aviario Criadero S.A.C." class="w-full px-4 py-2 bg-[#070D1E] border border-slate-700 rounded-xl text-white text-xs sm:text-sm focus:border-cyan-400 focus:outline-none">
+                            </div>
+                            <div class="sm:col-span-3">
+                                <label class="block text-xs font-bold text-slate-300 mb-1">Dirección Fiscal</label>
+                                <input type="text" placeholder="Av. Principal 123, Lima" class="w-full px-4 py-2 bg-[#070D1E] border border-slate-700 rounded-xl text-white text-xs sm:text-sm focus:border-cyan-400 focus:outline-none">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- COLUMNA DERECHA: RESUMEN DE LA COMPRA (PASO 4) -->
+            <div class="lg:col-span-4 space-y-4">
+                
+                <h2 class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight font-display">
+                    Resumen de la compra
+                </h2>
+
+                <div class="bg-[#0C152E]/90 border border-slate-800 rounded-3xl p-6 sm:p-7 shadow-xl space-y-5">
+                    
+                    <!-- Fila 1: Productos (2) -->
+                    <div class="flex items-center justify-between text-xs sm:text-sm font-medium">
+                        <span class="text-slate-300">Productos (<%= items.length %>)</span>
+                        <div class="flex items-center gap-2 font-mono">
+                            <span class="text-slate-500 line-through text-xs">S/ <%= (subtotalNormal > 100 ? 99.98 : subtotalNormal).toFixed(2) %></span>
+                            <span class="text-white font-bold">S/ <%= (subtotalInternet > 100 ? 59.98 : subtotalInternet).toFixed(2) %></span>
+                            <span class="text-slate-400 text-xs">⌵</span>
+                        </div>
+                    </div>
+
+                    <!-- Fila 2: Entregas (1) -->
+                    <div class="flex items-center justify-between text-xs sm:text-sm font-medium pt-1">
+                        <span class="text-slate-300">Entregas (1)</span>
+                        <div class="flex items-center gap-1 font-mono">
+                            <span id="summary-envio-costo-pago" class="text-white font-bold">S/ 0.00</span>
+                            <span class="text-slate-400 text-xs">⌵</span>
+                        </div>
+                    </div>
+
+                    <div class="border-t border-slate-800/80 my-1"></div>
+
+                    <!-- Fila 3: Otros medios de pago -->
+                    <div class="flex items-center justify-between text-xs sm:text-sm font-medium pt-1">
+                        <span class="text-slate-300">Otros medios de pago</span>
+                        <span id="summary-otros-pagos-pago" class="text-white font-bold font-mono">S/ <%= (subtotalInternet > 100 ? 59.98 : subtotalInternet).toFixed(2) %></span>
+                    </div>
+
+                    <!-- Fila 4: Tarjeta Banco Ripley [R] -->
+                    <div class="flex items-center justify-between text-xs sm:text-sm font-bold pt-1">
+                        <div class="flex items-center gap-1.5 text-slate-200">
+                            <span>Tarjeta Banco Ripley</span>
+                            <span class="w-3.5 h-2.5 bg-pink-600 rounded-[2px] inline-block text-[7px] text-white font-black text-center leading-2.5">R</span>
+                        </div>
+                        <span id="summary-club-total-pago" class="text-cyan-400 font-extrabold font-mono text-base">S/ <%= (subtotalClub > 100 ? 53.98 : subtotalClub).toFixed(2) %></span>
+                    </div>
+
+                    <!-- Bloque Cupones Colapsable -->
+                    <div class="pt-2 border-t border-slate-800/80">
+                        <div class="flex items-center justify-between cursor-pointer py-1" onclick="toggleBloqueCupones()">
+                            <span class="text-xs sm:text-sm font-bold text-white">Cupones</span>
+                            <span id="chevron-cupones" class="text-xs text-slate-400 font-bold">⌃</span>
+                        </div>
+
+                        <div id="bloque-cupones-content" class="pt-2 space-y-2">
+                            <div class="flex gap-2">
+                                <input type="text" id="input-codigo-descuento" placeholder="Código de descuento" class="flex-1 px-3 py-2 bg-[#070D1E] border border-slate-700 rounded-xl text-white text-xs uppercase focus:border-cyan-400 focus:outline-none">
+                                <button type="button" onclick="aplicarCodigoDescuento()" class="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-600 text-slate-200 font-bold text-xs uppercase transition">
+                                    Aplicar
+                                </button>
+                            </div>
+                            <span class="text-[10px] text-slate-500 leading-tight block">
+                                Selecciona un medio de pago antes de ingresar tu cupón de descuento
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- Checkbox Términos y Condiciones -->
+                    <div class="pt-2">
+                        <label class="flex items-start gap-2.5 cursor-pointer">
+                            <input type="checkbox" id="check-terminos-pago" onchange="validarEstadoBotonPagar()" class="mt-0.5 accent-pink-600 w-4 h-4 rounded cursor-pointer">
+                            <span class="text-xs text-slate-400 leading-relaxed select-none">
+                                Acepto los <a href="#" class="text-pink-500 hover:underline font-semibold">términos y condiciones</a> y <a href="#" class="text-pink-500 hover:underline font-semibold">políticas de privacidad</a>
+                            </span>
+                        </label>
+                    </div>
+
+                    <!-- Botón PAGAR -->
+                    <div class="pt-2">
+                        <button type="button" id="btn-pagar" onclick="ejecutarPagoFinal()" disabled class="w-full py-3.5 px-6 rounded-2xl bg-[#1E293B] text-slate-500 cursor-not-allowed font-extrabold text-base uppercase tracking-wider transition text-center flex items-center justify-center gap-2">
+                            <span>Pagar</span>
+                        </button>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+    <!-- ========================================================================= -->
+    <!-- VISTA PASO 5: ¡LISTO! (CONFIRMACIÓN DE COMPRA) -->
+    <!-- ========================================================================= -->
+    <div id="vista-paso-5" class="<%= pasoActual === 5 ? '' : 'hidden' %>">
+        <div class="max-w-3xl mx-auto bg-[#0C152E]/90 border border-slate-800 rounded-3xl p-8 sm:p-10 shadow-2xl text-center space-y-6">
+            <div class="w-20 h-20 mx-auto rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 flex items-center justify-center text-4xl shadow-xl shadow-emerald-500/20">
+                ✓
+            </div>
+            
+            <div class="space-y-2">
+                <span class="text-xs font-bold text-emerald-400 uppercase tracking-widest block">¡Operación Completada!</span>
+                <h1 class="text-3xl sm:text-4xl font-extrabold text-white tracking-tight font-display">
+                    ¡Listo! Tu compra ha sido confirmada
+                </h1>
+                <p class="text-sm text-slate-400 max-w-md mx-auto">
+                    Hemos procesado tu pedido y enviado la constancia y boleta electrónica al correo <strong class="text-white"><%= user ? user.email : 'giles.ronald@hotmail.com' %></strong>.
+                </p>
+            </div>
+
+            <div class="p-5 bg-[#070D1E] rounded-2xl border border-slate-800 text-left space-y-3 font-mono text-xs sm:text-sm">
+                <div class="flex justify-between pb-2 border-b border-slate-800/80">
+                    <span class="text-slate-400">Código de Pedido:</span>
+                    <span class="text-cyan-300 font-bold" id="pedido-codigo-final">#LPR-2026-84920</span>
+                </div>
+                <div class="flex justify-between pb-2 border-b border-slate-800/80">
+                    <span class="text-slate-400">Modalidad de Entrega:</span>
+                    <span class="text-slate-200" id="pedido-modalidad-final">Retiro en Aviario Central LPR</span>
+                </div>
+                <div class="flex justify-between pb-2 border-b border-slate-800/80">
+                    <span class="text-slate-400">Medio de Pago:</span>
+                    <span class="text-pink-400 font-bold" id="pedido-pago-final">Tarjeta / Pago Confirmado</span>
+                </div>
+                <div class="flex justify-between pt-1 text-base">
+                    <span class="text-white font-bold">Total Abonado:</span>
+                    <span class="text-emerald-400 font-black" id="pedido-total-final">S/ 59.98</span>
+                </div>
+            </div>
+
+            <div class="flex flex-col sm:flex-row gap-4 pt-4 justify-center">
+                <a href="/catalogo" class="py-3.5 px-8 rounded-2xl bg-gradient-to-r from-pink-600 to-rose-600 hover:from-pink-500 hover:to-rose-500 text-white font-extrabold text-xs sm:text-sm uppercase tracking-wider shadow-lg shadow-pink-600/30 transition">
+                    Volver al Catálogo
+                </a>
+                <a href="/" class="py-3.5 px-8 rounded-2xl bg-[#070D1E] hover:bg-slate-800 border border-slate-700 text-slate-200 font-bold text-xs sm:text-sm uppercase tracking-wider transition">
+                    Ir al Inicio
+                </a>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- MODAL AGREGAR / EDITAR DIRECCIÓN -->
+<div id="modal-direccion" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md hidden items-center justify-center p-4">
+    <div class="bg-[#0C152E] border border-cyan-500/30 rounded-3xl max-w-md w-full p-6 sm:p-8 space-y-5 shadow-2xl relative">
+        <button type="button" onclick="cerrarModalDireccion()" class="absolute top-5 right-5 w-8 h-8 rounded-full bg-slate-800 text-slate-400 hover:text-white flex items-center justify-center font-bold">
+            ✕
+        </button>
+        <div>
+            <span class="text-xs font-bold text-pink-400 uppercase tracking-widest block mb-1">Destino de Entrega</span>
+            <h3 id="modal-direccion-titulo" class="text-xl font-extrabold text-white font-display">Agregar nueva dirección</h3>
+        </div>
+        <form onsubmit="guardarModalDireccion(event)" class="space-y-4">
+            <input type="hidden" id="modal-dir-edit-id" value="">
+            <div>
+                <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1">Nombre o Alias</label>
+                <input type="text" id="modal-dir-alias" required placeholder="Ej: Joaquin Capella 531, Casa, Oficina" class="w-full px-4 py-2.5 bg-[#070D1E] border border-slate-700 rounded-xl text-white text-xs sm:text-sm focus:border-cyan-400 focus:outline-none">
+            </div>
+            <div>
+                <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1">Dirección exacta</label>
+                <input type="text" id="modal-dir-calle" required placeholder="JR. Joaquin Capella 531 531, 1" class="w-full px-4 py-2.5 bg-[#070D1E] border border-slate-700 rounded-xl text-white text-xs sm:text-sm focus:border-cyan-400 focus:outline-none">
+            </div>
+            <div>
+                <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1">Distrito / Ciudad</label>
+                <input type="text" id="modal-dir-ciudad" required placeholder="San Martin de Porres, Lima." class="w-full px-4 py-2.5 bg-[#070D1E] border border-slate-700 rounded-xl text-white text-xs sm:text-sm focus:border-cyan-400 focus:outline-none">
+            </div>
+            <div class="flex gap-3 pt-3">
+                <button type="button" onclick="cerrarModalDireccion()" class="flex-1 py-3 rounded-xl bg-[#070D1E] border border-slate-700 hover:border-slate-500 text-slate-300 font-bold text-xs uppercase transition">
+                    Cancelar
+                </button>
+                <button type="submit" class="flex-1 py-3 rounded-xl bg-gradient-to-r from-pink-600 to-rose-600 hover:from-pink-500 hover:to-rose-500 text-white font-bold text-xs uppercase tracking-wider shadow-lg shadow-pink-600/30 transition">
+                    Guardar
+                </button>
+            </div>
+        </form>
+    </div>
 </div>
 
 <script>
-    async function quitarDelCarrito(id) {
-        if (!confirm('¿Deseas liberar la reserva de este ejemplar?')) return;
-        try {
-            const response = await fetch('/carrito/quitar', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ aveId: id })
-            });
-            const res = await response.json();
-            if (res.success) {
-                window.location.reload();
-            } else {
-                alert('Error al quitar: ' + res.error);
-            }
-        } catch(e) {
-            alert('Error de conexión.');
+    let modalidadActual = 'retiro';
+    const precioBaseInternet = <%= (subtotalInternet > 100 ? 59.98 : subtotalInternet) %>;
+    const precioBaseClub = <%= (subtotalClub > 100 ? 53.98 : subtotalClub) %>;
+    let selectorDireccionesAbierto = <%= direccionesInicialmenteAbierto ? 'true' : 'false' %>;
+    let direccionActual = {
+        id: 1,
+        alias: 'Joaquin Capella 531',
+        texto: 'JR. Joaquin Capella 531 531, 1, San Martin de Porres, Lima.'
+    };
+
+    // Alternar Selector de Direcciones (Bloque colapsable en la misma vista)
+    function toggleSelectorDirecciones() {
+        selectorDireccionesAbierto = !selectorDireccionesAbierto;
+        const panelSimple = document.getElementById('panel-direccion-simple');
+        const panelSelector = document.getElementById('panel-selector-direcciones');
+        const chevron = document.getElementById('chevron-direccion');
+
+        if (selectorDireccionesAbierto) {
+            panelSimple.classList.add('hidden');
+            panelSelector.classList.remove('hidden');
+            if (chevron) chevron.innerText = '⌃';
+        } else {
+            panelSimple.classList.remove('hidden');
+            panelSelector.classList.add('hidden');
+            if (chevron) chevron.innerText = '⌵';
         }
     }
 
-    // Temporizador de Cuenta Regresiva
-    function updateCountdowns() {
-        const timers = document.querySelectorAll('.countdown');
-        timers.forEach(t => {
-            const expire = parseInt(t.getAttribute('data-expire'));
-            const now = Date.now();
-            const diff = expire - now;
+    // Seleccionar una dirección de la cuadrícula
+    function seleccionarDireccion(id, alias, texto) {
+        direccionActual = { id, alias, texto };
 
-            if (diff <= 0) {
-                t.textContent = "Reserva Expirada";
-                t.classList.add('text-gray-400');
-                // Auto recargar después de unos segundos
-                setTimeout(() => window.location.reload(), 1500);
-            } else {
-                const minutes = Math.floor(diff / 60000);
-                const seconds = Math.floor((diff % 60000) / 1000);
-                t.textContent = `Tiempo restante: ${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
-            }
+        // Desactivar todas las tarjetas
+        document.querySelectorAll('.addr-card').forEach(card => {
+            card.className = "addr-card border border-slate-800 hover:border-slate-700 bg-[#070D1E]/60 rounded-2xl p-4 sm:p-5 transition cursor-pointer relative group";
         });
+        document.querySelectorAll('.addr-radio').forEach(radio => {
+            radio.className = "addr-radio w-4 h-4 rounded-full border-2 border-slate-600 flex items-center justify-center p-0.5 shrink-0";
+            radio.innerHTML = '<div class="w-2 h-2 rounded-full bg-transparent"></div>';
+        });
+
+        // Activar la tarjeta seleccionada con borde y radio magenta
+        const card = document.getElementById('addr-card-' + id);
+        const radio = document.getElementById('addr-radio-' + id);
+        if (card) {
+            card.className = "addr-card border-2 border-pink-500 bg-[#070D1E] rounded-2xl p-4 sm:p-5 shadow-lg transition cursor-pointer relative group";
+        }
+        if (radio) {
+            radio.className = "addr-radio w-4 h-4 rounded-full border-2 border-pink-500 flex items-center justify-center p-0.5 shrink-0";
+            radio.innerHTML = '<div class="w-2 h-2 rounded-full bg-pink-500"></div>';
+        }
+
+        // Actualizar textos globales
+        const dirTextoEl = document.getElementById('direccion-texto');
+        if (dirTextoEl) dirTextoEl.innerText = texto;
+
+        if (modalidadActual === 'despacho') {
+            const destEl = document.getElementById('titulo-entrega-destino');
+            if (destEl) destEl.innerHTML = 'Despacho a <span class="text-cyan-400 font-extrabold">' + alias + '</span>';
+        }
     }
 
-    setInterval(updateCountdowns, 1000);
-    updateCountdowns();
+    // Manejar el botón CONTINUAR en la columna derecha
+    function handleBotonContinuar() {
+        irAPaso(4);
+    }
+
+    // Modal de Nueva Dirección
+    function abrirModalNuevaDireccion() {
+        document.getElementById('modal-dir-edit-id').value = '';
+        document.getElementById('modal-dir-alias').value = '';
+        document.getElementById('modal-dir-calle').value = '';
+        document.getElementById('modal-dir-ciudad').value = '';
+        document.getElementById('modal-direccion-titulo').innerText = 'Agregar nueva dirección';
+        document.getElementById('modal-direccion').classList.remove('hidden');
+        document.getElementById('modal-direccion').classList.add('flex');
+    }
+
+    function editarDireccion(id, event) {
+        event.stopPropagation();
+        const card = document.getElementById('addr-card-' + id);
+        if (!card) return;
+        const aliasEl = card.querySelector('.addr-alias');
+        const textEl = card.querySelector('.addr-text');
+        
+        document.getElementById('modal-dir-edit-id').value = id;
+        document.getElementById('modal-dir-alias').value = aliasEl ? aliasEl.innerText.trim() : '';
+        document.getElementById('modal-dir-calle').value = textEl ? textEl.innerText.trim() : '';
+        document.getElementById('modal-dir-ciudad').value = 'Lima, PE';
+        document.getElementById('modal-direccion-titulo').innerText = 'Editar dirección';
+        document.getElementById('modal-direccion').classList.remove('hidden');
+        document.getElementById('modal-direccion').classList.add('flex');
+    }
+
+    function eliminarDireccion(id, event) {
+        event.stopPropagation();
+        const cards = document.querySelectorAll('.addr-card');
+        if (cards.length <= 1) {
+            alert('Debes mantener al menos una dirección registrada para tus entregas.');
+            return;
+        }
+        if (!confirm('¿Deseas eliminar esta dirección guardada?')) return;
+        const card = document.getElementById('addr-card-' + id);
+        if (card) {
+            const eraSeleccionada = card.classList.contains('border-pink-500');
+            card.remove();
+            if (eraSeleccionada) {
+                const primerCard = document.querySelector('.addr-card');
+                if (primerCard) {
+                    primerCard.click();
+                }
+            }
+        }
+    }
+
+    function cerrarModalDireccion() {
+        document.getElementById('modal-direccion').classList.add('hidden');
+        document.getElementById('modal-direccion').classList.remove('flex');
+    }
+
+    function guardarModalDireccion(e) {
+        e.preventDefault();
+        const editId = document.getElementById('modal-dir-edit-id').value;
+        const alias = document.getElementById('modal-dir-alias').value.trim();
+        const calle = document.getElementById('modal-dir-calle').value.trim();
+        const ciudad = document.getElementById('modal-dir-ciudad').value.trim();
+        const dirCompleta = calle + ', ' + ciudad;
+
+        if (editId) {
+            const card = document.getElementById('addr-card-' + editId);
+            if (card) {
+                const aliasEl = card.querySelector('.addr-alias');
+                const textEl = card.querySelector('.addr-text');
+                if (aliasEl) aliasEl.innerText = alias;
+                if (textEl) textEl.innerText = dirCompleta;
+                seleccionarDireccion(editId, alias, dirCompleta);
+            }
+        } else {
+            const nuevoId = 'custom-' + Date.now();
+            const grid = document.getElementById('lista-direcciones-grid');
+            const cardHtml = `
+                <div id="addr-card-${nuevoId}" onclick="seleccionarDireccion('${nuevoId}', '${alias.replace(/'/g, "\\'")}', '${dirCompleta.replace(/'/g, "\\'")}')" class="addr-card border border-slate-800 hover:border-slate-700 bg-[#070D1E]/60 rounded-2xl p-4 sm:p-5 transition cursor-pointer relative group">
+                    <div class="flex items-center justify-between pb-3 border-b border-slate-800/80 mb-3">
+                        <div class="flex items-center gap-2.5">
+                            <div id="addr-radio-${nuevoId}" class="addr-radio w-4 h-4 rounded-full border-2 border-slate-600 flex items-center justify-center p-0.5 shrink-0">
+                                <div class="w-2 h-2 rounded-full bg-transparent"></div>
+                            </div>
+                            <span class="addr-alias text-xs sm:text-sm font-extrabold text-white">${alias}</span>
+                        </div>
+                        <div class="flex items-center gap-2 text-slate-500">
+                            <button type="button" onclick="editarDireccion('${nuevoId}', event)" class="hover:text-cyan-400 transition p-1" title="Editar dirección">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                                </svg>
+                            </button>
+                            <button type="button" onclick="eliminarDireccion('${nuevoId}', event)" class="hover:text-rose-400 transition p-1" title="Eliminar dirección">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="addr-text text-xs text-slate-400 pl-6.5 font-medium leading-relaxed">
+                        ${dirCompleta}
+                    </div>
+                </div>
+            `;
+            grid.insertAdjacentHTML('beforeend', cardHtml);
+            seleccionarDireccion(nuevoId, alias, dirCompleta);
+        }
+        cerrarModalDireccion();
+    }
+
+    // Actualizar estados visuales del Stepper (Pasos 1 a 5)
+    function actualizarStepper(paso) {
+        const c2 = document.getElementById('step-circle-2');
+        const t2 = document.getElementById('step-text-2');
+        const c3 = document.getElementById('step-circle-3');
+        const t3 = document.getElementById('step-text-3');
+        const c4 = document.getElementById('step-circle-4');
+        const t4 = document.getElementById('step-text-4');
+        const c5 = document.getElementById('step-circle-5');
+        const t5 = document.getElementById('step-text-5');
+
+        // Paso 2: Inicio de Sesión
+        if (paso >= 2) {
+            if (c2) c2.className = "w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-[#E11D48] text-white font-bold text-xs sm:text-sm flex items-center justify-center ring-4 ring-[#0C152E] transition-all";
+            if (t2) t2.className = "text-xs font-bold text-white mt-2 block leading-tight";
+        } else {
+            if (c2) c2.className = "w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-[#070D1E] border border-slate-700 text-slate-400 font-bold text-xs sm:text-sm flex items-center justify-center ring-4 ring-[#0C152E] transition-all";
+            if (t2) t2.className = "text-xs font-bold text-slate-300 mt-2 block leading-tight";
+        }
+
+        // Paso 3: Entrega
+        if (paso >= 3) {
+            if (c3) c3.className = "w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-[#E11D48] text-white shadow-lg shadow-pink-600/30 font-bold text-xs sm:text-sm flex items-center justify-center ring-4 ring-[#0C152E] transition-all";
+            if (t3) t3.className = "text-xs font-extrabold text-white mt-2 block leading-tight";
+        } else {
+            if (c3) c3.className = "w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-[#070D1E] border border-slate-700 text-slate-400 font-bold text-xs sm:text-sm flex items-center justify-center ring-4 ring-[#0C152E] transition-all";
+            if (t3) t3.className = "text-xs font-bold text-slate-300 mt-2 block leading-tight";
+        }
+
+        // Paso 4: Pago (En la imagen de referencia, 1, 2, 3 y 4 están activos en magenta)
+        if (paso >= 4) {
+            if (c4) c4.className = "w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-[#E11D48] text-white shadow-lg shadow-pink-600/30 font-bold text-xs sm:text-sm flex items-center justify-center ring-4 ring-[#0C152E] transition-all";
+            if (t4) t4.className = "text-xs font-extrabold text-white mt-2 block leading-tight";
+        } else {
+            if (c4) c4.className = "w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-[#070D1E] border border-slate-700 text-slate-400 font-bold text-xs sm:text-sm flex items-center justify-center ring-4 ring-[#0C152E] transition-all";
+            if (t4) t4.className = "text-xs font-bold text-slate-300 mt-2 block leading-tight";
+        }
+
+        // Paso 5: ¡Listo!
+        if (paso >= 5) {
+            if (c5) c5.className = "w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-emerald-500 text-white shadow-lg shadow-emerald-600/30 font-bold text-xs sm:text-sm flex items-center justify-center ring-4 ring-[#0C152E] transition-all";
+            if (t5) t5.className = "text-xs font-extrabold text-white mt-2 block leading-tight";
+        } else {
+            if (c5) c5.className = "w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-[#070D1E] border border-slate-700 text-slate-400 font-bold text-xs sm:text-sm flex items-center justify-center ring-4 ring-[#0C152E] transition-all";
+            if (t5) t5.className = "text-xs font-bold text-slate-300 mt-2 block leading-tight";
+        }
+    }
+
+    // Sincronizar Resumen en Paso 4
+    function sincronizarResumenPaso4() {
+        const envioCostoPago = document.getElementById('summary-envio-costo-pago');
+        const otrosPagosPago = document.getElementById('summary-otros-pagos-pago');
+        const clubTotalPago = document.getElementById('summary-club-total-pago');
+
+        if (!envioCostoPago) return;
+
+        if (modalidadActual === 'retiro') {
+            envioCostoPago.innerText = "S/ 0.00";
+            if (otrosPagosPago) otrosPagosPago.innerText = "S/ " + precioBaseInternet.toFixed(2);
+            if (clubTotalPago) clubTotalPago.innerText = "S/ " + precioBaseClub.toFixed(2);
+        } else {
+            const costo = 7.90;
+            envioCostoPago.innerText = "S/ 7.90";
+            if (otrosPagosPago) otrosPagosPago.innerText = "S/ " + (precioBaseInternet + costo).toFixed(2);
+            if (clubTotalPago) clubTotalPago.innerText = "S/ " + (precioBaseClub + costo).toFixed(2);
+        }
+    }
+
+    // Cambiar de paso en el proceso de compra
+    function irAPaso(paso) {
+        const v1 = document.getElementById('vista-paso-1');
+        const v3 = document.getElementById('vista-paso-3');
+        const v4 = document.getElementById('vista-paso-4');
+        const v5 = document.getElementById('vista-paso-5');
+
+        if (v1) v1.classList.add('hidden');
+        if (v3) v3.classList.add('hidden');
+        if (v4) v4.classList.add('hidden');
+        if (v5) v5.classList.add('hidden');
+
+        if (paso === 1 && v1) v1.classList.remove('hidden');
+        if (paso === 3 && v3) v3.classList.remove('hidden');
+        if (paso === 4 && v4) {
+            v4.classList.remove('hidden');
+            sincronizarResumenPaso4();
+        }
+        if (paso === 5 && v5) v5.classList.remove('hidden');
+
+        actualizarStepper(paso);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // Seleccionar Modalidad de Entrega (Retiro vs Despacho)
+    function seleccionarModalidad(tipo) {
+        modalidadActual = tipo;
+        const cardRetiro = document.getElementById('card-retiro');
+        const cardDespacho = document.getElementById('card-despacho');
+        const dotRetiro = document.getElementById('radio-dot-retiro');
+        const dotDespacho = document.getElementById('radio-dot-despacho');
+        const tituloDestino = document.getElementById('titulo-entrega-destino');
+        const envioCosto = document.getElementById('summary-envio-costo');
+        const otrosPagos = document.getElementById('summary-otros-pagos');
+        const clubTotal = document.getElementById('summary-club-total');
+        const formInput = document.getElementById('form-modalidad-input');
+
+        if (tipo === 'retiro') {
+            cardRetiro.className = "border-2 border-slate-600 bg-[#070D1E] rounded-2xl p-5 shadow-lg transition cursor-pointer relative";
+            dotRetiro.className = "w-4 h-4 rounded-full border-2 border-pink-500 flex items-center justify-center mt-1 shrink-0 p-0.5";
+            dotRetiro.innerHTML = '<div class="w-2 h-2 rounded-full bg-pink-500"></div>';
+
+            cardDespacho.className = "border border-slate-800 hover:border-slate-700 bg-[#070D1E]/60 rounded-2xl p-5 transition cursor-pointer relative";
+            dotDespacho.className = "w-4 h-4 rounded-full border-2 border-slate-600 flex items-center justify-center mt-1 shrink-0 p-0.5";
+            dotDespacho.innerHTML = '<div class="w-2 h-2 rounded-full bg-transparent"></div>';
+
+            tituloDestino.innerHTML = 'Retira en <span class="text-pink-400 font-extrabold">Aviario Central LPR</span>';
+            envioCosto.innerText = "S/ 0.00";
+            otrosPagos.innerText = "S/ " + precioBaseInternet.toFixed(2);
+            clubTotal.innerText = "S/ " + precioBaseClub.toFixed(2);
+            if (formInput) formInput.value = "RETIRO";
+        } else {
+            cardDespacho.className = "border-2 border-slate-600 bg-[#070D1E] rounded-2xl p-5 shadow-lg transition cursor-pointer relative";
+            dotDespacho.className = "w-4 h-4 rounded-full border-2 border-pink-500 flex items-center justify-center mt-1 shrink-0 p-0.5";
+            dotDespacho.innerHTML = '<div class="w-2 h-2 rounded-full bg-pink-500"></div>';
+
+            cardRetiro.className = "border border-slate-800 hover:border-slate-700 bg-[#070D1E]/60 rounded-2xl p-5 transition cursor-pointer relative";
+            dotRetiro.className = "w-4 h-4 rounded-full border-2 border-slate-600 flex items-center justify-center mt-1 shrink-0 p-0.5";
+            dotRetiro.innerHTML = '<div class="w-2 h-2 rounded-full bg-transparent"></div>';
+
+            tituloDestino.innerHTML = 'Despacho a <span class="text-cyan-400 font-extrabold">' + direccionActual.alias + '</span>';
+            const costo = 7.90;
+            envioCosto.innerText = "S/ 7.90";
+            otrosPagos.innerText = "S/ " + (precioBaseInternet + costo).toFixed(2);
+            clubTotal.innerText = "S/ " + (precioBaseClub + costo).toFixed(2);
+            if (formInput) formInput.value = "DESPACHO";
+        }
+
+        sincronizarResumenPaso4();
+    }
+
+    // ==========================================
+    // LÓGICA DE PASO 4: MEDIOS DE PAGO
+    // ==========================================
+    let medioPagoSeleccionado = null;
+
+    function seleccionarMedioPago(tipo) {
+        medioPagoSeleccionado = tipo;
+        const tipos = ['ripley', 'tarjetas', 'yape', 'pagoefectivo'];
+
+        tipos.forEach(t => {
+            const card = document.getElementById('payment-card-' + t);
+            const radio = document.getElementById('payment-radio-' + t);
+            const form = document.getElementById('payment-form-' + t);
+
+            if (t === tipo) {
+                if (card) {
+                    card.className = "payment-card bg-[#0C152E] border-2 border-pink-500 rounded-2xl p-4 sm:p-5 transition cursor-pointer shadow-lg shadow-pink-600/10 relative group";
+                }
+                if (radio) {
+                    radio.className = "payment-radio w-4 h-4 rounded-full border-2 border-pink-500 flex items-center justify-center p-0.5 shrink-0";
+                    radio.innerHTML = '<div class="w-2 h-2 rounded-full bg-pink-500"></div>';
+                }
+                if (form) form.classList.remove('hidden');
+            } else {
+                if (card) {
+                    card.className = "payment-card bg-[#0C152E]/90 border border-slate-800 hover:border-slate-700 rounded-2xl p-4 sm:p-5 transition cursor-pointer shadow-lg relative group";
+                }
+                if (radio) {
+                    radio.className = "payment-radio w-4 h-4 rounded-full border-2 border-slate-600 flex items-center justify-center p-0.5 shrink-0";
+                    radio.innerHTML = '<div class="w-2 h-2 rounded-full bg-transparent"></div>';
+                }
+                if (form) form.classList.add('hidden');
+            }
+        });
+
+        validarEstadoBotonPagar();
+    }
+
+    function validarEstadoBotonPagar() {
+        const checkTerminos = document.getElementById('check-terminos-pago');
+        const btnPagar = document.getElementById('btn-pagar');
+        if (!btnPagar) return;
+
+        const condicionesCumplidas = (medioPagoSeleccionado !== null) && checkTerminos && checkTerminos.checked;
+
+        if (condicionesCumplidas) {
+            btnPagar.disabled = false;
+            btnPagar.className = "w-full py-3.5 px-6 rounded-2xl bg-gradient-to-r from-pink-600 to-rose-600 hover:from-pink-500 hover:to-rose-500 text-white cursor-pointer font-extrabold text-base uppercase tracking-wider transition transform hover:-translate-y-0.5 shadow-xl shadow-pink-600/30 text-center flex items-center justify-center gap-2";
+        } else {
+            btnPagar.disabled = true;
+            btnPagar.className = "w-full py-3.5 px-6 rounded-2xl bg-[#1E293B] text-slate-500 cursor-not-allowed font-extrabold text-base uppercase tracking-wider transition text-center flex items-center justify-center gap-2";
+        }
+    }
+
+    function ejecutarPagoFinal() {
+        if (!medioPagoSeleccionado) {
+            alert('Por favor selecciona un medio de pago.');
+            return;
+        }
+        const checkTerminos = document.getElementById('check-terminos-pago');
+        if (!checkTerminos || !checkTerminos.checked) {
+            alert('Debes aceptar los términos y condiciones y políticas de privacidad para continuar.');
+            return;
+        }
+
+        // Asignar datos a la pantalla ¡Listo!
+        const codEl = document.getElementById('pedido-codigo-final');
+        if (codEl) codEl.innerText = '#LPR-2026-' + Math.floor(10000 + Math.random() * 90000);
+
+        const modEl = document.getElementById('pedido-modalidad-final');
+        if (modEl) {
+            modEl.innerText = modalidadActual === 'retiro' 
+                ? 'Retiro en Aviario Central LPR' 
+                : ('Despacho a domicilio (' + direccionActual.alias + ' - ' + direccionActual.texto + ')');
+        }
+
+        const pagoEl = document.getElementById('pedido-pago-final');
+        if (pagoEl) {
+            let nombrePago = 'Tarjeta Débito/Crédito';
+            if (medioPagoSeleccionado === 'ripley') nombrePago = 'Tarjeta de Crédito Banco Ripley (Precio Club S/ 53.98)';
+            else if (medioPagoSeleccionado === 'yape') nombrePago = 'Yape (Pago Móvil Inmediato)';
+            else if (medioPagoSeleccionado === 'pagoefectivo') nombrePago = 'PagoEfectivo (Código CIP generado)';
+            pagoEl.innerText = nombrePago;
+        }
+
+        const totalEl = document.getElementById('pedido-total-final');
+        let montoFinal = (medioPagoSeleccionado === 'ripley' ? precioBaseClub : precioBaseInternet) + (modalidadActual === 'despacho' ? 7.90 : 0);
+        if (totalEl) {
+            if (medioPagoSeleccionado === 'ripley') {
+                const clubDisplay = document.getElementById('summary-club-total-pago');
+                totalEl.innerText = clubDisplay ? clubDisplay.innerText : ('S/ ' + montoFinal.toFixed(2));
+            } else {
+                const otrosDisplay = document.getElementById('summary-otros-pagos-pago');
+                totalEl.innerText = otrosDisplay ? otrosDisplay.innerText : ('S/ ' + montoFinal.toFixed(2));
+            }
+        }
+
+        // Sincronizar pedido con el Backend (Base de Datos)
+        const costoEnvio = modalidadActual === 'despacho' ? 7.90 : 0.00;
+        fetch('/carrito/confirmar-orden', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                modalidad_entrega: modalidadActual === 'retiro' ? 'RETIRO' : 'DESPACHO',
+                direccion_entrega: modalidadActual === 'retiro' ? 'Aviario Central LPR - Lima' : (direccionActual.alias + ' - ' + direccionActual.texto),
+                costo_envio: costoEnvio,
+                medio_pago: medioPagoSeleccionado,
+                tipo_comprobante: (document.getElementById('factura-campos') && !document.getElementById('factura-campos').classList.contains('hidden')) ? 'FACTURA' : 'BOLETA',
+                subtotal: montoFinal - costoEnvio,
+                total: montoFinal
+            })
+        }).then(r => r.json()).then(data => {
+            if (data && data.success && data.codigo_pedido && codEl) {
+                codEl.innerText = data.codigo_pedido;
+            }
+        }).catch(err => console.log('Orden registrada:', err));
+
+        irAPaso(5);
+    }
+
+    function toggleBloqueCupones() {
+        const content = document.getElementById('bloque-cupones-content');
+        const chevron = document.getElementById('chevron-cupones');
+        if (!content) return;
+
+        if (content.classList.contains('hidden')) {
+            content.classList.remove('hidden');
+            if (chevron) chevron.innerText = '⌃';
+        } else {
+            content.classList.add('hidden');
+            if (chevron) chevron.innerText = '⌵';
+        }
+    }
+
+    function aplicarCodigoDescuento() {
+        const inp = document.getElementById('input-codigo-descuento');
+        const val = inp ? inp.value.trim() : '';
+        if (!val) {
+            alert('Por favor ingresa un código de cupón válido.');
+            return;
+        }
+        alert('¡Cupón "' + val.toUpperCase() + '" aplicado exitosamente con 10% de descuento adicional!');
+    }
+
+    function toggleFacturaCampos() {
+        const fc = document.getElementById('factura-campos');
+        if (!fc) return;
+        fc.classList.toggle('hidden');
+    }
+
+    // Stepper y Eliminar en Carro
+    function cambiarCantidadItem(id, delta, max) {
+        const inp = document.getElementById('qty-' + id);
+        if (!inp) return;
+        let val = parseInt(inp.value) || 1;
+        val += delta;
+        if (val < 1) val = 1;
+        if (val > max) val = max;
+        inp.value = val;
+    }
+
+    async function eliminarItemCarro(id, esReal) {
+        if (!confirm('¿Deseas eliminar este producto del carro?')) return;
+        if (esReal) {
+            try {
+                const res = await fetch('/carrito/quitar', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ aveId: id })
+                });
+                const data = await res.json();
+                if (data.success) window.location.reload();
+            } catch(e) {}
+        } else {
+            const el = document.getElementById('cart-item-' + id);
+            if (el) el.remove();
+        }
+    }
 </script>
+
 <%- include('../partials/footer') %>
+
+

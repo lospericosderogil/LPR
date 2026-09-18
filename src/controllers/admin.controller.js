@@ -20,7 +20,27 @@ class AdminController {
                 FROM aves
             `);
             
-            const stats = resCounts.rows[0];
+            // Estadísticas Comerciales & Inventario
+            const resVentas = await db.query(`
+                SELECT 
+                    COUNT(*) as total_pedidos,
+                    COALESCE(SUM(total), 0) as ingresos_totales,
+                    COUNT(CASE WHEN estado IN ('PENDIENTE', 'CONFIRMADO', 'EN_PREPARACION') THEN 1 END) as pedidos_pendientes
+                FROM pedidos
+            `);
+
+            const resCategorias = await db.query(`SELECT COUNT(*) as total_categorias FROM categorias_catalogo WHERE activo = true`);
+            const resProductos = await db.query(`SELECT COUNT(*) as total_productos FROM productos_tienda WHERE activo = true`);
+            const ultimosPedidos = await db.query(`SELECT * FROM pedidos ORDER BY created_at DESC LIMIT 5`);
+
+            const stats = {
+                ...resCounts.rows[0],
+                ...resVentas.rows[0],
+                total_categorias: resCategorias.rows[0]?.total_categorias || 0,
+                total_productos: resProductos.rows[0]?.total_productos || 0,
+                ultimos_pedidos: ultimosPedidos.rows || []
+            };
+
             res.render('admin/dashboard', { title: 'Dashboard - Admin', stats });
         } catch (err) {
             next(err);
@@ -553,6 +573,220 @@ class AdminController {
             const arbol = map[id] || null;
 
             res.render('admin/genealogia', { title: 'Árbol Genealógico', ave, arbol });
+        } catch (err) {
+            next(err);
+        }
+    }
+
+    // --- MÓDULO CATEGORÍAS COMERCIALES ---
+    async listarCategorias(req, res, next) {
+        try {
+            const queryText = `
+                SELECT c.*, 
+                       (SELECT COUNT(*) FROM productos_tienda WHERE categoria_id = c.id) as total_productos
+                FROM categorias_catalogo c
+                ORDER BY c.orden ASC, c.id ASC
+            `;
+            const result = await db.query(queryText);
+            res.render('admin/categorias', {
+                title: 'Gestión de Categorías - Admin',
+                categorias: result.rows,
+                query: req.query
+            });
+        } catch (err) {
+            next(err);
+        }
+    }
+
+    async guardarCategoria(req, res, next) {
+        try {
+            const { id, slug, nombre, icono, imagen, descripcion, orden, activo } = req.body;
+            const esActivo = activo === 'on' || activo === 'true' || activo === true;
+            const ordenNum = parseInt(orden) || 0;
+
+            if (id) {
+                // Actualizar
+                await db.query(`
+                    UPDATE categorias_catalogo
+                    SET slug = $1, nombre = $2, icono = $3, imagen = $4, descripcion = $5, orden = $6, activo = $7
+                    WHERE id = $8
+                `, [slug.trim().toLowerCase(), nombre.trim(), icono || '📦', imagen || '', descripcion || '', ordenNum, esActivo, id]);
+            } else {
+                // Insertar nueva
+                await db.query(`
+                    INSERT INTO categorias_catalogo (slug, nombre, icono, imagen, descripcion, orden, activo)
+                    VALUES ($1, $2, $3, $4, $5, $6, $7)
+                `, [slug.trim().toLowerCase(), nombre.trim(), icono || '📦', imagen || '', descripcion || '', ordenNum, esActivo]);
+            }
+
+            res.redirect('/admin/categorias?msg=guardado');
+        } catch (err) {
+            next(err);
+        }
+    }
+
+    async eliminarCategoria(req, res, next) {
+        try {
+            const { id } = req.params;
+            await db.query('DELETE FROM categorias_catalogo WHERE id = $1', [id]);
+            res.redirect('/admin/categorias?msg=eliminado');
+        } catch (err) {
+            next(err);
+        }
+    }
+
+    // --- MÓDULO VENTAS & PEDIDOS ---
+    async listarVentas(req, res, next) {
+        try {
+            const { estado, medio_pago, search } = req.query;
+            let conditions = [];
+            let params = [];
+            let pIdx = 1;
+
+            if (estado && estado !== 'TODOS') {
+                conditions.push(`p.estado = $${pIdx++}`);
+                params.push(estado);
+            }
+            if (medio_pago && medio_pago !== 'TODOS') {
+                conditions.push(`p.medio_pago = $${pIdx++}`);
+                params.push(medio_pago);
+            }
+            if (search && search.trim() !== '') {
+                conditions.push(`(p.codigo_pedido ILIKE $${pIdx} OR p.nombre_cliente ILIKE $${pIdx} OR p.email_cliente ILIKE $${pIdx} OR p.ruc ILIKE $${pIdx})`);
+                params.push(`%${search.trim()}%`);
+                pIdx++;
+            }
+
+            const whereClause = conditions.length > 0 ? 'WHERE ' + conditions.join(' AND ') : '';
+            const queryText = `
+                SELECT p.*,
+                       (SELECT COUNT(*) FROM detalles_pedido WHERE pedido_id = p.id) as total_items
+                FROM pedidos p
+                ${whereClause}
+                ORDER BY p.created_at DESC
+            `;
+
+            const resPedidos = await db.query(queryText, params);
+
+            // Métricas de ventas
+            const metricsRes = await db.query(`
+                SELECT 
+                    COUNT(*) as total_ordenes,
+                    COALESCE(SUM(total), 0) as volumen_ventas,
+                    COUNT(CASE WHEN estado = 'CONFIRMADO' THEN 1 END) as confirmados,
+                    COUNT(CASE WHEN estado = 'EN_PREPARACION' THEN 1 END) as en_preparacion,
+                    COUNT(CASE WHEN estado = 'DESPACHADO' THEN 1 END) as despachados,
+                    COUNT(CASE WHEN estado = 'ENTREGADO' THEN 1 END) as entregados
+                FROM pedidos
+            `);
+
+            res.render('admin/ventas', {
+                title: 'Gestión de Ventas y Pedidos - Admin',
+                pedidos: resPedidos.rows,
+                metrics: metricsRes.rows[0],
+                filters: { estado, medio_pago, search }
+            });
+        } catch (err) {
+            next(err);
+        }
+    }
+
+    async detalleVenta(req, res, next) {
+        try {
+            const { id } = req.params;
+            const resPedido = await db.query('SELECT * FROM pedidos WHERE id = $1', [id]);
+            if (resPedido.rows.length === 0) {
+                return res.status(404).render('error', { title: 'No Encontrado', message: 'El pedido no existe', statusCode: 404 });
+            }
+
+            const pedido = resPedido.rows[0];
+            const resItems = await db.query(`
+                SELECT d.*, a.anilla, a.sexo, e.nombre as especie_nombre
+                FROM detalles_pedido d
+                LEFT JOIN aves a ON d.ave_id = a.id
+                LEFT JOIN especies e ON a.especie_id = e.id
+                WHERE d.pedido_id = $1
+            `, [id]);
+
+            res.render('admin/detalle_venta', {
+                title: `Pedido ${pedido.codigo_pedido} - Admin`,
+                pedido,
+                items: resItems.rows
+            });
+        } catch (err) {
+            next(err);
+        }
+    }
+
+    async actualizarEstadoVenta(req, res, next) {
+        try {
+            const { id } = req.params;
+            const { estado, notas } = req.body;
+
+            await db.query(`
+                UPDATE pedidos
+                SET estado = $1, notas = COALESCE($2, notas), updated_at = NOW()
+                WHERE id = $3
+            `, [estado, notas, id]);
+
+            res.redirect(`/admin/ventas/${id}?msg=actualizado`);
+        } catch (err) {
+            next(err);
+        }
+    }
+
+    // --- MÓDULO PRODUCTOS MULTI-RUBRO ---
+    async listarProductos(req, res, next) {
+        try {
+            const resProductos = await db.query(`
+                SELECT p.*, c.nombre as categoria_nombre, c.icono as categoria_icono
+                FROM productos_tienda p
+                LEFT JOIN categorias_catalogo c ON p.categoria_id = c.id
+                ORDER BY p.id DESC
+            `);
+
+            const resCategorias = await db.query('SELECT id, nombre FROM categorias_catalogo WHERE activo = true ORDER BY nombre');
+
+            res.render('admin/productos', {
+                title: 'Inventario & Productos - Admin',
+                productos: resProductos.rows,
+                categorias: resCategorias.rows,
+                query: req.query
+            });
+        } catch (err) {
+            next(err);
+        }
+    }
+
+    async guardarProducto(req, res, next) {
+        try {
+            const { id, categoria_id, nombre, sku, precio_normal, precio_internet, precio_club, stock, foto_url, activo, descripcion } = req.body;
+            const esActivo = activo === 'on' || activo === 'true' || activo === true;
+
+            if (id) {
+                await db.query(`
+                    UPDATE productos_tienda
+                    SET categoria_id = $1, nombre = $2, sku = $3, precio_normal = $4, precio_internet = $5, precio_club = $6, stock = $7, foto_url = $8, activo = $9, descripcion = $10
+                    WHERE id = $11
+                `, [categoria_id || null, nombre.trim(), sku.trim(), parseFloat(precio_normal) || 0, parseFloat(precio_internet) || 0, parseFloat(precio_club) || 0, parseInt(stock) || 0, foto_url || '', esActivo, descripcion || '', id]);
+            } else {
+                await db.query(`
+                    INSERT INTO productos_tienda (categoria_id, nombre, sku, precio_normal, precio_internet, precio_club, stock, foto_url, activo, descripcion)
+                    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+                `, [categoria_id || null, nombre.trim(), sku.trim(), parseFloat(precio_normal) || 0, parseFloat(precio_internet) || 0, parseFloat(precio_club) || 0, parseInt(stock) || 0, foto_url || '', esActivo, descripcion || '']);
+            }
+
+            res.redirect('/admin/productos?msg=guardado');
+        } catch (err) {
+            next(err);
+        }
+    }
+
+    async eliminarProducto(req, res, next) {
+        try {
+            const { id } = req.params;
+            await db.query('DELETE FROM productos_tienda WHERE id = $1', [id]);
+            res.redirect('/admin/productos?msg=eliminado');
         } catch (err) {
             next(err);
         }

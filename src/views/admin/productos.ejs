@@ -1,0 +1,276 @@
+<%- include('../partials/header') %>
+<%- include('./partials/admin_nav', { activeTab: 'productos' }) %>
+
+<div class="max-w-7xl mx-auto px-4 py-8 sm:px-6 lg:px-8 space-y-8">
+
+    <!-- Encabezado -->
+    <div class="md:flex md:items-center md:justify-between border-b border-slate-800 pb-6">
+        <div class="flex-1 min-w-0">
+            <span class="text-xs font-bold text-cyan-400 tracking-widest uppercase block mb-1">Inventario & Marketplace</span>
+            <h1 class="text-3xl font-extrabold text-white font-display tracking-tight">Inventario de Productos & Kits</h1>
+            <p class="text-sm text-slate-400 mt-1">Administra los kits de bienvenida, alimentos balanceados, suplementos y jaulas/accesorios.</p>
+        </div>
+        <div class="mt-4 flex md:mt-0 md:ml-4">
+            <button type="button" onclick="abrirModalProducto()" class="inline-flex items-center px-5 py-2.5 rounded-2xl bg-gradient-to-r from-cyan-400 to-teal-400 hover:from-cyan-300 hover:to-teal-300 text-slate-950 font-extrabold text-xs sm:text-sm uppercase tracking-wider shadow-lg shadow-cyan-500/20 transition transform hover:scale-105">
+                <span class="mr-2 text-base font-bold">+</span>
+                <span>Nuevo Producto</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Feedback Alerts -->
+    <% if (query && query.msg === 'guardado') { %>
+        <div class="p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 text-xs sm:text-sm flex items-center justify-between">
+            <div class="flex items-center gap-2">
+                <span>✓</span>
+                <span class="font-bold">¡Producto guardado exitosamente!</span>
+            </div>
+            <a href="/admin/productos" class="text-xs underline text-emerald-400">Cerrar</a>
+        </div>
+    <% } else if (query && query.msg === 'eliminado') { %>
+        <div class="p-4 rounded-2xl bg-rose-500/10 border border-rose-500/30 text-rose-300 text-xs sm:text-sm flex items-center justify-between">
+            <div class="flex items-center gap-2">
+                <span>🗑️</span>
+                <span class="font-bold">Producto eliminado del inventario.</span>
+            </div>
+            <a href="/admin/productos" class="text-xs underline text-rose-400">Cerrar</a>
+        </div>
+    <% } %>
+
+    <!-- Tabla de Productos -->
+    <div class="bg-[#0C152E]/90 border border-slate-800 rounded-3xl overflow-hidden shadow-2xl">
+        <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs sm:text-sm">
+                <thead>
+                    <tr class="bg-[#070D1E] border-b border-slate-800 text-slate-400 uppercase text-[10px] tracking-wider font-mono">
+                        <th class="py-4 px-6">Producto</th>
+                        <th class="py-4 px-6">Categoría</th>
+                        <th class="py-4 px-6">SKU</th>
+                        <th class="py-4 px-6">Precios (Normal / Web / Club)</th>
+                        <th class="py-4 px-6 text-center">Stock</th>
+                        <th class="py-4 px-6 text-center">Estado</th>
+                        <th class="py-4 px-6 text-right">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-800/60">
+                    <% if (productos && productos.length > 0) { %>
+                        <% productos.forEach(p => { %>
+                            <tr class="hover:bg-slate-800/30 transition group">
+                                <td class="py-4 px-6">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-12 h-12 rounded-xl bg-[#070D1E] border border-slate-700 overflow-hidden shrink-0 flex items-center justify-center shadow-md">
+                                            <% if (p.foto_url) { %>
+                                                <img src="<%= p.foto_url %>" class="w-full h-full object-cover">
+                                            <% } else { %>
+                                                <span class="text-xl">📦</span>
+                                            <% } %>
+                                        </div>
+                                        <div>
+                                            <div class="font-bold text-white group-hover:text-cyan-400 transition"><%= p.nombre %></div>
+                                            <div class="text-[11px] text-slate-400 line-clamp-1"><%= p.descripcion %></div>
+                                        </div>
+                                    </div>
+                                </td>
+
+                                <td class="py-4 px-6">
+                                    <span class="px-2.5 py-1 rounded-full text-xs font-semibold bg-slate-800 border border-slate-700 text-slate-200">
+                                        <%= p.categoria_icono || '🏷️' %> <%= p.categoria_nombre || 'Sin categoría' %>
+                                    </span>
+                                </td>
+
+                                <td class="py-4 px-6 font-mono text-slate-400 text-xs">
+                                    <%= p.sku || '-' %>
+                                </td>
+
+                                <td class="py-4 px-6 font-mono">
+                                    <div class="text-[11px] text-slate-500 line-through">S/ <%= parseFloat(p.precio_normal).toFixed(2) %></div>
+                                    <div class="text-xs font-bold text-white">Web: S/ <%= parseFloat(p.precio_internet).toFixed(2) %></div>
+                                    <div class="text-xs font-black text-cyan-300">Club: S/ <%= parseFloat(p.precio_club).toFixed(2) %></div>
+                                </td>
+
+                                <td class="py-4 px-6 text-center font-mono">
+                                    <% if (p.stock > 10) { %>
+                                        <span class="px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-500/15 text-emerald-400 border border-emerald-500/20">
+                                            <%= p.stock %> unids.
+                                        </span>
+                                    <% } else if (p.stock > 0) { %>
+                                        <span class="px-2.5 py-1 rounded-full text-xs font-bold bg-yellow-500/15 text-yellow-400 border border-yellow-500/20">
+                                            <%= p.stock %> unids. (Bajo)
+                                        </span>
+                                    <% } else { %>
+                                        <span class="px-2.5 py-1 rounded-full text-xs font-bold bg-rose-500/15 text-rose-400 border border-rose-500/20">
+                                            Agotado
+                                        </span>
+                                    <% } %>
+                                </td>
+
+                                <td class="py-4 px-6 text-center">
+                                    <% if (p.activo) { %>
+                                        <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/20 text-emerald-400">
+                                            Activo
+                                        </span>
+                                    <% } else { %>
+                                        <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-slate-800 text-slate-400">
+                                            Pausado
+                                        </span>
+                                    <% } %>
+                                </td>
+
+                                <td class="py-4 px-6 text-right space-x-2">
+                                    <button type="button" onclick="editarProducto(<%= JSON.stringify(p) %>)" class="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-cyan-300 border border-slate-700 text-xs font-bold transition">
+                                        Editar
+                                    </button>
+                                    <form method="POST" action="/admin/productos/<%= p.id %>/eliminar" onsubmit="return confirm('¿Eliminar producto <%= p.nombre %>?')" class="inline">
+                                        <button type="submit" class="px-3 py-1.5 rounded-xl bg-rose-950/40 hover:bg-rose-900/50 text-rose-300 border border-rose-800/40 text-xs font-bold transition">
+                                            Eliminar
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                        <% }) %>
+                    <% } else { %>
+                        <tr>
+                            <td colspan="7" class="py-12 text-center text-slate-400">
+                                No se encontraron productos registrados. Haz clic en <strong>+ Nuevo Producto</strong> para agregar el primero.
+                            </td>
+                        </tr>
+                    <% } %>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+
+<!-- MODAL CREAR / EDITAR PRODUCTO -->
+<div id="modal-producto" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md hidden items-center justify-center p-4">
+    <div class="bg-[#0C152E] border border-cyan-500/30 rounded-3xl max-w-xl w-full p-6 sm:p-8 space-y-6 shadow-2xl relative max-h-[90vh] overflow-y-auto">
+        <button type="button" onclick="cerrarModalProducto()" class="absolute top-5 right-5 w-8 h-8 rounded-full bg-slate-800 text-slate-400 hover:text-white flex items-center justify-center font-bold">
+            ✕
+        </button>
+
+        <div>
+            <span class="text-xs font-bold text-pink-400 uppercase tracking-widest block mb-1">Inventario Comercial</span>
+            <h3 id="modal-producto-titulo" class="text-2xl font-extrabold text-white font-display">Nuevo Producto</h3>
+        </div>
+
+        <form method="POST" action="/admin/productos/guardar" class="space-y-4">
+            <input type="hidden" name="id" id="prod-id" value="">
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div class="sm:col-span-2">
+                    <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1.5">Nombre del Producto / Kit</label>
+                    <input type="text" name="nombre" id="prod-nombre" required placeholder="Ej: Kit de Bienvenida Criador Pro" class="w-full px-4 py-2.5 bg-[#070D1E] border border-slate-700 rounded-xl text-white text-xs sm:text-sm focus:border-cyan-400 focus:outline-none">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1.5">Categoría</label>
+                    <select name="categoria_id" id="prod-categoria" class="w-full px-4 py-2.5 bg-[#070D1E] border border-slate-700 rounded-xl text-white text-xs sm:text-sm focus:border-cyan-400 focus:outline-none">
+                        <% if (categorias && categorias.length > 0) { %>
+                            <% categorias.forEach(c => { %>
+                                <option value="<%= c.id %>"><%= c.nombre %></option>
+                            <% }) %>
+                        <% } %>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1.5">Código SKU</label>
+                    <input type="text" name="sku" id="prod-sku" required placeholder="KIT-PRO-2026" class="w-full px-4 py-2.5 bg-[#070D1E] border border-slate-700 rounded-xl text-white font-mono text-xs sm:text-sm focus:border-cyan-400 focus:outline-none">
+                </div>
+            </div>
+
+            <!-- Precios -->
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-1">
+                <div>
+                    <label class="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1">Precio Normal (S/)</label>
+                    <input type="number" step="0.01" name="precio_normal" id="prod-precio-normal" placeholder="180.00" class="w-full px-3 py-2 bg-[#070D1E] border border-slate-700 rounded-xl text-white font-mono text-xs sm:text-sm focus:border-cyan-400 focus:outline-none">
+                </div>
+                <div>
+                    <label class="block text-[11px] font-bold text-white uppercase tracking-wider mb-1">Precio Internet (S/)</label>
+                    <input type="number" step="0.01" name="precio_internet" id="prod-precio-internet" required placeholder="149.90" class="w-full px-3 py-2 bg-[#070D1E] border border-slate-700 rounded-xl text-white font-mono text-xs sm:text-sm focus:border-cyan-400 focus:outline-none">
+                </div>
+                <div>
+                    <label class="block text-[11px] font-bold text-cyan-300 uppercase tracking-wider mb-1">Precio Club (S/)</label>
+                    <input type="number" step="0.01" name="precio_club" id="prod-precio-club" required placeholder="134.90" class="w-full px-3 py-2 bg-[#070D1E] border border-slate-700 rounded-xl text-cyan-300 font-mono text-xs sm:text-sm focus:border-cyan-400 focus:outline-none">
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1.5">Stock Disponible</label>
+                    <input type="number" name="stock" id="prod-stock" value="10" min="0" class="w-full px-4 py-2.5 bg-[#070D1E] border border-slate-700 rounded-xl text-white font-mono text-xs sm:text-sm focus:border-cyan-400 focus:outline-none">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1.5">URL de Imagen</label>
+                    <input type="text" name="foto_url" id="prod-foto" placeholder="/img/salud_preventiva/nido_parental.jpg" class="w-full px-4 py-2.5 bg-[#070D1E] border border-slate-700 rounded-xl text-white font-mono text-xs sm:text-sm focus:border-cyan-400 focus:outline-none">
+                </div>
+            </div>
+
+            <div>
+                <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1.5">Descripción del Producto</label>
+                <textarea name="descripcion" id="prod-descripcion" rows="3" placeholder="Detalle técnico, componentes del kit, peso o modo de uso..." class="w-full px-4 py-2.5 bg-[#070D1E] border border-slate-700 rounded-xl text-white text-xs sm:text-sm focus:border-cyan-400 focus:outline-none"></textarea>
+            </div>
+
+            <div class="pt-2">
+                <label class="flex items-center gap-3 cursor-pointer">
+                    <input type="checkbox" name="activo" id="prod-activo" checked class="w-4 h-4 accent-cyan-500 rounded">
+                    <span class="text-xs text-slate-300 font-bold select-none">Habilitar para compra pública en catálogo</span>
+                </label>
+            </div>
+
+            <div class="flex gap-3 pt-4 border-t border-slate-800">
+                <button type="button" onclick="cerrarModalProducto()" class="flex-1 py-3 rounded-xl bg-[#070D1E] border border-slate-700 hover:border-slate-500 text-slate-300 font-bold text-xs uppercase transition">
+                    Cancelar
+                </button>
+                <button type="submit" class="flex-1 py-3 rounded-xl bg-gradient-to-r from-cyan-400 to-teal-400 hover:from-cyan-300 hover:to-teal-300 text-slate-950 font-extrabold text-xs uppercase tracking-wider shadow-lg shadow-cyan-500/20 transition">
+                    Guardar Producto
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    function abrirModalProducto() {
+        document.getElementById('prod-id').value = '';
+        document.getElementById('prod-nombre').value = '';
+        document.getElementById('prod-sku').value = '';
+        document.getElementById('prod-precio-normal').value = '';
+        document.getElementById('prod-precio-internet').value = '';
+        document.getElementById('prod-precio-club').value = '';
+        document.getElementById('prod-stock').value = '10';
+        document.getElementById('prod-foto').value = '';
+        document.getElementById('prod-descripcion').value = '';
+        document.getElementById('prod-activo').checked = true;
+        document.getElementById('modal-producto-titulo').innerText = 'Nuevo Producto';
+
+        document.getElementById('modal-producto').classList.remove('hidden');
+        document.getElementById('modal-producto').classList.add('flex');
+    }
+
+    function editarProducto(prod) {
+        document.getElementById('prod-id').value = prod.id;
+        document.getElementById('prod-nombre').value = prod.nombre || '';
+        document.getElementById('prod-categoria').value = prod.categoria_id || '';
+        document.getElementById('prod-sku').value = prod.sku || '';
+        document.getElementById('prod-precio-normal').value = prod.precio_normal || '';
+        document.getElementById('prod-precio-internet').value = prod.precio_internet || '';
+        document.getElementById('prod-precio-club').value = prod.precio_club || '';
+        document.getElementById('prod-stock').value = prod.stock || 0;
+        document.getElementById('prod-foto').value = prod.foto_url || '';
+        document.getElementById('prod-descripcion').value = prod.descripcion || '';
+        document.getElementById('prod-activo').checked = prod.activo !== false;
+        document.getElementById('modal-producto-titulo').innerText = 'Editar Producto: ' + prod.nombre;
+
+        document.getElementById('modal-producto').classList.remove('hidden');
+        document.getElementById('modal-producto').classList.add('flex');
+    }
+
+    function cerrarModalProducto() {
+        document.getElementById('modal-producto').classList.add('hidden');
+        document.getElementById('modal-producto').classList.remove('flex');
+    }
+</script>
+
+<%- include('../partials/footer') %>

@@ -1,0 +1,237 @@
+<%- include('../partials/header') %>
+<%- include('./partials/admin_nav', { activeTab: 'ventas' }) %>
+
+<div class="max-w-7xl mx-auto px-4 py-8 sm:px-6 lg:px-8 space-y-8">
+
+    <!-- Navegación & Encabezado -->
+    <div class="space-y-3">
+        <a href="/admin/ventas" class="text-xs font-bold text-slate-400 hover:text-cyan-400 transition flex items-center gap-1.5 w-fit">
+            <span>←</span>
+            <span>Volver al Listado de Ventas</span>
+        </a>
+
+        <div class="md:flex md:items-center md:justify-between border-b border-slate-800 pb-6">
+            <div class="flex-1 min-w-0">
+                <div class="flex items-center gap-3">
+                    <h1 class="text-3xl font-extrabold text-white font-display tracking-tight font-mono">
+                        <%= pedido.codigo_pedido || ('#ORD-' + pedido.id) %>
+                    </h1>
+                    
+                    <% if (pedido.estado === 'CONFIRMADO') { %>
+                        <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-pink-500/20 text-pink-400 border border-pink-500/30">
+                            ● Confirmado
+                        </span>
+                    <% } else if (pedido.estado === 'EN_PREPARACION') { %>
+                        <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-yellow-500/20 text-yellow-400 border border-yellow-500/30">
+                            ● En Preparación
+                        </span>
+                    <% } else if (pedido.estado === 'DESPACHADO') { %>
+                        <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-cyan-500/20 text-cyan-400 border border-cyan-500/30">
+                            ● Despachado
+                        </span>
+                    <% } else if (pedido.estado === 'ENTREGADO') { %>
+                        <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
+                            ✓ Entregado
+                        </span>
+                    <% } else if (pedido.estado === 'CANCELADO') { %>
+                        <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-rose-500/20 text-rose-400 border border-rose-500/30">
+                            ✕ Cancelado
+                        </span>
+                    <% } %>
+                </div>
+                <p class="text-xs text-slate-400 mt-1 font-mono">
+                    Registrado el <%= new Date(pedido.created_at || pedido.fecha_pedido).toLocaleDateString('es-PE', { weekday: 'long', day: '2-digit', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' }) %>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Feedback Message -->
+    <% if (typeof query !== 'undefined' && query.msg === 'actualizado') { %>
+        <div class="p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 text-xs sm:text-sm flex items-center gap-2">
+            <span>✓</span>
+            <span class="font-bold">¡El estado del pedido ha sido actualizado correctamente!</span>
+        </div>
+    <% } %>
+
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+        
+        <!-- COLUMNA IZQUIERDA: ÍTEMS & DESGLOSE ECONÓMICO (8 cols) -->
+        <div class="lg:col-span-8 space-y-6">
+            
+            <!-- Card de Productos Comprados -->
+            <div class="bg-[#0C152E]/90 border border-slate-800 rounded-3xl p-6 sm:p-7 shadow-xl space-y-5">
+                <h3 class="text-lg font-bold text-white font-display flex items-center justify-between">
+                    <span>Productos de la Orden</span>
+                    <span class="text-xs font-mono text-cyan-400 font-normal"><%= items.length %> artículo(s)</span>
+                </h3>
+
+                <div class="divide-y divide-slate-800/80">
+                    <% if (items && items.length > 0) { %>
+                        <% items.forEach(it => { %>
+                            <div class="py-4 flex items-center justify-between gap-4 first:pt-0 last:pb-0">
+                                <div class="flex items-center gap-4">
+                                    <div class="w-14 h-14 rounded-2xl bg-[#070D1E] border border-slate-700 overflow-hidden shrink-0 flex items-center justify-center">
+                                        <% if (it.foto_url) { %>
+                                            <img src="<%= it.foto_url %>" class="w-full h-full object-cover">
+                                        <% } else { %>
+                                            <span class="text-2xl">🦜</span>
+                                        <% } %>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-bold text-white text-sm"><%= it.nombre || ('Ejemplar Anilla ' + it.anilla) %></h4>
+                                        <div class="text-xs text-slate-400 font-mono mt-0.5">
+                                            <%= it.sku ? ('SKU: ' + it.sku) : (it.anilla ? ('Anilla: ' + it.anilla + ' (' + (it.sexo === 'M' ? 'Macho ♂' : 'Hembra ♀') + ')') : '') %>
+                                        </div>
+                                        <div class="text-[11px] text-slate-500">Cantidad: <strong class="text-slate-300"><%= it.cantidad || 1 %></strong></div>
+                                    </div>
+                                </div>
+                                <div class="text-right font-mono">
+                                    <div class="text-xs text-slate-400">Unit: S/ <%= parseFloat(it.precio_unitario || it.precio_historico || 0).toFixed(2) %></div>
+                                    <div class="text-sm font-extrabold text-white">S/ <%= parseFloat(it.subtotal || it.precio_historico || 0).toFixed(2) %></div>
+                                </div>
+                            </div>
+                        <% }) %>
+                    <% } else { %>
+                        <div class="py-4 flex items-center justify-between">
+                            <div class="flex items-center gap-3">
+                                <div class="w-12 h-12 rounded-xl bg-slate-800 flex items-center justify-center text-xl">🦜</div>
+                                <div>
+                                    <div class="font-bold text-white text-sm">Reserva / Compra General</div>
+                                    <div class="text-xs text-slate-400 font-mono">Ítems vinculados a la orden</div>
+                                </div>
+                            </div>
+                            <span class="font-mono font-bold text-white">S/ <%= parseFloat(pedido.total).toFixed(2) %></span>
+                        </div>
+                    <% } %>
+                </div>
+
+                <!-- Totales y Resumen Financiero -->
+                <div class="pt-4 border-t border-slate-800/80 space-y-2 font-mono text-xs sm:text-sm">
+                    <div class="flex justify-between text-slate-400">
+                        <span>Subtotal Productos:</span>
+                        <span class="text-white">S/ <%= parseFloat(pedido.subtotal || (pedido.total - (pedido.costo_envio || 0))).toFixed(2) %></span>
+                    </div>
+                    <% if (parseFloat(pedido.descuento || 0) > 0) { %>
+                        <div class="flex justify-between text-pink-400">
+                            <span>Descuento Aplicado:</span>
+                            <span>- S/ <%= parseFloat(pedido.descuento).toFixed(2) %></span>
+                        </div>
+                    <% } %>
+                    <div class="flex justify-between text-slate-400">
+                        <span>Costo de Envío:</span>
+                        <span class="text-white">S/ <%= parseFloat(pedido.costo_envio || 0).toFixed(2) %></span>
+                    </div>
+                    <div class="flex justify-between text-base sm:text-lg font-black pt-2 border-t border-slate-800">
+                        <span class="text-white">Total Abonado:</span>
+                        <span class="text-emerald-400">S/ <%= parseFloat(pedido.total).toFixed(2) %></span>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Notas del Pedido -->
+            <% if (pedido.notas) { %>
+                <div class="bg-[#0C152E]/90 border border-slate-800 rounded-3xl p-6 shadow-xl space-y-2">
+                    <h3 class="text-xs font-bold text-cyan-400 uppercase tracking-wider">Notas Internas & Observaciones</h3>
+                    <p class="text-xs sm:text-sm text-slate-300 leading-relaxed font-mono bg-[#070D1E] p-4 rounded-2xl border border-slate-800">
+                        <%= pedido.notas %>
+                    </p>
+                </div>
+            <% } %>
+
+        </div>
+
+        <!-- COLUMNA DERECHA: GESTIÓN DE ESTADO, CLIENTE & LOGÍSTICA (4 cols) -->
+        <div class="lg:col-span-4 space-y-6">
+
+            <!-- Panel de Cambio de Estado -->
+            <div class="bg-[#0C152E]/90 border border-pink-500/30 rounded-3xl p-6 shadow-xl space-y-4">
+                <h3 class="text-sm font-bold text-white uppercase tracking-wider flex items-center gap-2">
+                    <span class="text-pink-400">⚙️</span>
+                    <span>Actualizar Estado del Pedido</span>
+                </h3>
+
+                <form method="POST" action="/admin/ventas/<%= pedido.id %>/estado" class="space-y-4">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1.5">Nuevo Estado</label>
+                        <select name="estado" class="w-full px-3 py-2.5 bg-[#070D1E] border border-slate-700 rounded-xl text-white text-xs sm:text-sm font-bold focus:border-pink-500 focus:outline-none">
+                            <option value="CONFIRMADO" <%= pedido.estado === 'CONFIRMADO' ? 'selected' : '' %>>Confirmado / Pagado</option>
+                            <option value="EN_PREPARACION" <%= pedido.estado === 'EN_PREPARACION' ? 'selected' : '' %>>En Preparación</option>
+                            <option value="DESPACHADO" <%= pedido.estado === 'DESPACHADO' ? 'selected' : '' %>>Despachado</option>
+                            <option value="ENTREGADO" <%= pedido.estado === 'ENTREGADO' ? 'selected' : '' %>>Entregado</option>
+                            <option value="CANCELADO" <%= pedido.estado === 'CANCELADO' ? 'selected' : '' %>>Cancelado</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1.5">Agregar / Editar Nota</label>
+                        <textarea name="notas" rows="2" placeholder="Ej: Código de seguimiento courier, fecha de retiro..." class="w-full px-3 py-2 bg-[#070D1E] border border-slate-700 rounded-xl text-white text-xs focus:border-pink-500 focus:outline-none"><%= pedido.notas || '' %></textarea>
+                    </div>
+
+                    <button type="submit" class="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-pink-600 to-rose-600 hover:from-pink-500 hover:to-rose-500 text-white font-extrabold text-xs uppercase tracking-wider shadow-lg shadow-pink-600/30 transition">
+                        Guardar Estado
+                    </button>
+                </form>
+            </div>
+
+            <!-- Datos del Cliente -->
+            <div class="bg-[#0C152E]/90 border border-slate-800 rounded-3xl p-6 shadow-xl space-y-3">
+                <h3 class="text-xs font-bold text-cyan-400 uppercase tracking-wider">Información del Cliente</h3>
+                <div class="space-y-1 text-xs">
+                    <div class="font-extrabold text-white text-sm"><%= pedido.nombre_cliente || 'No especificado' %></div>
+                    <div class="text-slate-400"><%= pedido.email_cliente %></div>
+                    <div class="text-slate-300 font-mono"><%= pedido.telefono_cliente || 'Sin teléfono' %></div>
+                </div>
+            </div>
+
+            <!-- Logística de Entrega -->
+            <div class="bg-[#0C152E]/90 border border-slate-800 rounded-3xl p-6 shadow-xl space-y-3">
+                <h3 class="text-xs font-bold text-cyan-400 uppercase tracking-wider">Destino & Modalidad</h3>
+                <div class="space-y-2 text-xs">
+                    <div>
+                        <% if (pedido.modalidad_entrega === 'RETIRO') { %>
+                            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-pink-950/40 text-pink-300 border border-pink-500/30">
+                                <span>🏢</span> Retiro en Aviario Central
+                            </span>
+                        <% } else { %>
+                            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-cyan-950/40 text-cyan-300 border border-cyan-500/30">
+                                <span>🚚</span> Despacho a Domicilio (+S/ 7.90)
+                            </span>
+                        <% } %>
+                    </div>
+                    <div class="p-3 bg-[#070D1E] rounded-xl border border-slate-800 text-slate-300 font-medium leading-relaxed">
+                        <%= pedido.direccion_entrega || 'Aviario Central LPR - Lima' %>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Facturación y Pago -->
+            <div class="bg-[#0C152E]/90 border border-slate-800 rounded-3xl p-6 shadow-xl space-y-3">
+                <h3 class="text-xs font-bold text-cyan-400 uppercase tracking-wider">Pago & Comprobante</h3>
+                <div class="space-y-2 text-xs">
+                    <div class="flex justify-between items-center">
+                        <span class="text-slate-400">Medio de Pago:</span>
+                        <span class="font-bold text-white"><%= pedido.medio_pago %></span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-slate-400">Tipo de Documento:</span>
+                        <span class="font-bold text-cyan-300"><%= pedido.tipo_comprobante %></span>
+                    </div>
+                    <% if (pedido.tipo_comprobante === 'FACTURA') { %>
+                        <div class="pt-2 border-t border-slate-800 space-y-1">
+                            <div class="text-[11px] text-slate-400">RUC: <strong class="text-white font-mono"><%= pedido.ruc %></strong></div>
+                            <div class="text-[11px] text-slate-400">Razón Social: <strong class="text-white"><%= pedido.razon_social %></strong></div>
+                            <div class="text-[11px] text-slate-400">Dir. Fiscal: <strong class="text-white"><%= pedido.direccion_fiscal %></strong></div>
+                        </div>
+                    <% } %>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<%- include('../partials/footer') %>

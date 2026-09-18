@@ -1,0 +1,231 @@
+<%- include('../partials/header') %>
+<%- include('./partials/admin_nav', { activeTab: 'categorias' }) %>
+
+<div class="max-w-7xl mx-auto px-4 py-8 sm:px-6 lg:px-8 space-y-8">
+
+    <!-- Encabezado de Sección -->
+    <div class="md:flex md:items-center md:justify-between border-b border-slate-800 pb-6">
+        <div class="flex-1 min-w-0">
+            <span class="text-xs font-bold text-cyan-400 tracking-widest uppercase block mb-1">E-Commerce & Catálogo</span>
+            <h1 class="text-3xl font-extrabold text-white font-display tracking-tight">Gestión de Categorías y Rubros</h1>
+            <p class="text-sm text-slate-400 mt-1">Configura las categorías que alimentan el carrusel circular y los filtros del catálogo comercial.</p>
+        </div>
+        <div class="mt-4 flex md:mt-0 md:ml-4">
+            <button type="button" onclick="abrirModalCategoria()" class="inline-flex items-center px-5 py-2.5 rounded-2xl bg-gradient-to-r from-cyan-400 to-teal-400 hover:from-cyan-300 hover:to-teal-300 text-slate-950 font-extrabold text-xs sm:text-sm uppercase tracking-wider shadow-lg shadow-cyan-500/20 transition transform hover:scale-105">
+                <span class="mr-2 text-base font-bold">+</span>
+                <span>Nueva Categoría</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Feedback Alerts -->
+    <% if (query && query.msg === 'guardado') { %>
+        <div class="p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 text-xs sm:text-sm flex items-center justify-between">
+            <div class="flex items-center gap-2">
+                <span>✓</span>
+                <span class="font-bold">¡Categoría guardada con éxito!</span>
+            </div>
+            <a href="/admin/categorias" class="text-xs underline text-emerald-400">Cerrar</a>
+        </div>
+    <% } else if (query && query.msg === 'eliminado') { %>
+        <div class="p-4 rounded-2xl bg-rose-500/10 border border-rose-500/30 text-rose-300 text-xs sm:text-sm flex items-center justify-between">
+            <div class="flex items-center gap-2">
+                <span>🗑️</span>
+                <span class="font-bold">Categoría eliminada del sistema.</span>
+            </div>
+            <a href="/admin/categorias" class="text-xs underline text-rose-400">Cerrar</a>
+        </div>
+    <% } %>
+
+    <!-- Tarjetas de Categorías / Tabla -->
+    <div class="bg-[#0C152E]/90 border border-slate-800 rounded-3xl overflow-hidden shadow-2xl">
+        <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs sm:text-sm">
+                <thead>
+                    <tr class="bg-[#070D1E] border-b border-slate-800 text-slate-400 uppercase text-[10px] tracking-wider font-mono">
+                        <th class="py-4 px-6">Orden</th>
+                        <th class="py-4 px-6">Categoría / Ícono</th>
+                        <th class="py-4 px-6">Slug (Filtro URL)</th>
+                        <th class="py-4 px-6 text-center">Productos Vinculados</th>
+                        <th class="py-4 px-6 text-center">Estado</th>
+                        <th class="py-4 px-6 text-right">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-800/60">
+                    <% if (categorias && categorias.length > 0) { %>
+                        <% categorias.forEach(c => { %>
+                            <tr class="hover:bg-slate-800/30 transition group">
+                                <td class="py-4 px-6 font-mono text-cyan-300 font-bold">
+                                    #<%= c.orden %>
+                                </td>
+                                <td class="py-4 px-6">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-10 h-10 rounded-xl bg-[#070D1E] border border-slate-700 overflow-hidden shrink-0 flex items-center justify-center text-xl shadow-md">
+                                            <% if (c.imagen) { %>
+                                                <img src="<%= c.imagen %>" alt="<%= c.nombre %>" class="w-full h-full object-cover">
+                                            <% } else { %>
+                                                <span><%= c.icono || '📦' %></span>
+                                            <% } %>
+                                        </div>
+                                        <div>
+                                            <div class="font-bold text-white group-hover:text-cyan-400 transition flex items-center gap-1.5">
+                                                <span><%= c.icono %></span>
+                                                <span><%= c.nombre %></span>
+                                            </div>
+                                            <% if (c.descripcion) { %>
+                                                <span class="text-[11px] text-slate-400 line-clamp-1"><%= c.descripcion %></span>
+                                            <% } %>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="py-4 px-6">
+                                    <span class="px-2.5 py-1 rounded-lg bg-[#070D1E] border border-slate-700 font-mono text-cyan-300 text-xs">
+                                        /catalogo?rubro=<%= c.slug %>
+                                    </span>
+                                </td>
+                                <td class="py-4 px-6 text-center font-mono font-bold text-slate-200">
+                                    <span class="px-2.5 py-1 rounded-full bg-slate-800 border border-slate-700">
+                                        <%= c.total_productos || 0 %> items
+                                    </span>
+                                </td>
+                                <td class="py-4 px-6 text-center">
+                                    <% if (c.activo) { %>
+                                        <span class="inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
+                                            ● Activa
+                                        </span>
+                                    <% } else { %>
+                                        <span class="inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-bold bg-slate-800 text-slate-400 border border-slate-700">
+                                            Inactiva
+                                        </span>
+                                    <% } %>
+                                </td>
+                                <td class="py-4 px-6 text-right space-x-2">
+                                    <button type="button" onclick="editarCategoria(<%= JSON.stringify(c) %>)" class="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-cyan-300 border border-slate-700 text-xs font-bold transition">
+                                        Editar
+                                    </button>
+                                    <form method="POST" action="/admin/categorias/<%= c.id %>/eliminar" onsubmit="return confirm('¿Seguro que deseas eliminar la categoría <%= c.nombre %>?')" class="inline">
+                                        <button type="submit" class="px-3 py-1.5 rounded-xl bg-rose-950/40 hover:bg-rose-900/50 text-rose-300 border border-rose-800/40 text-xs font-bold transition">
+                                            Eliminar
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                        <% }) %>
+                    <% } else { %>
+                        <tr>
+                            <td colspan="6" class="py-10 text-center text-slate-400">
+                                No se encontraron categorías configuradas.
+                            </td>
+                        </tr>
+                    <% } %>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+
+<!-- MODAL CREAR / EDITAR CATEGORÍA -->
+<div id="modal-categoria" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md hidden items-center justify-center p-4">
+    <div class="bg-[#0C152E] border border-cyan-500/30 rounded-3xl max-w-lg w-full p-6 sm:p-8 space-y-6 shadow-2xl relative">
+        <button type="button" onclick="cerrarModalCategoria()" class="absolute top-5 right-5 w-8 h-8 rounded-full bg-slate-800 text-slate-400 hover:text-white flex items-center justify-center font-bold">
+            ✕
+        </button>
+
+        <div>
+            <span class="text-xs font-bold text-pink-400 uppercase tracking-widest block mb-1">Configuración Comercial</span>
+            <h3 id="modal-categoria-titulo" class="text-2xl font-extrabold text-white font-display">Nueva Categoría</h3>
+        </div>
+
+        <form method="POST" action="/admin/categorias/guardar" class="space-y-4">
+            <input type="hidden" name="id" id="cat-id" value="">
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1.5">Nombre de Categoría</label>
+                    <input type="text" name="nombre" id="cat-nombre" required placeholder="Ej: Kits de Bienvenida" class="w-full px-4 py-2.5 bg-[#070D1E] border border-slate-700 rounded-xl text-white text-xs sm:text-sm focus:border-cyan-400 focus:outline-none">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1.5">Slug URL (Único)</label>
+                    <input type="text" name="slug" id="cat-slug" required placeholder="kits" class="w-full px-4 py-2.5 bg-[#070D1E] border border-slate-700 rounded-xl text-white text-xs sm:text-sm focus:border-cyan-400 focus:outline-none font-mono">
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div>
+                    <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1.5">Ícono Emoji</label>
+                    <input type="text" name="icono" id="cat-icono" placeholder="🎁" class="w-full px-4 py-2.5 bg-[#070D1E] border border-slate-700 rounded-xl text-white text-center text-lg focus:border-cyan-400 focus:outline-none">
+                </div>
+                <div class="sm:col-span-2">
+                    <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1.5">Orden en Carrusel</label>
+                    <input type="number" name="orden" id="cat-orden" value="1" min="1" class="w-full px-4 py-2.5 bg-[#070D1E] border border-slate-700 rounded-xl text-white text-xs sm:text-sm focus:border-cyan-400 focus:outline-none font-mono">
+                </div>
+            </div>
+
+            <div>
+                <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1.5">Ruta de Imagen / Foto de Portada</label>
+                <input type="text" name="imagen" id="cat-imagen" placeholder="/img/salud_preventiva/nido_parental.jpg" class="w-full px-4 py-2.5 bg-[#070D1E] border border-slate-700 rounded-xl text-white text-xs sm:text-sm focus:border-cyan-400 focus:outline-none font-mono">
+            </div>
+
+            <div>
+                <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1.5">Descripción Corta</label>
+                <textarea name="descripcion" id="cat-descripcion" rows="2" placeholder="Resumen o guía de los productos incluidos..." class="w-full px-4 py-2.5 bg-[#070D1E] border border-slate-700 rounded-xl text-white text-xs sm:text-sm focus:border-cyan-400 focus:outline-none"></textarea>
+            </div>
+
+            <div class="pt-2">
+                <label class="flex items-center gap-3 cursor-pointer">
+                    <input type="checkbox" name="activo" id="cat-activo" checked class="w-4 h-4 accent-cyan-500 rounded">
+                    <span class="text-xs text-slate-300 font-bold select-none">Mostrar activamente en el catálogo y carrusel</span>
+                </label>
+            </div>
+
+            <div class="flex gap-3 pt-4 border-t border-slate-800">
+                <button type="button" onclick="cerrarModalCategoria()" class="flex-1 py-3 rounded-xl bg-[#070D1E] border border-slate-700 hover:border-slate-500 text-slate-300 font-bold text-xs uppercase transition">
+                    Cancelar
+                </button>
+                <button type="submit" class="flex-1 py-3 rounded-xl bg-gradient-to-r from-cyan-400 to-teal-400 hover:from-cyan-300 hover:to-teal-300 text-slate-950 font-extrabold text-xs uppercase tracking-wider shadow-lg shadow-cyan-500/20 transition">
+                    Guardar Categoría
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    function abrirModalCategoria() {
+        document.getElementById('cat-id').value = '';
+        document.getElementById('cat-nombre').value = '';
+        document.getElementById('cat-slug').value = '';
+        document.getElementById('cat-icono').value = '📦';
+        document.getElementById('cat-orden').value = '1';
+        document.getElementById('cat-imagen').value = '';
+        document.getElementById('cat-descripcion').value = '';
+        document.getElementById('cat-activo').checked = true;
+        document.getElementById('modal-categoria-titulo').innerText = 'Nueva Categoría';
+
+        document.getElementById('modal-categoria').classList.remove('hidden');
+        document.getElementById('modal-categoria').classList.add('flex');
+    }
+
+    function editarCategoria(cat) {
+        document.getElementById('cat-id').value = cat.id;
+        document.getElementById('cat-nombre').value = cat.nombre || '';
+        document.getElementById('cat-slug').value = cat.slug || '';
+        document.getElementById('cat-icono').value = cat.icono || '📦';
+        document.getElementById('cat-orden').value = cat.orden || 1;
+        document.getElementById('cat-imagen').value = cat.imagen || '';
+        document.getElementById('cat-descripcion').value = cat.descripcion || '';
+        document.getElementById('cat-activo').checked = cat.activo !== false;
+        document.getElementById('modal-categoria-titulo').innerText = 'Editar Categoría: ' + cat.nombre;
+
+        document.getElementById('modal-categoria').classList.remove('hidden');
+        document.getElementById('modal-categoria').classList.add('flex');
+    }
+
+    function cerrarModalCategoria() {
+        document.getElementById('modal-categoria').classList.add('hidden');
+        document.getElementById('modal-categoria').classList.remove('flex');
+    }
+</script>
+
+<%- include('../partials/footer') %>

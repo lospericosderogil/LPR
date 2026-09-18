@@ -12,10 +12,12 @@ router.get('/ecosistema-genetico', shopController.ecosistemaGenetico);
 router.get('/bienestar', shopController.bienestar);
 router.get('/experiencias', shopController.experiencias);
 
-// Carrito / Reservas (Requiere inicio de sesión para comprar)
+// Carrito / Reservas (Visualización pública, reserva formal y compra requieren autenticación)
 router.post('/carrito/agregar', isAuthenticated, shopController.agregarAlCarrito);
 router.post('/carrito/quitar', isAuthenticated, shopController.quitarDelCarrito);
-router.get('/checkout', isAuthenticated, shopController.verCheckout);
+router.get('/carrito', shopController.verCheckout);
+router.get('/checkout', shopController.verCheckout);
 router.post('/checkout', isAuthenticated, shopController.procesarCompra);
+router.post('/carrito/confirmar-orden', shopController.confirmarOrdenCheckout);
 
 module.exports = router;

@@ -1,7 +1,14 @@
 const { Pool } = require('pg');
 require('dotenv').config();
 
-const connectionString = (process.env.DATABASE_URL || '').trim();
+let connectionString = (process.env.DATABASE_URL || '').trim();
+
+// En Supabase Pooler, el puerto 6543 es 'Transaction Mode' (PgBouncer), el cual descarta
+// prepared statements y conexiones de sesión (express-session / connect-pg-simple) con ECONNRESET.
+// El puerto 5432 es 'Session Mode', 100% compatible y estable con Node.js y pools de conexiones.
+if (connectionString.includes('pooler.supabase.com:6543')) {
+    connectionString = connectionString.replace(':6543', ':5432');
+}
 
 const isLocal = connectionString.includes('localhost') || connectionString.includes('127.0.0.1') || (!connectionString && (!process.env.DB_HOST || process.env.DB_HOST === 'localhost' || process.env.DB_HOST === '127.0.0.1'));
 

@@ -51,4 +51,19 @@ router.get('/parejas/nuevo', adminController.formNuevaPareja);
 router.post('/parejas/nuevo', adminController.registrarPareja);
 router.post('/parejas/:id/desunir', adminController.desunirPareja);
 
+// Categorías del Catálogo
+router.get('/categorias', adminController.listarCategorias);
+router.post('/categorias/guardar', adminController.guardarCategoria);
+router.post('/categorias/:id/eliminar', adminController.eliminarCategoria);
+
+// Ventas y Pedidos
+router.get('/ventas', adminController.listarVentas);
+router.get('/ventas/:id', adminController.detalleVenta);
+router.post('/ventas/:id/estado', adminController.actualizarEstadoVenta);
+
+// Productos de Tienda Multi-Rubro
+router.get('/productos', adminController.listarProductos);
+router.post('/productos/guardar', adminController.guardarProducto);
+router.post('/productos/:id/eliminar', adminController.eliminarProducto);
+
 module.exports = router;

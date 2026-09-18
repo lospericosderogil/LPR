@@ -1,90 +1,217 @@
 <%- include('../partials/header') %>
-<div class="max-w-7xl mx-auto px-4 py-10 sm:px-6 lg:px-8 space-y-8">
+<%- include('./partials/admin_nav', { activeTab: 'dashboard' }) %>
+
+<div class="max-w-7xl mx-auto px-4 py-8 sm:px-6 lg:px-8 space-y-8">
+
+    <!-- Encabezado -->
     <div class="md:flex md:items-center md:justify-between border-b border-slate-800 pb-6">
         <div class="flex-1 min-w-0">
-            <span class="text-xs font-bold text-cyan-400 tracking-widest uppercase block mb-1">Módulo de Control</span>
-            <h2 class="text-3xl font-extrabold text-white font-display">Panel de Administración</h2>
-            <p class="text-sm text-slate-400 mt-1">Resumen biológico y comercial del criadero</p>
+            <span class="text-xs font-bold text-cyan-400 tracking-widest uppercase block mb-1">Módulo de Control Central</span>
+            <h1 class="text-3xl font-extrabold text-white font-display tracking-tight">Panel de Administración</h1>
+            <p class="text-sm text-slate-400 mt-1">Supervisión biológica, inventario multi-rubro y control comercial de AviPerú.</p>
         </div>
-        <div class="mt-4 flex md:mt-0 md:ml-4">
-            <a href="/admin/aves/nuevo" class="inline-flex items-center px-5 py-2.5 rounded-2xl bg-gradient-to-r from-cyan-400 to-teal-400 hover:from-cyan-300 hover:to-teal-300 text-slate-950 font-extrabold text-sm uppercase tracking-wider shadow-lg shadow-cyan-500/20 transition transform hover:scale-105">
+        <div class="mt-4 flex md:mt-0 md:ml-4 gap-3">
+            <a href="/admin/aves/nuevo" class="inline-flex items-center px-4 py-2.5 rounded-2xl bg-[#070D1E] hover:bg-slate-800 border border-slate-700 text-slate-200 font-bold text-xs uppercase tracking-wider transition">
                 + Registrar Ave
             </a>
+            <a href="/admin/productos" class="inline-flex items-center px-5 py-2.5 rounded-2xl bg-gradient-to-r from-cyan-400 to-teal-400 hover:from-cyan-300 hover:to-teal-300 text-slate-950 font-extrabold text-xs sm:text-sm uppercase tracking-wider shadow-lg shadow-cyan-500/20 transition transform hover:scale-105">
+                + Nuevo Producto
+            </a>
         </div>
     </div>
 
-    <!-- Stats Grid -->
-    <div class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
+    <!-- Stats Grid: Comercial & Biológico -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+        
+        <!-- Total Ventas Bruto -->
+        <div class="bg-[#0C152E]/90 shadow-xl rounded-3xl border border-emerald-500/25 p-6 hover:border-emerald-400/50 transition">
+            <div class="flex items-center">
+                <div class="w-12 h-12 rounded-2xl bg-emerald-950 border border-emerald-500/40 flex items-center justify-center text-2xl text-emerald-400">💰</div>
+                <div class="ml-4 flex-1">
+                    <dt class="text-xs font-bold text-slate-400 uppercase tracking-wider">Ventas Totales</dt>
+                    <dd class="text-2xl sm:text-3xl font-black text-emerald-400 font-mono mt-0.5">S/ <%= parseFloat(stats.ingresos_totales || 0).toFixed(2) %></dd>
+                </div>
+            </div>
+            <div class="mt-3 pt-3 border-t border-slate-800/80 flex justify-between text-xs">
+                <span class="text-slate-400"><%= stats.total_pedidos || 0 %> órdenes registradas</span>
+                <a href="/admin/ventas" class="text-cyan-400 hover:underline font-bold">Ver &rarr;</a>
+            </div>
+        </div>
+
+        <!-- Pedidos Pendientes -->
+        <div class="bg-[#0C152E]/90 shadow-xl rounded-3xl border border-pink-500/25 p-6 hover:border-pink-400/50 transition">
+            <div class="flex items-center">
+                <div class="w-12 h-12 rounded-2xl bg-pink-950 border border-pink-500/40 flex items-center justify-center text-2xl text-pink-400">⚡</div>
+                <div class="ml-4 flex-1">
+                    <dt class="text-xs font-bold text-slate-400 uppercase tracking-wider">Por Procesar</dt>
+                    <dd class="text-3xl font-black text-pink-400 font-display mt-0.5"><%= stats.pedidos_pendientes || 0 %></dd>
+                </div>
+            </div>
+            <div class="mt-3 pt-3 border-t border-slate-800/80 flex justify-between text-xs">
+                <span class="text-slate-400">Despacho y retiro</span>
+                <a href="/admin/ventas?estado=CONFIRMADO" class="text-pink-400 hover:underline font-bold">Atender &rarr;</a>
+            </div>
+        </div>
+
+        <!-- Categorías & Productos Tienda -->
         <div class="bg-[#0C152E]/90 shadow-xl rounded-3xl border border-cyan-500/25 p-6 hover:border-cyan-400/50 transition">
             <div class="flex items-center">
-                <div class="w-12 h-12 rounded-2xl bg-cyan-950 border border-cyan-500/40 flex items-center justify-center text-2xl text-cyan-400">🦜</div>
+                <div class="w-12 h-12 rounded-2xl bg-cyan-950 border border-cyan-500/40 flex items-center justify-center text-2xl text-cyan-400">🏷️</div>
                 <div class="ml-4 flex-1">
-                    <dt class="text-xs font-bold text-cyan-400 uppercase tracking-wider">Total Aves</dt>
-                    <dd class="text-3xl font-black text-white font-display mt-0.5"><%= stats.total %></dd>
+                    <dt class="text-xs font-bold text-slate-400 uppercase tracking-wider">Multi-Rubro</dt>
+                    <dd class="text-3xl font-black text-white font-display mt-0.5"><%= stats.total_categorias || 0 %> <span class="text-sm font-normal text-slate-400">Cats.</span></dd>
                 </div>
+            </div>
+            <div class="mt-3 pt-3 border-t border-slate-800/80 flex justify-between text-xs">
+                <span class="text-slate-400"><%= stats.total_productos || 0 %> productos activos</span>
+                <a href="/admin/categorias" class="text-cyan-400 hover:underline font-bold">Configurar &rarr;</a>
             </div>
         </div>
 
+        <!-- Aves Disponibles / En Venta -->
         <div class="bg-[#0C152E]/90 shadow-xl rounded-3xl border border-teal-500/25 p-6 hover:border-teal-400/50 transition">
             <div class="flex items-center">
-                <div class="w-12 h-12 rounded-2xl bg-teal-950 border border-teal-500/40 flex items-center justify-center text-2xl text-teal-400">✔</div>
+                <div class="w-12 h-12 rounded-2xl bg-teal-950 border border-teal-500/40 flex items-center justify-center text-2xl text-teal-400">🦜</div>
                 <div class="ml-4 flex-1">
-                    <dt class="text-xs font-bold text-teal-400 uppercase tracking-wider">Disponibles</dt>
-                    <dd class="text-3xl font-black text-white font-display mt-0.5"><%= stats.disponibles %></dd>
+                    <dt class="text-xs font-bold text-slate-400 uppercase tracking-wider">Plantel Aviar</dt>
+                    <dd class="text-3xl font-black text-white font-display mt-0.5"><%= stats.total || 0 %> <span class="text-sm font-normal text-teal-400">(<%= stats.en_venta || 0 %> en venta)</span></dd>
                 </div>
+            </div>
+            <div class="mt-3 pt-3 border-t border-slate-800/80 flex justify-between text-xs">
+                <span class="text-slate-400"><%= stats.disponibles || 0 %> disponibles</span>
+                <a href="/admin/aves" class="text-teal-400 hover:underline font-bold">Ver Plantel &rarr;</a>
             </div>
         </div>
 
-        <div class="bg-[#0C152E]/90 shadow-xl rounded-3xl border border-yellow-500/25 p-6 hover:border-yellow-400/50 transition">
-            <div class="flex items-center">
-                <div class="w-12 h-12 rounded-2xl bg-yellow-950 border border-yellow-500/40 flex items-center justify-center text-2xl text-yellow-400">🛒</div>
-                <div class="ml-4 flex-1">
-                    <dt class="text-xs font-bold text-yellow-400 uppercase tracking-wider">En Venta</dt>
-                    <dd class="text-3xl font-black text-white font-display mt-0.5"><%= stats.en_venta %></dd>
-                </div>
-            </div>
-        </div>
-
-        <div class="bg-[#0C152E]/90 shadow-xl rounded-3xl border border-purple-500/25 p-6 hover:border-purple-400/50 transition">
-            <div class="flex items-center">
-                <div class="w-12 h-12 rounded-2xl bg-purple-950 border border-purple-500/40 flex items-center justify-center text-2xl text-purple-400">💰</div>
-                <div class="ml-4 flex-1">
-                    <dt class="text-xs font-bold text-purple-400 uppercase tracking-wider">Vendidos</dt>
-                    <dd class="text-3xl font-black text-white font-display mt-0.5"><%= stats.vendidos %></dd>
-                </div>
-            </div>
-        </div>
     </div>
 
-    <!-- Shortcuts -->
-    <div class="bg-[#0C152E]/90 shadow-2xl rounded-3xl border border-cyan-500/25 p-8 backdrop-blur-xl space-y-6">
+    <!-- Accesos Rápidos de Gestión -->
+    <div class="bg-[#0C152E]/90 shadow-2xl rounded-3xl border border-slate-800 p-6 sm:p-8 space-y-6">
         <h3 class="text-lg font-bold text-white font-display flex items-center gap-2">
             <span class="text-cyan-400">⚡</span>
-            <span>Accesos Rápidos de Gestión</span>
+            <span>Módulos de Gestión Administrativa</span>
         </h3>
-        <div class="grid grid-cols-1 gap-5 sm:grid-cols-3">
-            <a href="/admin/aves" class="flex items-center p-5 bg-[#070D1E] border border-slate-800 rounded-2xl hover:border-cyan-400 transition group">
-                <div class="text-3xl mr-4 group-hover:scale-110 transition-transform">🗂️</div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+            
+            <a href="/admin/categorias" class="flex items-center p-5 bg-[#070D1E] border border-slate-800 rounded-2xl hover:border-cyan-400 transition group shadow-md">
+                <div class="text-3xl mr-4 group-hover:scale-110 transition-transform">🏷️</div>
                 <div>
-                    <h4 class="font-bold text-white group-hover:text-cyan-400 transition">Listado de Aves</h4>
-                    <p class="text-xs text-slate-400 mt-0.5">Ver, filtrar y editar ejemplares</p>
+                    <h4 class="font-bold text-white group-hover:text-cyan-400 transition">Categorías del Catálogo</h4>
+                    <p class="text-xs text-slate-400 mt-0.5">Configurar carrusel, íconos y slugs</p>
                 </div>
             </a>
-            <a href="/admin/parejas" class="flex items-center p-5 bg-[#070D1E] border border-slate-800 rounded-2xl hover:border-cyan-400 transition group">
+
+            <a href="/admin/ventas" class="flex items-center p-5 bg-[#070D1E] border border-slate-800 rounded-2xl hover:border-pink-500 transition group shadow-md">
+                <div class="text-3xl mr-4 group-hover:scale-110 transition-transform">📑</div>
+                <div>
+                    <h4 class="font-bold text-white group-hover:text-pink-400 transition">Ventas & Pedidos</h4>
+                    <p class="text-xs text-slate-400 mt-0.5">Control de órdenes, pagos y facturas</p>
+                </div>
+            </a>
+
+            <a href="/admin/productos" class="flex items-center p-5 bg-[#070D1E] border border-slate-800 rounded-2xl hover:border-teal-400 transition group shadow-md">
+                <div class="text-3xl mr-4 group-hover:scale-110 transition-transform">📦</div>
+                <div>
+                    <h4 class="font-bold text-white group-hover:text-teal-400 transition">Productos & Kits</h4>
+                    <p class="text-xs text-slate-400 mt-0.5">Alimentos, suplementos y accesorios</p>
+                </div>
+            </a>
+
+            <a href="/admin/aves" class="flex items-center p-5 bg-[#070D1E] border border-slate-800 rounded-2xl hover:border-cyan-400 transition group shadow-md">
+                <div class="text-3xl mr-4 group-hover:scale-110 transition-transform">🦜</div>
+                <div>
+                    <h4 class="font-bold text-white group-hover:text-cyan-400 transition">Listado de Aves</h4>
+                    <p class="text-xs text-slate-400 mt-0.5">Anillas oficiales, mutaciones y ADN</p>
+                </div>
+            </a>
+
+            <a href="/admin/parejas" class="flex items-center p-5 bg-[#070D1E] border border-slate-800 rounded-2xl hover:border-cyan-400 transition group shadow-md">
                 <div class="text-3xl mr-4 group-hover:scale-110 transition-transform">👩‍❤️‍👨</div>
                 <div>
                     <h4 class="font-bold text-white group-hover:text-cyan-400 transition">Parejas Reproductivas</h4>
-                    <p class="text-xs text-slate-400 mt-0.5">Gestionar uniones y jaulas</p>
+                    <p class="text-xs text-slate-400 mt-0.5">Uniones biológicas, nidos y jaulas</p>
                 </div>
             </a>
-            <a href="/admin/ventas" class="flex items-center p-5 bg-[#070D1E] border border-slate-800 rounded-2xl hover:border-cyan-400 transition group">
-                <div class="text-3xl mr-4 group-hover:scale-110 transition-transform">📑</div>
+
+            <a href="/catalogo" target="_blank" class="flex items-center p-5 bg-[#070D1E] border border-slate-800 rounded-2xl hover:border-cyan-400 transition group shadow-md">
+                <div class="text-3xl mr-4 group-hover:scale-110 transition-transform">🌐</div>
                 <div>
-                    <h4 class="font-bold text-white group-hover:text-cyan-400 transition">Pedidos y Clientes</h4>
-                    <p class="text-xs text-slate-400 mt-0.5">Historial comercial y reservas</p>
+                    <h4 class="font-bold text-white group-hover:text-cyan-400 transition">Ver Tienda en Vivo</h4>
+                    <p class="text-xs text-slate-400 mt-0.5">Abrir catálogo y checkout público</p>
                 </div>
             </a>
+
         </div>
     </div>
+
+    <!-- Tabla de Últimos Pedidos Registrados -->
+    <div class="bg-[#0C152E]/90 border border-slate-800 rounded-3xl overflow-hidden shadow-2xl space-y-4 p-6 sm:p-8">
+        <div class="flex items-center justify-between">
+            <div>
+                <h3 class="text-lg font-bold text-white font-display">Últimos Pedidos Realizados</h3>
+                <p class="text-xs text-slate-400 mt-0.5">Órdenes procesadas en tiempo real a través del checkout</p>
+            </div>
+            <a href="/admin/ventas" class="text-xs font-bold text-cyan-400 hover:underline">Ver todas las ventas &rarr;</a>
+        </div>
+
+        <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs sm:text-sm">
+                <thead>
+                    <tr class="bg-[#070D1E] border-b border-slate-800 text-slate-400 uppercase text-[10px] tracking-wider font-mono">
+                        <th class="py-3 px-4">Código</th>
+                        <th class="py-3 px-4">Cliente</th>
+                        <th class="py-3 px-4">Modalidad</th>
+                        <th class="py-3 px-4">Medio de Pago</th>
+                        <th class="py-3 px-4 text-right">Total</th>
+                        <th class="py-3 px-4 text-center">Estado</th>
+                        <th class="py-3 px-4 text-right">Acción</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-800/60">
+                    <% if (stats.ultimos_pedidos && stats.ultimos_pedidos.length > 0) { %>
+                        <% stats.ultimos_pedidos.forEach(p => { %>
+                            <tr class="hover:bg-slate-800/30 transition">
+                                <td class="py-3 px-4 font-mono font-bold text-white">
+                                    <%= p.codigo_pedido || ('#ORD-' + p.id) %>
+                                </td>
+                                <td class="py-3 px-4 text-slate-300">
+                                    <%= p.nombre_cliente %>
+                                </td>
+                                <td class="py-3 px-4">
+                                    <span class="text-[11px] font-semibold text-slate-400">
+                                        <%= p.modalidad_entrega === 'RETIRO' ? '🏢 Retiro' : '🚚 Despacho' %>
+                                    </span>
+                                </td>
+                                <td class="py-3 px-4 font-mono text-xs text-slate-300">
+                                    <%= p.medio_pago %>
+                                </td>
+                                <td class="py-3 px-4 text-right font-mono font-bold text-emerald-400">
+                                    S/ <%= parseFloat(p.total).toFixed(2) %>
+                                </td>
+                                <td class="py-3 px-4 text-center">
+                                    <span class="px-2 py-0.5 rounded-full text-[10px] font-bold <%= p.estado === 'CONFIRMADO' ? 'bg-pink-500/20 text-pink-400' : (p.estado === 'ENTREGADO' ? 'bg-emerald-500/20 text-emerald-400' : 'bg-yellow-500/20 text-yellow-400') %>">
+                                        <%= p.estado %>
+                                    </span>
+                                </td>
+                                <td class="py-3 px-4 text-right">
+                                    <a href="/admin/ventas/<%= p.id %>" class="text-xs text-cyan-400 hover:underline font-bold">
+                                        Detalle
+                                    </a>
+                                </td>
+                            </tr>
+                        <% }) %>
+                    <% } else { %>
+                        <tr>
+                            <td colspan="7" class="py-6 text-center text-slate-400">
+                                Aún no hay órdenes registradas.
+                            </td>
+                        </tr>
+                    <% } %>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
 </div>
+
 <%- include('../partials/footer') %>
