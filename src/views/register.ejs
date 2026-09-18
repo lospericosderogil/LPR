@@ -1,47 +1,78 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" class="h-full">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Registro - AviPeru</title>
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+    <style>
+        html, body {
+            background-color: #080E1E !important;
+            color: #F8FAFC !important;
+        }
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+        .font-display {
+            font-family: 'Space Grotesk', sans-serif;
+        }
+        .glow-cyan {
+            box-shadow: 0 0 25px rgba(6, 182, 212, 0.25);
+        }
+    </style>
 </head>
-<body class="bg-gray-50 min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-    <div class="max-w-md w-full space-y-8 bg-white p-8 rounded-lg shadow-md border border-gray-150">
-        <div>
-            <h2 class="text-center text-3xl font-extrabold text-gray-900">Crear Cuenta</h2>
-            <p class="mt-2 text-center text-sm text-gray-600">Regístrese en el sistema</p>
+<body class="bg-[#080E1E] min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 relative overflow-hidden" style="background-color: #080E1E !important;">
+    <!-- Resplandor ambiental de fondo -->
+    <div class="absolute w-96 h-96 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none -top-20 -left-20"></div>
+    <div class="absolute w-96 h-96 bg-blue-600/10 rounded-full blur-3xl pointer-events-none -bottom-20 -right-20"></div>
+
+    <div class="max-w-md w-full space-y-8 bg-[#0C152E]/95 p-8 sm:p-10 rounded-3xl shadow-2xl border border-cyan-500/30 backdrop-blur-xl relative z-10 glow-cyan">
+        <div class="text-center space-y-2">
+            <a href="/" class="inline-flex items-center gap-2 mb-2">
+                <span class="text-3xl">🦜</span>
+                <span class="text-2xl font-black text-white font-display tracking-tight">AVIPERU</span>
+            </a>
+            <h2 class="text-xl font-bold text-white font-display">Crear Cuenta Oficial</h2>
+            <p class="text-xs text-slate-400">Regístrate para reservar aves y consultar pedigríes en vivo</p>
         </div>
+
         <% if (error) { %>
-            <div class="bg-red-50 border-l-4 border-red-400 p-4 text-sm text-red-700"><%= error %></div>
+            <div class="bg-rose-950/60 border border-rose-500/40 p-3.5 rounded-2xl text-xs text-rose-300">
+                <%= error %>
+            </div>
         <% } %>
-        <form class="mt-8 space-y-6" action="/register" method="POST">
-            <div class="rounded-md shadow-sm space-y-4">
-                <div>
-                    <label for="nombre" class="block text-sm font-medium text-gray-700">Nombre completo *</label>
-                    <input id="nombre" name="nombre" type="text" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" placeholder="Juan Pérez">
-                </div>
-                <div>
-                    <label for="email" class="block text-sm font-medium text-gray-700">Correo electrónico *</label>
-                    <input id="email" name="email" type="email" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" placeholder="correo@ejemplo.com">
-                </div>
-                <div>
-                    <label for="password" class="block text-sm font-medium text-gray-700">Contraseña *</label>
-                    <input id="password" name="password" type="password" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" placeholder="••••••••">
-                </div>
-                <div>
-                    <label for="telefono" class="block text-sm font-medium text-gray-700">Teléfono (opcional)</label>
-                    <input id="telefono" name="telefono" type="text" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" placeholder="987654321">
-                </div>
+
+        <form class="mt-8 space-y-4" action="/register" method="POST">
+            <div>
+                <label for="nombre" class="block text-[11px] font-bold text-cyan-400 uppercase tracking-wider mb-1.5">Nombre Completo *</label>
+                <input id="nombre" name="nombre" type="text" required class="block w-full px-4 py-2.5 bg-[#070D1E] border border-slate-800 rounded-2xl text-sm text-white placeholder-slate-500 focus:outline-none focus:border-cyan-400 transition" placeholder="Juan Pérez">
             </div>
             <div>
-                <button type="submit" class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                <label for="email" class="block text-[11px] font-bold text-cyan-400 uppercase tracking-wider mb-1.5">Correo Electrónico *</label>
+                <input id="email" name="email" type="email" required class="block w-full px-4 py-2.5 bg-[#070D1E] border border-slate-800 rounded-2xl text-sm text-white placeholder-slate-500 focus:outline-none focus:border-cyan-400 transition" placeholder="correo@ejemplo.com">
+            </div>
+            <div>
+                <label for="password" class="block text-[11px] font-bold text-cyan-400 uppercase tracking-wider mb-1.5">Contraseña *</label>
+                <input id="password" name="password" type="password" required class="block w-full px-4 py-2.5 bg-[#070D1E] border border-slate-800 rounded-2xl text-sm text-white placeholder-slate-500 focus:outline-none focus:border-cyan-400 transition" placeholder="••••••••">
+            </div>
+            <div>
+                <label for="telefono" class="block text-[11px] font-bold text-cyan-400 uppercase tracking-wider mb-1.5">Teléfono / WhatsApp (opcional)</label>
+                <input id="telefono" name="telefono" type="text" class="block w-full px-4 py-2.5 bg-[#070D1E] border border-slate-800 rounded-2xl text-sm text-white placeholder-slate-500 focus:outline-none focus:border-cyan-400 transition" placeholder="987654321">
+            </div>
+
+            <div class="pt-2">
+                <button type="submit" class="w-full py-3.5 px-4 rounded-2xl bg-gradient-to-r from-cyan-400 via-teal-400 to-cyan-500 hover:from-cyan-300 hover:to-teal-300 text-slate-950 font-extrabold text-sm uppercase tracking-wider shadow-lg shadow-cyan-500/30 transition transform hover:scale-[1.02]">
                     Registrarse
                 </button>
             </div>
         </form>
-        <div class="text-center mt-4">
-            <p class="text-sm text-gray-600">¿Ya tienes cuenta? <a href="/login" class="font-medium text-blue-600 hover:text-blue-500">Inicia sesión</a></p>
+
+        <div class="text-center pt-4 border-t border-slate-800/80">
+            <p class="text-xs text-slate-400">
+                ¿Ya tienes cuenta? <a href="/login" class="font-bold text-cyan-400 hover:underline">Inicia sesión</a>
+            </p>
+            <a href="/" class="inline-block mt-3 text-xs text-slate-500 hover:text-slate-400 transition">&larr; Volver al inicio</a>
         </div>
     </div>
 </body>

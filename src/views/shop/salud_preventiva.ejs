@@ -1,0 +1,660 @@
+<%- include('../partials/header') %>
+
+<!-- Contenedor Principal con Fondo Deep Navy -->
+<main class="min-h-screen bg-[#080E1E] text-slate-100 py-10 px-4 sm:px-6 lg:px-8 font-sans selection:bg-cyan-500 selection:text-slate-950">
+    <div class="max-w-7xl mx-auto space-y-12 sm:space-y-16">
+
+        <!-- 1. HERO HEADER & BREADCRUMBS -->
+        <header class="text-center max-w-4xl mx-auto space-y-4">
+            <!-- Breadcrumbs -->
+            <nav class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#0C152E] border border-cyan-500/30 text-xs text-slate-400">
+                <a href="/" class="hover:text-cyan-300 transition">Inicio</a>
+                <span class="text-cyan-500/60">/</span>
+                <span class="text-slate-400">Bioseguridad & Diagnóstico</span>
+                <span class="text-cyan-500/60">/</span>
+                <span class="text-white font-bold">Salud Preventiva & ADN</span>
+            </nav>
+
+            <div class="space-y-3">
+                <div class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-cyan-300 text-xs font-bold uppercase tracking-widest glow-cyan-sm">
+                    <span>🧬</span>
+                    <span>Biología Molecular & Medicina Veterinaria Preventiva</span>
+                </div>
+                <h1 class="text-3xl sm:text-5xl font-black text-white font-display tracking-tight leading-tight">
+                    Manual de Salud Preventiva & <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-teal-300 to-emerald-400">Sexado por ADN</span>
+                </h1>
+                <p class="text-base sm:text-lg text-slate-300 leading-relaxed max-w-3xl mx-auto">
+                    Protocolos técnicos de bioseguridad, determinación cromosómica por PCR (99.9% de certeza), cuarentena profiláctica de 30 a 40 días, desparasitación metódica y checklist clínico para <strong class="text-cyan-300">Pericos Australianos</strong> y <strong class="text-emerald-300">Pericos Ingleses</strong>.
+                </p>
+            </div>
+
+            <!-- Accesos rápidos de navegación temática -->
+            <div class="flex flex-wrap items-center justify-center gap-3 pt-2">
+                <a href="#sexado-adn" class="px-4 py-2 rounded-xl bg-[#0C152E] hover:bg-cyan-950/60 border border-cyan-500/30 text-cyan-300 text-xs font-bold transition">
+                    🔬 Sexado por ADN (PCR)
+                </a>
+                <a href="#cuarentena-bioseguridad" class="px-4 py-2 rounded-xl bg-[#0C152E] hover:bg-cyan-950/60 border border-cyan-500/30 text-cyan-300 text-xs font-bold transition">
+                    🛡️ Cuarentena & Bioseguridad
+                </a>
+                <a href="#desparasitacion" class="px-4 py-2 rounded-xl bg-[#0C152E] hover:bg-cyan-950/60 border border-cyan-500/30 text-cyan-300 text-xs font-bold transition">
+                    🩺 Desparasitación Integral
+                </a>
+                <a href="#checklist-clinico" class="px-4 py-2 rounded-xl bg-[#0C152E] hover:bg-cyan-950/60 border border-cyan-500/30 text-cyan-300 text-xs font-bold transition">
+                    📋 Examen en 6 Puntos
+                </a>
+                <a href="#nutraceutica" class="px-4 py-2 rounded-xl bg-[#0C152E] hover:bg-cyan-950/60 border border-cyan-500/30 text-cyan-300 text-xs font-bold transition">
+                    🌿 Nutracéutica Natural
+                </a>
+            </div>
+        </header>
+
+        <!-- 2. RESUMEN CLÍNICO & FOTO PRINCIPAL -->
+        <section class="bg-[#0C152E]/90 rounded-3xl p-6 sm:p-10 border border-cyan-500/20 shadow-2xl overflow-hidden">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+                <!-- Imagen del chequeo veterinario -->
+                <div class="lg:col-span-7 relative rounded-2xl overflow-hidden border border-slate-800 group bg-[#070D1E]">
+                    <img src="/img/salud_preventiva/chequeo_veterinario.jpg" alt="Examen clínico veterinario de perico australiano bajo luz quirúrgica con guantes de exploración estériles" class="w-full h-80 sm:h-96 object-cover transition-transform duration-500 group-hover:scale-[1.02]">
+                    <div class="absolute bottom-3 left-3 right-3 bg-[#080E1E]/95 backdrop-blur-md p-3.5 rounded-xl border border-cyan-500/30 text-xs text-slate-300">
+                        <span class="font-bold text-cyan-300 block mb-0.5">Exploración Clínica Preventiva</span>
+                        Sujeción anatómica suave para inspección de quilla, simetría alar, ojos y fosas nasales sin inducir estrés en el ejemplar.
+                    </div>
+                </div>
+
+                <!-- Resumen de Principios -->
+                <div class="lg:col-span-5 space-y-4">
+                    <span class="text-xs font-bold text-cyan-400 tracking-widest uppercase block">Medicina Profiláctica Aviar</span>
+                    <h2 class="text-2xl sm:text-3xl font-extrabold text-white font-display">
+                        El Instinto de Enmascarar Enfermedades
+                    </h2>
+                    <p class="text-sm text-slate-300 leading-relaxed">
+                        En su condición biológica de aves presa, los pericos poseen el instinto evolutivo de <strong class="text-white">ocultar cualquier debilidad física</strong> para no ser expulsados de la bandada ni atraer depredadores. Cuando un perico muestra síntomas evidentes (embolamiento o letargo), la patología suele encontrarse en fase avanzada.
+                    </p>
+                    <p class="text-sm text-slate-300 leading-relaxed">
+                        Por ello, la avicultura científica se fundamenta en la <strong class="text-cyan-300">prevención metódica</strong>: desparasitaciones periódicas, análisis coprológicos, nutrición adaptada y aislamiento profiláctico estricto.
+                    </p>
+                    <div class="pt-2">
+                        <div class="inline-flex items-center gap-2 p-3 rounded-2xl bg-cyan-500/10 border border-cyan-500/30 text-xs font-semibold text-cyan-300">
+                            <span>✓</span>
+                            <span>Salud preventiva: máxima longevidad y cero medicación indiscriminada</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. SEXADO MOLECULAR POR ADN (PCR) -->
+        <section id="sexado-adn" class="space-y-8">
+            <div class="text-center max-w-3xl mx-auto space-y-2">
+                <span class="text-xs font-bold text-cyan-400 uppercase tracking-widest">Biología Molecular Aviar</span>
+                <h2 class="text-2xl sm:text-4xl font-extrabold text-white font-display">
+                    Sexado Molecular por PCR: Certeza del 99.9%
+                </h2>
+                <p class="text-sm text-slate-300">
+                    Diferenciación genética inequívoca en fases tempranas y en mutaciones donde el céreo no manifiesta dimorfismo sexual evidente.
+                </p>
+            </div>
+
+            <div class="bg-[#0C152E]/90 rounded-3xl p-6 sm:p-10 border border-cyan-500/20 shadow-2xl space-y-8">
+                <!-- Foto de laboratorio molecular -->
+                <div class="relative rounded-2xl overflow-hidden border border-slate-800 group bg-[#070D1E]">
+                    <img src="/img/salud_preventiva/laboratorio_adn.jpg" alt="Laboratorio de genética aviar con termociclador PCR, micropipetas y muestras de plumas para sexado de pericos" class="w-full h-auto object-cover max-h-[500px] mx-auto transition-transform duration-500 group-hover:scale-[1.01]">
+                    <div class="absolute bottom-3 left-3 bg-[#080E1E]/95 backdrop-blur-md px-4 py-2 rounded-xl border border-cyan-500/30 text-xs font-mono text-cyan-300">
+                        Determinación Genética por PCR: Amplificación del gen CHD en cromosomas sexuales aviares
+                    </div>
+                </div>
+
+                <!-- Comparativa Técnica: ZW vs ZZ -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    
+                    <!-- Hembras ZW -->
+                    <div class="bg-[#070D1E] p-6 sm:p-8 rounded-2xl border border-fuchsia-500/40 space-y-4 relative overflow-hidden">
+                        <div class="flex items-center justify-between">
+                            <span class="px-3 py-1 rounded-full text-xs font-black bg-fuchsia-500/20 text-fuchsia-300 border border-fuchsia-500/40 uppercase">
+                                Cromosomas Heterogaméticos
+                            </span>
+                            <span class="text-3xl">♀️</span>
+                        </div>
+                        <h3 class="text-2xl font-bold text-white font-display">Hembra Aviar (Cariotipo ZW)</h3>
+                        <p class="text-xs text-slate-300 leading-relaxed">
+                            En las aves, a diferencia de los mamíferos, la hembra es el sexo heterogamético. Aporta un cromosoma Z y un cromosoma W. El ensayo por reacción en cadena de la polimerasa (PCR) detecta dos bandas de amplificación nítidas correspondientes a los genes homólogos <strong class="text-white">CHD-Z y CHD-W</strong>.
+                        </p>
+                        <div class="p-3 rounded-xl bg-[#0C152E] border border-fuchsia-900/60 text-xs space-y-1">
+                            <span class="text-fuchsia-300 font-bold block">Electroforesis en Gel:</span>
+                            <span class="text-slate-400">Presencia de 2 fragmentos de ADN de distinta masa molecular (doble banda).</span>
+                        </div>
+                    </div>
+
+                    <!-- Machos ZZ -->
+                    <div class="bg-[#070D1E] p-6 sm:p-8 rounded-2xl border border-cyan-500/40 space-y-4 relative overflow-hidden glow-cyan-sm">
+                        <div class="flex items-center justify-between">
+                            <span class="px-3 py-1 rounded-full text-xs font-black bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 uppercase">
+                                Cromosomas Homogaméticos
+                            </span>
+                            <span class="text-3xl">♂️</span>
+                        </div>
+                        <h3 class="text-2xl font-bold text-white font-display">Macho Aviar (Cariotipo ZZ)</h3>
+                        <p class="text-xs text-slate-300 leading-relaxed">
+                            El macho aviar porta dos cromosomas homólogos idénticos (ZZ). Durante la electroforesis en gel de agarosa o secuenciación capilar, la prueba amplifica una única banda nítida correspondiente al gen <strong class="text-white">CHD-Z</strong>, permitiendo una clasificación 100% objetiva e irrevocable.
+                        </p>
+                        <div class="p-3 rounded-xl bg-[#0C152E] border border-cyan-900/60 text-xs space-y-1">
+                            <span class="text-cyan-300 font-bold block">Electroforesis en Gel:</span>
+                            <span class="text-slate-400">Presencia de 1 sola banda uniforme de amplificación (monomórfica).</span>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Cuadro de Herencia Sexual (Tablero de Segregación Cromosómica) -->
+                <div class="space-y-4 pt-2">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                        <div>
+                            <span class="text-2xs font-bold text-cyan-400 uppercase tracking-widest block">Leyes de Mendel & Determinación Cromosómica Aviar</span>
+                            <h4 class="text-xl sm:text-2xl font-bold text-white font-display flex items-center gap-2">
+                                <span>🧬</span>
+                                <span>Cuadro Correcto de Herencia Sexual</span>
+                            </h4>
+                        </div>
+                        <span class="px-3 py-1 rounded-full text-xs font-mono font-bold bg-cyan-500/10 text-cyan-300 border border-cyan-500/30 w-fit">
+                            Segregación Mendeliana 50% ♂ / 50% ♀
+                        </span>
+                    </div>
+
+                    <!-- Contenedor de la Imagen Técnica -->
+                    <div class="relative rounded-2xl overflow-hidden border border-cyan-500/30 bg-[#070D1E] shadow-2xl group">
+                        <img src="/img/salud_preventiva/cuadro_herencia_sexual.png" alt="Cuadro correcto de herencia sexual aviar - Tablero de segregación cromosómica en pericos australianos (Macho ZZ x Hembra ZW)" class="w-full h-auto object-cover transition-transform duration-500 group-hover:scale-[1.005]">
+                        <div class="p-4 sm:p-5 bg-[#080E1E]/95 border-t border-slate-800 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 text-xs text-slate-300">
+                            <div class="space-y-1">
+                                <span class="font-bold text-cyan-300 flex items-center gap-1.5">
+                                    <span>🔬</span>
+                                    <span>Principio Biológico en Psitácidas: La Hembra Determina el Sexo</span>
+                                </span>
+                                <p class="text-slate-400 leading-relaxed">
+                                    A diferencia de los mamíferos (donde el espermatozoide paterno aporta X o Y), en las aves el macho es homogamético (ZZ) y solo produce gametos portadores del cromosoma <strong>Z</strong>. Es el óvulo de la hembra (que aporta <strong>Z</strong> o <strong>W</strong>) el factor determinante para definir si el descendiente será macho (ZZ) o hembra (ZW).
+                                </p>
+                            </div>
+                            <div class="shrink-0 flex items-center gap-2">
+                                <a href="/img/salud_preventiva/cuadro_herencia_sexual.png" target="_blank" rel="noopener" class="px-3.5 py-2 rounded-xl bg-cyan-500/20 hover:bg-cyan-500/30 text-cyan-300 border border-cyan-400/30 font-semibold transition flex items-center gap-1.5 text-xs">
+                                    <span>🔍</span>
+                                    <span>Ver en Alta Resolución</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Por qué el sexado visual falla en mutaciones -->
+                <div class="p-6 sm:p-8 rounded-2xl bg-[#070D1E] border border-cyan-500/30 space-y-4">
+                    <div class="flex items-center gap-2">
+                        <span class="px-2.5 py-0.5 rounded-full text-2xs font-black bg-amber-500/20 text-amber-300 border border-amber-500/40 uppercase">
+                            Casos Complejos en Mutaciones
+                        </span>
+                        <h4 class="text-base font-bold text-white">¿Por qué la inspección visual del céreo no es suficiente?</h4>
+                    </div>
+                    <p class="text-xs text-slate-300 leading-relaxed">
+                        En pericos de línea clásica ancestral (verdes o azules con marcas negras), los machos adultos presentan céreo azul intenso y las hembras céreo marrón rugoso o blanquecino en reposo. Sin embargo, en ejemplares jóvenes de menos de 4 meses y en mutaciones que inhiben o modifican la melanina, el céreo no sigue este patrón:
+                    </p>
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2 text-xs">
+                        <div class="p-4 rounded-xl bg-[#0C152E] border border-slate-800 space-y-1.5">
+                            <span class="font-bold text-cyan-300 block">Inos (Albinos & Lutinos):</span>
+                            <p class="text-slate-400">Los machos conservan de por vida un céreo rosa chicle o púrpura translúcido, sin virar a azul, confundiéndose habitualmente con hembras inmaduras.</p>
+                        </div>
+                        <div class="p-4 rounded-xl bg-[#0C152E] border border-slate-800 space-y-1.5">
+                            <span class="font-bold text-purple-300 block">Píos Recesivos (Daneses):</span>
+                            <p class="text-slate-400">Debido a la distribución amelánica dérmica, los machos reproductores conservan el céreo rosáceo homogéneo en plena madurez sexual.</p>
+                        </div>
+                        <div class="p-4 rounded-xl bg-[#0C152E] border border-slate-800 space-y-1.5">
+                            <span class="font-bold text-emerald-300 block">Flavos & Lacewings:</span>
+                            <p class="text-slate-400">La alteración enzimática en la síntesis de eumelanina genera tonalidades indefinidas entre azul tenue y lila que conducen a emparejamientos fallidos.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Vinculación del ADN con la Anilla -->
+                <div class="p-5 rounded-2xl bg-cyan-950/30 border border-cyan-500/40 flex flex-col sm:flex-row items-center justify-between gap-4">
+                    <div class="space-y-1 text-center sm:text-left">
+                        <span class="text-xs font-bold text-cyan-300 uppercase tracking-wider block">Certificación Blindada con Anilla Cerrada</span>
+                        <p class="text-xs text-slate-300 max-w-2xl">
+                            Todo informe emitido por laboratorio molecular debe registrar el código inalterable de la anilla cerrada. Como regla biológica estricta en el aviario: <strong class="text-white">los pericos australianos se deben anillar entre los 7 y 13 días de nacidos, siendo la edad ideal entre los 9 y 10 días</strong>. Al extraer la muestra de pluma una vez destetada el ave, el resultado genético queda vinculado de forma vitalicia a ese individuo exclusivo.
+                        </p>
+                    </div>
+                    <span class="px-4 py-2 rounded-xl bg-cyan-500/20 text-cyan-300 text-xs font-mono font-bold border border-cyan-400/40 whitespace-nowrap">
+                        100% Inviolable
+                    </span>
+                </div>
+            </div>
+        </section>
+
+        <!-- 4. PROTOCOLO ESTRICTO DE CUARENTENA & BIOSEGURIDAD -->
+        <section id="cuarentena-bioseguridad" class="space-y-8">
+            <div class="text-center max-w-3xl mx-auto space-y-2">
+                <span class="text-xs font-bold text-cyan-400 uppercase tracking-widest">Barrera Sanitaria</span>
+                <h2 class="text-2xl sm:text-4xl font-extrabold text-white font-display">
+                    Protocolo de Cuarentena (30 a 40 Días)
+                </h2>
+                <p class="text-sm text-slate-300">
+                    Cualquier ejemplar recién introducido debe permanecer aislado para proteger la bioseguridad del aviario contra patógenos latentes.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <!-- Regla 1 -->
+                <div class="bg-[#0C152E]/90 p-6 rounded-3xl border border-slate-800 hover:border-cyan-400/50 shadow-xl transition space-y-3 flex flex-col justify-between">
+                    <div class="space-y-3">
+                        <div class="w-12 h-12 rounded-2xl bg-cyan-950 border border-cyan-500/40 flex items-center justify-center text-xl text-cyan-400">
+                            🚪
+                        </div>
+                        <span class="text-2xs font-bold text-cyan-400 uppercase tracking-wider block">Fase 01</span>
+                        <h3 class="text-lg font-bold text-white font-display">Aislamiento Espacial</h3>
+                        <p class="text-xs text-slate-300 leading-relaxed">
+                            Ubicación en una sala con flujo de aire independiente y a distancia mínima de los recintos de cría. Los aerosoles y el polvillo de plumón transportan patógenos infecciosos con gran facilidad.
+                        </p>
+                    </div>
+                    <div class="pt-3 border-t border-slate-800 text-3xs font-bold text-cyan-300 uppercase">
+                        Cero contacto aéreo
+                    </div>
+                </div>
+
+                <!-- Regla 2 -->
+                <div class="bg-[#0C152E]/90 p-6 rounded-3xl border border-slate-800 hover:border-cyan-400/50 shadow-xl transition space-y-3 flex flex-col justify-between">
+                    <div class="space-y-3">
+                        <div class="w-12 h-12 rounded-2xl bg-cyan-950 border border-cyan-500/40 flex items-center justify-center text-xl text-cyan-400">
+                            🥣
+                        </div>
+                        <span class="text-2xs font-bold text-cyan-400 uppercase tracking-wider block">Fase 02</span>
+                        <h3 class="text-lg font-bold text-white font-display">Utensilios Exclusivos</h3>
+                        <p class="text-xs text-slate-300 leading-relaxed">
+                            Comederos, bebederos y bandejas de cuarentena no se mezclan con los del resto de las aves. Se higienizan diariamente con desinfectantes de grado veterinario (amonios cuaternarios o Virkon S).
+                        </p>
+                    </div>
+                    <div class="pt-3 border-t border-slate-800 text-3xs font-bold text-emerald-300 uppercase">
+                        Desinfección estricta
+                    </div>
+                </div>
+
+                <!-- Regla 3 -->
+                <div class="bg-[#0C152E]/90 p-6 rounded-3xl border border-slate-800 hover:border-cyan-400/50 shadow-xl transition space-y-3 flex flex-col justify-between">
+                    <div class="space-y-3">
+                        <div class="w-12 h-12 rounded-2xl bg-cyan-950 border border-cyan-500/40 flex items-center justify-center text-xl text-cyan-400">
+                            🔬
+                        </div>
+                        <span class="text-2xs font-bold text-cyan-400 uppercase tracking-wider block">Fase 03</span>
+                        <h3 class="text-lg font-bold text-white font-display">Panel Diagnóstico</h3>
+                        <p class="text-xs text-slate-300 leading-relaxed">
+                            Control coprológico para descarte de coccidios, megabacterias y nematodos. Inspección clínica de vías respiratorias para descartar micoplasmosis y clamidiosis.
+                        </p>
+                    </div>
+                    <div class="pt-3 border-t border-slate-800 text-3xs font-bold text-purple-300 uppercase">
+                        Análisis de heces y raspados
+                    </div>
+                </div>
+
+                <!-- Regla 4 -->
+                <div class="bg-[#0C152E]/90 p-6 rounded-3xl border border-slate-800 hover:border-cyan-400/50 shadow-xl transition space-y-3 flex flex-col justify-between">
+                    <div class="space-y-3">
+                        <div class="w-12 h-12 rounded-2xl bg-cyan-950 border border-cyan-500/40 flex items-center justify-center text-xl text-cyan-400">
+                            ⏱️
+                        </div>
+                        <span class="text-2xs font-bold text-cyan-400 uppercase tracking-wider block">Fase 04</span>
+                        <h3 class="text-lg font-bold text-white font-display">Período de 30-40 Días</h3>
+                        <p class="text-xs text-slate-300 leading-relaxed">
+                            Las enfermedades virales y bacterianas lentas poseen periodos de incubación prolongados. Cumplir la ventana de 30 a 40 días es la única garantía de que ningún portador asintomático ingrese a la colonia.
+                        </p>
+                    </div>
+                    <div class="pt-3 border-t border-slate-800 text-3xs font-bold text-amber-300 uppercase">
+                        Integración segura al aviario
+                    </div>
+                </div>
+            </div>
+
+            <!-- Las 4 patologías críticas a vigilar -->
+            <div class="bg-[#0C152E]/90 rounded-3xl p-6 sm:p-8 border border-cyan-500/20 shadow-2xl space-y-6">
+                <div class="border-b border-slate-800 pb-3">
+                    <span class="text-xs font-bold text-cyan-400 uppercase tracking-widest">Patología Preventiva</span>
+                    <h3 class="text-xl font-bold text-white font-display">Las 4 Amenazas Silenciosas en Psitácidos</h3>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 text-xs">
+                    <div class="p-5 rounded-2xl bg-[#070D1E] border border-cyan-900/60 space-y-2">
+                        <span class="text-xs font-bold text-red-400 block">1. Megabacterias</span>
+                        <p class="text-slate-400 font-mono text-3xs">Macrorhabdus ornithogaster</p>
+                        <p class="text-slate-300 leading-relaxed">
+                            Levadura oportunista que coloniza el proventrículo gástrico. Produce digestión incompleta, semillas enteras en las heces y enflaquecimiento agudo con apetito voraz.
+                        </p>
+                    </div>
+
+                    <div class="p-5 rounded-2xl bg-[#070D1E] border border-cyan-900/60 space-y-2">
+                        <span class="text-xs font-bold text-red-400 block">2. Psitacosis</span>
+                        <p class="text-slate-400 font-mono text-3xs">Chlamydia psittaci</p>
+                        <p class="text-slate-300 leading-relaxed">
+                            Bacteria zoonótica de alta contagiosidad. Causa conjuntivitis purulenta, heces verde lima fluorescentes, dificultad respiratoria e inflamación hepatoesplénica.
+                        </p>
+                    </div>
+
+                    <div class="p-5 rounded-2xl bg-[#070D1E] border border-cyan-900/60 space-y-2">
+                        <span class="text-xs font-bold text-red-400 block">3. Circovirus (PBFD)</span>
+                        <p class="text-slate-400 font-mono text-3xs">Enfermedad Pico & Plumas</p>
+                        <p class="text-slate-300 leading-relaxed">
+                            Virus inmunosupresor altamente resistente que ataca los folículos plumarios. Produce cañones deformes, plumas rotas y daño progresivo en la ranfoteca córnea del pico.
+                        </p>
+                    </div>
+
+                    <div class="p-5 rounded-2xl bg-[#070D1E] border border-cyan-900/60 space-y-2">
+                        <span class="text-xs font-bold text-red-400 block">4. Poliomavirus</span>
+                        <p class="text-slate-400 font-mono text-3xs">Muda Francesa Clásica</p>
+                        <p class="text-slate-300 leading-relaxed">
+                            Afección viral que impacta a pichones nidícolas. Se manifiesta con desprendimiento anormal de plumas remeras y timoneras, dejando al ejemplar incapacitado para el vuelo continuo.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 5. DESPARASITACIÓN INTEGRAL ESCALONADA -->
+        <section id="desparasitacion" class="space-y-8">
+            <div class="text-center max-w-3xl mx-auto space-y-2">
+                <span class="text-xs font-bold text-cyan-400 uppercase tracking-widest">Profilaxis Antiparasitaria</span>
+                <h2 class="text-2xl sm:text-4xl font-extrabold text-white font-display">
+                    Programa de Desparasitación Interna y Externa
+                </h2>
+                <p class="text-sm text-slate-300">
+                    Control metódico sin saturación química: cómo erradicar ácaros y parásitos respetando el sistema hepático del perico.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                
+                <!-- Desparasitación Externa -->
+                <div class="bg-[#0C152E]/90 p-6 sm:p-8 rounded-3xl border border-cyan-500/30 space-y-5">
+                    <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-xl bg-cyan-950 border border-cyan-500/40 flex items-center justify-center text-xl text-cyan-400">
+                                🧴
+                            </div>
+                            <div>
+                                <h3 class="text-lg font-bold text-white font-display">Desparasitación Externa</h3>
+                                <span class="text-2xs text-cyan-300 font-bold uppercase">Ácaros de la Sarna y Sacos Aéreos</span>
+                            </div>
+                        </div>
+                        <span class="px-2.5 py-1 rounded-full text-3xs font-black bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 uppercase">
+                            Tópica Cutánea
+                        </span>
+                    </div>
+
+                    <p class="text-xs text-slate-300 leading-relaxed">
+                        El ácaro de la sarna (<em class="text-white">Knemidokoptes pilae</em>) taladra galerías en el céreo, pico y patas, produciendo costras blanquecinas esponjosas. Paralelamente, los ácaros traqueales (<em class="text-white">Sternostoma tracheacolum</em>) colonizan tráquea y sacos aéreos generando chasquidos respiratorios al anochecer.
+                    </p>
+
+                    <div class="p-4 rounded-2xl bg-[#070D1E] border border-cyan-900/60 text-xs space-y-2">
+                        <span class="font-bold text-cyan-300 block">Protocolo de Aplicación:</span>
+                        <ul class="space-y-1.5 text-slate-400">
+                            <li>• <strong class="text-white">Principio Activo:</strong> Ivermectina formulada al 0.12% para uso ornitológico directo.</li>
+                            <li>• <strong class="text-white">Punto de Aplicación:</strong> Se sopla con suavidad el plumaje de la nuca hasta exponer la piel desnuda y la vena yugular. Se deposita exactamente <strong class="text-cyan-300">1 gota en la piel</strong> (nunca en las plumas).</li>
+                            <li>• <strong class="text-white">Frecuencia:</strong> 2 veces al año en ejemplares adultos (inicio de primavera e inicio de otoño). Si hay infestación activa, se repite la dosis a los 14 días para romper el ciclo larvario.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Desparasitación Interna -->
+                <div class="bg-[#0C152E]/90 p-6 sm:p-8 rounded-3xl border border-emerald-500/30 space-y-5">
+                    <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-xl bg-emerald-950 border border-emerald-500/40 flex items-center justify-center text-xl text-emerald-400">
+                                💧
+                            </div>
+                            <div>
+                                <h3 class="text-lg font-bold text-white font-display">Desparasitación Interna</h3>
+                                <span class="text-2xs text-emerald-300 font-bold uppercase">Nematodos, Cestodos & Coccidios</span>
+                            </div>
+                        </div>
+                        <span class="px-2.5 py-1 rounded-full text-3xs font-black bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 uppercase">
+                            Vía Oral / Agua
+                        </span>
+                    </div>
+
+                    <p class="text-xs text-slate-300 leading-relaxed">
+                        Los parásitos gastrointestinales (<em class="text-white">Ascaridia hermaphrodita</em>, <em class="text-white">Capillaria</em> y coccidios) compiten directamente por nutrientes esenciales en el lumen entérico, mermando la masa muscular pectoral y provocando heces acuosas y letargia.
+                    </p>
+
+                    <div class="p-4 rounded-2xl bg-[#070D1E] border border-emerald-900/60 text-xs space-y-2">
+                        <span class="font-bold text-emerald-300 block">Protocolo de Aplicación:</span>
+                        <ul class="space-y-1.5 text-slate-400">
+                            <li>• <strong class="text-white">Pauta Preventiva:</strong> Examen coprológico previo por flotación. Se desaconseja medicar a ciegas para evitar resistencia parasitaria.</li>
+                            <li>• <strong class="text-white">Tratamiento Clínico:</strong> Levamisol o Febendazol solubles administrados en agua de bebida dosificada durante 48 horas continuas.</li>
+                            <li>• <strong class="text-white">Recuperación Posterior:</strong> Tras completar el tratamiento, se administran 5 días consecutivos de probióticos aviares junto a complejo multivitamínico con vitamina K (antihemorrágica) y vitamina B.</li>
+                        </ul>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- 6. EL CHECKLIST CLÍNICO EN 6 PUNTOS (EXPLORACIÓN DIARIA) -->
+        <section id="checklist-clinico" class="space-y-8">
+            <div class="text-center max-w-3xl mx-auto space-y-2">
+                <span class="text-xs font-bold text-cyan-400 uppercase tracking-widest">Inspección Semiológica</span>
+                <h2 class="text-2xl sm:text-4xl font-extrabold text-white font-display">
+                    El Checklist Clínico en 6 Puntos
+                </h2>
+                <p class="text-sm text-slate-300">
+                    Examen físico protocolar para evaluar la condición corporal y detectar anomalías en menos de un minuto.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+
+                <!-- Punto 1 -->
+                <div class="bg-[#0C152E]/90 p-6 rounded-3xl border border-slate-800 hover:border-cyan-400/50 shadow-xl transition space-y-3">
+                    <div class="flex items-center justify-between">
+                        <span class="text-2xl">👁️</span>
+                        <span class="text-2xs font-mono font-bold text-cyan-400 uppercase">Punto 01</span>
+                    </div>
+                    <h3 class="text-base font-bold text-white font-display">Ojos & Fosas Nasales</h3>
+                    <p class="text-xs text-slate-300 leading-relaxed">
+                        Ojos limpios, vivos, redondos y sin lagrimeo ni párpados hinchados. Narinas secas, permeables y libres de exudados o tapones mucosos.
+                    </p>
+                    <div class="text-3xs text-emerald-400 font-bold uppercase pt-2 border-t border-slate-800">
+                        Normal: Mirada alerta y respiración silenciosa
+                    </div>
+                </div>
+
+                <!-- Punto 2 -->
+                <div class="bg-[#0C152E]/90 p-6 rounded-3xl border border-slate-800 hover:border-cyan-400/50 shadow-xl transition space-y-3">
+                    <div class="flex items-center justify-between">
+                        <span class="text-2xl">🦜</span>
+                        <span class="text-2xs font-mono font-bold text-cyan-400 uppercase">Punto 02</span>
+                    </div>
+                    <h3 class="text-base font-bold text-white font-display">Céreo & Ranfoteca del Pico</h3>
+                    <p class="text-xs text-slate-300 leading-relaxed">
+                        Superficie del céreo lisa y uniforme (sin porosidades de ácaros). Mandíbulas superior e inferior alineadas sin desviación lateral ni sobrecrecimiento córneo.
+                    </p>
+                    <div class="text-3xs text-emerald-400 font-bold uppercase pt-2 border-t border-slate-800">
+                        Normal: Oclusión anatómica perfecta
+                    </div>
+                </div>
+
+                <!-- Punto 3 -->
+                <div class="bg-[#0C152E]/90 p-6 rounded-3xl border border-slate-800 hover:border-cyan-400/50 shadow-xl transition space-y-3">
+                    <div class="flex items-center justify-between">
+                        <span class="text-2xl">🌾</span>
+                        <span class="text-2xs font-mono font-bold text-cyan-400 uppercase">Punto 03</span>
+                    </div>
+                    <h3 class="text-base font-bold text-white font-display">Buche & Vaciado Digestivo</h3>
+                    <p class="text-xs text-slate-300 leading-relaxed">
+                        Palpación suave del buche en la base del cuello. Debe vaciarse completamente en 4 a 6 horas post-ingesta sin acumulación de aire, líquidos estancados ni olor ácido.
+                    </p>
+                    <div class="text-3xs text-emerald-400 font-bold uppercase pt-2 border-t border-slate-800">
+                        Normal: Tránsito esofágico elástico
+                    </div>
+                </div>
+
+                <!-- Punto 4 -->
+                <div class="bg-[#0C152E]/90 p-6 rounded-3xl border border-cyan-500/40 glow-cyan-sm shadow-xl transition space-y-3">
+                    <div class="flex items-center justify-between">
+                        <span class="text-2xl">⚖️</span>
+                        <span class="text-2xs font-mono font-bold text-cyan-300 uppercase">Punto 04 (Crítico)</span>
+                    </div>
+                    <h3 class="text-base font-bold text-white font-display">Score de Quilla Pectoral</h3>
+                    <p class="text-xs text-slate-300 leading-relaxed">
+                        Evaluación del esternón. La masa muscular pectoral debe cubrir los laterales formando una "U" suave (Score 3). Si la quilla se siente afilada como cuchilla (Score 1-2), hay emaciación grave.
+                    </p>
+                    <div class="text-3xs text-cyan-300 font-bold uppercase pt-2 border-t border-cyan-900/60">
+                        Normal: Músculo pectoral firme y redondeado
+                    </div>
+                </div>
+
+                <!-- Punto 5 -->
+                <div class="bg-[#0C152E]/90 p-6 rounded-3xl border border-slate-800 hover:border-cyan-400/50 shadow-xl transition space-y-3">
+                    <div class="flex items-center justify-between">
+                        <span class="text-2xl">🪶</span>
+                        <span class="text-2xs font-mono font-bold text-cyan-400 uppercase">Punto 05</span>
+                    </div>
+                    <h3 class="text-base font-bold text-white font-display">Cloaca & Plumón Ventral</h3>
+                    <p class="text-xs text-slate-300 leading-relaxed">
+                        Plumón alrededor de la cloaca esponjoso, seco y limpio de manchas fecales. Mucosa cloacal rosada sin prolapsos, heces adheridas ni enrojecimiento perianal.
+                    </p>
+                    <div class="text-3xs text-emerald-400 font-bold uppercase pt-2 border-t border-slate-800">
+                        Normal: Cero heces pegadas al plumaje
+                    </div>
+                </div>
+
+                <!-- Punto 6 -->
+                <div class="bg-[#0C152E]/90 p-6 rounded-3xl border border-slate-800 hover:border-cyan-400/50 shadow-xl transition space-y-3">
+                    <div class="flex items-center justify-between">
+                        <span class="text-2xl">🦶</span>
+                        <span class="text-2xs font-mono font-bold text-cyan-400 uppercase">Punto 06</span>
+                    </div>
+                    <h3 class="text-base font-bold text-white font-display">Patas, Dedos & Almohadillas</h3>
+                    <p class="text-xs text-slate-300 leading-relaxed">
+                        Articulaciones tibiotarsianas limpias y flexibles. Escamas lisas sin costras de sarna. Plantas sin llagas ni dermatitis. Las 4 uñas íntegras y anilla cerrada sin holgura excesiva ni opresión.
+                    </p>
+                    <div class="text-3xs text-emerald-400 font-bold uppercase pt-2 border-t border-slate-800">
+                        Normal: Reflejo prensil vigoroso
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- 7. NUTRACÉUTICA PREVENTIVA & BIOSEGURIDAD NATURAL -->
+        <section id="nutraceutica" class="space-y-8">
+            <div class="text-center max-w-3xl mx-auto space-y-2">
+                <span class="text-xs font-bold text-cyan-400 uppercase tracking-widest">Soporte Orgánico Diario</span>
+                <h2 class="text-2xl sm:text-4xl font-extrabold text-white font-display">
+                    Nutracéutica Preventiva & Defensa Inmune
+                </h2>
+                <p class="text-sm text-slate-300">
+                    Principios activos naturales que blindan el tracto gastrointestinal y el hígado sin alterar la microflora benéfica.
+                </p>
+            </div>
+
+            <div class="bg-[#0C152E]/90 rounded-3xl p-6 sm:p-8 border border-cyan-500/20 shadow-2xl space-y-8">
+                <!-- Foto de suplementos preventivos -->
+                <div class="relative rounded-2xl overflow-hidden border border-slate-800 group bg-[#070D1E]">
+                    <img src="/img/salud_preventiva/suplementos_preventivos.jpg" alt="Suplementos preventivos aviares: gotero de vinagre de sidra, semillas de cardo mariano, probióticos en polvo y ramas de orégano fresco" class="w-full h-auto object-cover max-h-[500px] mx-auto transition-transform duration-500 group-hover:scale-[1.01]">
+                    <div class="absolute bottom-3 left-3 bg-[#080E1E]/95 backdrop-blur-md px-4 py-2 rounded-xl border border-cyan-500/30 text-xs font-mono text-cyan-300">
+                        Compuestos Terapéuticos Naturales: Ácidos orgánicos, probióticos específicos y fitoterapia aviar
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-xs text-slate-300">
+                    
+                    <!-- Vinagre de Manzana -->
+                    <div class="p-5 rounded-2xl bg-[#070D1E] border border-cyan-900/60 space-y-2">
+                        <h3 class="text-sm font-bold text-white flex items-center gap-1.5">
+                            <span>🍎</span> Acidificación con Vinagre de Manzana Crudo
+                        </h3>
+                        <p class="leading-relaxed text-slate-400">
+                            El vinagre de sidra de manzana no pasteurizado (<em class="text-white">con madre</em>) reduce el pH del agua de bebida a 4.5 - 5.0. Este entorno ácido inhibe la adhesión y proliferación de hongos (<em class="text-white">Candida</em>), megabacterias y bacterias gramnegativas (<em class="text-white">E. coli, Salmonella</em>).
+                        </p>
+                        <div class="text-3xs text-cyan-300 font-mono">Dosis: 2 a 3 ml por litro de agua (2 veces por semana)</div>
+                    </div>
+
+                    <!-- Probióticos Específicos -->
+                    <div class="p-5 rounded-2xl bg-[#070D1E] border border-cyan-900/60 space-y-2">
+                        <h3 class="text-sm font-bold text-white flex items-center gap-1.5">
+                            <span>🦠</span> Probióticos Multicepa Específicos
+                        </h3>
+                        <p class="leading-relaxed text-slate-400">
+                            Las bacterias lácticas de origen aviar (<em class="text-white">Lactobacillus salivarius, Bacillus subtilis, Enterococcus faecium</em>) forman una biopelícula competitiva en las vellosidades entéricas, secretando bacteriocinas que impiden la colonización de patógenos externos.
+                        </p>
+                        <div class="text-3xs text-emerald-400 font-mono">Aplicación: Tras desparasitación o muda intensa</div>
+                    </div>
+
+                    <!-- Cardo Mariano -->
+                    <div class="p-5 rounded-2xl bg-[#070D1E] border border-cyan-900/60 space-y-2">
+                        <h3 class="text-sm font-bold text-white flex items-center gap-1.5">
+                            <span>🌾</span> Silimarina (Cardo Mariano) & Hígado
+                        </h3>
+                        <p class="leading-relaxed text-slate-400">
+                            Los pericos ingleses, debido a su mayor porte y acelerada demanda metabólica, tienen susceptibilidad a la lipidosis hepática. La silimarina estabiliza las membranas de los hepatocitos y estimula la regeneración del parénquima hepático dañado.
+                        </p>
+                        <div class="text-3xs text-purple-300 font-mono">Suministro: Semillas en mixtura o extracto líquido</div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- 8. DETECCIÓN PRECOZ & BOTIQUÍN DE EMERGENCIA -->
+        <section id="alertas-veterinarias" class="bg-[#0C152E]/90 rounded-3xl p-8 sm:p-10 border border-cyan-500/20 shadow-2xl space-y-6">
+            <div class="border-b border-slate-800 pb-4">
+                <span class="text-xs font-bold text-cyan-400 uppercase tracking-widest">Protocolos de Alerta Temprana</span>
+                <h3 class="text-2xl font-bold text-white font-display">Signos Clínicos de Alarma Inmediata</h3>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-xs text-slate-300">
+                <div class="p-5 rounded-2xl bg-[#070D1E] border border-red-950/60 space-y-2">
+                    <h4 class="font-bold text-red-400 text-sm flex items-center gap-1.5">
+                        <span>⚠️</span> Embolamiento & Letargo en el Suelo
+                    </h4>
+                    <p class="leading-relaxed text-slate-400">
+                        Un perico que permanece con las plumas ahuecadas, los ojos semicerrados y posado en el fondo de la jaula (en lugar de las perchas altas) está perdiendo calor corporal a ritmo crítico. Acción inmediata: traslado a jaula hospital con fuente de calor infrarrojo o manta térmica a 28-30°C.
+                    </p>
+                </div>
+
+                <div class="p-5 rounded-2xl bg-[#070D1E] border border-amber-950/60 space-y-2">
+                    <h4 class="font-bold text-amber-400 text-sm flex items-center gap-1.5">
+                        <span>⚠️</span> Respiración con Cola Oscilante (Balancín)
+                    </h4>
+                    <p class="leading-relaxed text-slate-400">
+                        La cola que se mueve de arriba hacia abajo con cada inhalación y exhalación denota disnea o esfuerzo respiratorio extremo (neumonía, ácaros traqueales o sacos aéreos colapsados). No medicar con polvos en el aire; requiere atención veterinaria y ambiente oxigenado.
+                    </p>
+                </div>
+
+                <div class="p-5 rounded-2xl bg-[#070D1E] border border-cyan-950/60 space-y-2">
+                    <h4 class="font-bold text-cyan-300 text-sm flex items-center gap-1.5">
+                        <span>🧰</span> Elementos Esenciales del Botiquín Aviar
+                    </h4>
+                    <p class="leading-relaxed text-slate-400">
+                        Todo aviario responsable debe contar con: solución estéril de clorhexidina al 0.05% para heridas, polvo hemostático para uñas sangrantes, suero oral rehidratante con electrolitos, papilla enteral de emergencia y jeringas de alimentación con sonda atraumática.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 9. LLAMADO A LA ACCIÓN (CTA) -->
+        <section class="bg-gradient-to-r from-cyan-950/60 via-[#0C152E] to-emerald-950/60 rounded-3xl p-8 sm:p-12 border border-cyan-500/40 text-center space-y-6 shadow-2xl relative overflow-hidden">
+            <div class="max-w-2xl mx-auto space-y-3">
+                <span class="text-xs font-bold text-cyan-400 tracking-widest uppercase">Garantía Sanitaria Certificada</span>
+                <h2 class="text-2xl sm:text-3xl font-black text-white font-display">
+                    Ejemplares Evaluados con Estándar Veterinario y ADN Comprobado
+                </h2>
+                <p class="text-sm text-slate-300 leading-relaxed">
+                    Cada ave publicada en el catálogo cuenta con su cartilla sanitaria al día, registro de desparasitaciones, anillado cerrado oficial COM y certificado de sexado molecular por PCR emitido por laboratorio acreditado.
+                </p>
+            </div>
+
+            <div class="flex flex-wrap items-center justify-center gap-4 pt-2">
+                <a href="/catalogo" class="px-8 py-3.5 rounded-2xl bg-gradient-to-r from-cyan-400 via-teal-400 to-emerald-400 hover:from-cyan-300 hover:to-emerald-300 text-slate-950 font-extrabold text-sm uppercase tracking-wider shadow-lg shadow-cyan-500/30 transition transform hover:scale-105">
+                    Ver Aves Disponibles con Certificado
+                </a>
+                <a href="/" class="px-6 py-3.5 rounded-2xl bg-[#070D1E] hover:bg-slate-800 text-slate-300 hover:text-white border border-slate-700 font-bold text-sm transition">
+                    &larr; Volver al Inicio
+                </a>
+            </div>
+        </section>
+
+    </div>
+</main>
+
+<%- include('../partials/footer') %>

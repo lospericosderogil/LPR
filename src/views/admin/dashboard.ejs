@@ -1,91 +1,87 @@
 <%- include('../partials/header') %>
-<div class="max-w-7xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
-    <div class="md:flex md:items-center md:justify-between mb-8">
+<div class="max-w-7xl mx-auto px-4 py-10 sm:px-6 lg:px-8 space-y-8">
+    <div class="md:flex md:items-center md:justify-between border-b border-slate-800 pb-6">
         <div class="flex-1 min-w-0">
-            <h2 class="text-2xl font-bold leading-7 text-gray-900 sm:text-3xl sm:truncate">Panel de Administración</h2>
-            <p class="text-sm text-gray-500 mt-1">Resumen general del criadero</p>
+            <span class="text-xs font-bold text-cyan-400 tracking-widest uppercase block mb-1">Módulo de Control</span>
+            <h2 class="text-3xl font-extrabold text-white font-display">Panel de Administración</h2>
+            <p class="text-sm text-slate-400 mt-1">Resumen biológico y comercial del criadero</p>
         </div>
         <div class="mt-4 flex md:mt-0 md:ml-4">
-            <a href="/admin/aves/nuevo" class="ml-3 inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700">
-                Registrar Ave
+            <a href="/admin/aves/nuevo" class="inline-flex items-center px-5 py-2.5 rounded-2xl bg-gradient-to-r from-cyan-400 to-teal-400 hover:from-cyan-300 hover:to-teal-300 text-slate-950 font-extrabold text-sm uppercase tracking-wider shadow-lg shadow-cyan-500/20 transition transform hover:scale-105">
+                + Registrar Ave
             </a>
         </div>
     </div>
 
     <!-- Stats Grid -->
-    <div class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4 mb-8">
-        <div class="bg-white overflow-hidden shadow rounded-lg border border-gray-150 p-5">
+    <div class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
+        <div class="bg-[#0C152E]/90 shadow-xl rounded-3xl border border-cyan-500/25 p-6 hover:border-cyan-400/50 transition">
             <div class="flex items-center">
-                <div class="flex-shrink-0 bg-blue-500 rounded-md p-3 text-white">🦜</div>
-                <div class="ml-5 w-0 flex-1">
-                    <dl>
-                        <dt class="text-sm font-medium text-gray-500 truncate">Total Aves</dt>
-                        <dd class="text-2xl font-semibold text-gray-900"><%= stats.total %></dd>
-                    </dl>
+                <div class="w-12 h-12 rounded-2xl bg-cyan-950 border border-cyan-500/40 flex items-center justify-center text-2xl text-cyan-400">🦜</div>
+                <div class="ml-4 flex-1">
+                    <dt class="text-xs font-bold text-cyan-400 uppercase tracking-wider">Total Aves</dt>
+                    <dd class="text-3xl font-black text-white font-display mt-0.5"><%= stats.total %></dd>
                 </div>
             </div>
         </div>
 
-        <div class="bg-white overflow-hidden shadow rounded-lg border border-gray-150 p-5">
+        <div class="bg-[#0C152E]/90 shadow-xl rounded-3xl border border-teal-500/25 p-6 hover:border-teal-400/50 transition">
             <div class="flex items-center">
-                <div class="flex-shrink-0 bg-green-500 rounded-md p-3 text-white">✔</div>
-                <div class="ml-5 w-0 flex-1">
-                    <dl>
-                        <dt class="text-sm font-medium text-gray-500 truncate">Disponibles</dt>
-                        <dd class="text-2xl font-semibold text-gray-900"><%= stats.disponibles %></dd>
-                    </dl>
+                <div class="w-12 h-12 rounded-2xl bg-teal-950 border border-teal-500/40 flex items-center justify-center text-2xl text-teal-400">✔</div>
+                <div class="ml-4 flex-1">
+                    <dt class="text-xs font-bold text-teal-400 uppercase tracking-wider">Disponibles</dt>
+                    <dd class="text-3xl font-black text-white font-display mt-0.5"><%= stats.disponibles %></dd>
                 </div>
             </div>
         </div>
 
-        <div class="bg-white overflow-hidden shadow rounded-lg border border-gray-150 p-5">
+        <div class="bg-[#0C152E]/90 shadow-xl rounded-3xl border border-yellow-500/25 p-6 hover:border-yellow-400/50 transition">
             <div class="flex items-center">
-                <div class="flex-shrink-0 bg-yellow-500 rounded-md p-3 text-white">🛒</div>
-                <div class="ml-5 w-0 flex-1">
-                    <dl>
-                        <dt class="text-sm font-medium text-gray-500 truncate">En Venta</dt>
-                        <dd class="text-2xl font-semibold text-gray-900"><%= stats.en_venta %></dd>
-                    </dl>
+                <div class="w-12 h-12 rounded-2xl bg-yellow-950 border border-yellow-500/40 flex items-center justify-center text-2xl text-yellow-400">🛒</div>
+                <div class="ml-4 flex-1">
+                    <dt class="text-xs font-bold text-yellow-400 uppercase tracking-wider">En Venta</dt>
+                    <dd class="text-3xl font-black text-white font-display mt-0.5"><%= stats.en_venta %></dd>
                 </div>
             </div>
         </div>
 
-        <div class="bg-white overflow-hidden shadow rounded-lg border border-gray-150 p-5">
+        <div class="bg-[#0C152E]/90 shadow-xl rounded-3xl border border-purple-500/25 p-6 hover:border-purple-400/50 transition">
             <div class="flex items-center">
-                <div class="flex-shrink-0 bg-purple-500 rounded-md p-3 text-white">💰</div>
-                <div class="ml-5 w-0 flex-1">
-                    <dl>
-                        <dt class="text-sm font-medium text-gray-500 truncate">Vendidos</dt>
-                        <dd class="text-2xl font-semibold text-gray-900"><%= stats.vendidos %></dd>
-                    </dl>
+                <div class="w-12 h-12 rounded-2xl bg-purple-950 border border-purple-500/40 flex items-center justify-center text-2xl text-purple-400">💰</div>
+                <div class="ml-4 flex-1">
+                    <dt class="text-xs font-bold text-purple-400 uppercase tracking-wider">Vendidos</dt>
+                    <dd class="text-3xl font-black text-white font-display mt-0.5"><%= stats.vendidos %></dd>
                 </div>
             </div>
         </div>
     </div>
 
     <!-- Shortcuts -->
-    <div class="bg-white shadow rounded-lg border border-gray-150 p-6">
-        <h3 class="text-lg font-bold text-gray-900 mb-4">Accesos Rápidos</h3>
-        <div class="grid grid-cols-1 gap-4 sm:grid-cols-3">
-            <a href="/admin/aves" class="flex items-center p-4 border border-gray-200 rounded-lg hover:bg-gray-50">
-                <div class="text-2xl mr-4">🗂</div>
+    <div class="bg-[#0C152E]/90 shadow-2xl rounded-3xl border border-cyan-500/25 p-8 backdrop-blur-xl space-y-6">
+        <h3 class="text-lg font-bold text-white font-display flex items-center gap-2">
+            <span class="text-cyan-400">⚡</span>
+            <span>Accesos Rápidos de Gestión</span>
+        </h3>
+        <div class="grid grid-cols-1 gap-5 sm:grid-cols-3">
+            <a href="/admin/aves" class="flex items-center p-5 bg-[#070D1E] border border-slate-800 rounded-2xl hover:border-cyan-400 transition group">
+                <div class="text-3xl mr-4 group-hover:scale-110 transition-transform">🗂️</div>
                 <div>
-                    <h4 class="font-semibold text-gray-900">Listado de Aves</h4>
-                    <p class="text-xs text-gray-500">Ver, filtrar y editar ejemplares</p>
+                    <h4 class="font-bold text-white group-hover:text-cyan-400 transition">Listado de Aves</h4>
+                    <p class="text-xs text-slate-400 mt-0.5">Ver, filtrar y editar ejemplares</p>
                 </div>
             </a>
-            <a href="/admin/parejas" class="flex items-center p-4 border border-gray-200 rounded-lg hover:bg-gray-50">
-                <div class="text-2xl mr-4">👩‍❤️‍👨</div>
+            <a href="/admin/parejas" class="flex items-center p-5 bg-[#070D1E] border border-slate-800 rounded-2xl hover:border-cyan-400 transition group">
+                <div class="text-3xl mr-4 group-hover:scale-110 transition-transform">👩‍❤️‍👨</div>
                 <div>
-                    <h4 class="font-semibold text-gray-900">Parejas Reproductivas</h4>
-                    <p class="text-xs text-gray-500">Gestionar uniones y jaulas</p>
+                    <h4 class="font-bold text-white group-hover:text-cyan-400 transition">Parejas Reproductivas</h4>
+                    <p class="text-xs text-slate-400 mt-0.5">Gestionar uniones y jaulas</p>
                 </div>
             </a>
-            <a href="/admin/ventas" class="flex items-center p-4 border border-gray-200 rounded-lg hover:bg-gray-50">
-                <div class="text-2xl mr-4">📑</div>
+            <a href="/admin/ventas" class="flex items-center p-5 bg-[#070D1E] border border-slate-800 rounded-2xl hover:border-cyan-400 transition group">
+                <div class="text-3xl mr-4 group-hover:scale-110 transition-transform">📑</div>
                 <div>
-                    <h4 class="font-semibold text-gray-900">Pedidos y Clientes</h4>
-                    <p class="text-xs text-gray-500">Historial comercial y facturas</p>
+                    <h4 class="font-bold text-white group-hover:text-cyan-400 transition">Pedidos y Clientes</h4>
+                    <p class="text-xs text-slate-400 mt-0.5">Historial comercial y reservas</p>
                 </div>
             </a>
         </div>

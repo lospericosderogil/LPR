@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Cuadro de Herencia Sexual</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap');
+
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  body {
+    width: 1280px;
+    height: 720px;
+    background-color: #070D1E;
+    background-image: 
+      radial-gradient(circle at 15% 20%, rgba(236, 72, 153, 0.12) 0%, transparent 40%),
+      radial-gradient(circle at 85% 20%, rgba(6, 182, 212, 0.14) 0%, transparent 45%),
+      radial-gradient(circle at 50% 90%, rgba(16, 185, 129, 0.08) 0%, transparent 50%);
+    font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    color: #F1F5F9;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 32px 48px;
+    overflow: hidden;
+  }
+
+  .canvas-card {
+    width: 100%;
+    height: 100%;
+    background: rgba(12, 21, 46, 0.85);
+    border: 1px solid rgba(6, 182, 212, 0.3);
+    border-radius: 28px;
+    box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.7), 0 0 40px rgba(6, 182, 212, 0.1);
+    display: flex;
+    flex-direction: column;
+    padding: 32px 40px;
+    position: relative;
+    backdrop-filter: blur(16px);
+  }
+
+  /* Header */
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 24px;
+    border-bottom: 1px solid rgba(148, 163, 184, 0.12);
+    padding-bottom: 18px;
+  }
+
+  .header-left {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .tag-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 12px;
+    border-radius: 999px;
+    background: rgba(6, 182, 212, 0.12);
+    border: 1px solid rgba(6, 182, 212, 0.35);
+    color: #22D3EE;
+    font-size: 11px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    width: fit-content;
+  }
+
+  .title {
+    font-size: 26px;
+    font-weight: 800;
+    color: #FFFFFF;
+    letter-spacing: -0.02em;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .title-icon {
+    font-size: 26px;
+  }
+
+  .subtitle {
+    font-size: 13px;
+    color: #94A3B8;
+  }
+
+  .header-right {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 4px;
+  }
+
+  .cert-pill {
+    padding: 6px 14px;
+    border-radius: 12px;
+    background: rgba(16, 185, 129, 0.12);
+    border: 1px solid rgba(16, 185, 129, 0.35);
+    color: #34D399;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    font-weight: 700;
+  }
+
+  .cert-sub {
+    font-size: 10px;
+    color: #64748B;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+
+  /* Grid Layout */
+  .grid-container {
+    display: grid;
+    grid-template-columns: 200px 1fr 1fr;
+    grid-template-rows: 64px 1fr 1fr;
+    gap: 14px;
+    flex: 1;
+  }
+
+  /* Corner Cell */
+  .cell-corner {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background: rgba(7, 13, 30, 0.6);
+    border: 1px dashed rgba(148, 163, 184, 0.2);
+    border-radius: 18px;
+    padding: 8px;
+    text-align: center;
+  }
+
+  .corner-label-male {
+    font-size: 11px;
+    font-weight: 700;
+    color: #22D3EE;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .corner-divider {
+    width: 60%;
+    height: 1px;
+    background: rgba(148, 163, 184, 0.2);
+    margin: 4px 0;
+  }
+
+  .corner-label-female {
+    font-size: 11px;
+    font-weight: 700;
+    color: #F472B6;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  /* Top Column Headers (Male Gametes) */
+  .cell-col-header {
+    background: linear-gradient(135deg, rgba(6, 182, 212, 0.15) 0%, rgba(14, 116, 144, 0.25) 100%);
+    border: 1px solid rgba(6, 182, 212, 0.4);
+    border-radius: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    box-shadow: 0 4px 14px rgba(6, 182, 212, 0.1);
+  }
+
+  .col-icon {
+    font-size: 20px;
+  }
+
+  .col-text-group {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .col-origin {
+    font-size: 10px;
+    color: #67E8F9;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  .col-gamete {
+    font-size: 17px;
+    font-weight: 800;
+    color: #FFFFFF;
+    letter-spacing: -0.01em;
+  }
+
+  .badge-chromosome-blue {
+    background: #0891B2;
+    color: #FFFFFF;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 6px;
+    margin-left: 6px;
+  }
+
+  /* Left Row Headers (Female Gametes) */
+  .cell-row-header {
+    background: linear-gradient(135deg, rgba(236, 72, 153, 0.15) 0%, rgba(190, 24, 93, 0.25) 100%);
+    border: 1px solid rgba(236, 72, 153, 0.4);
+    border-radius: 18px;
+    display: flex;
+    align-items: center;
+    padding: 0 18px;
+    gap: 12px;
+    box-shadow: 0 4px 14px rgba(236, 72, 153, 0.1);
+  }
+
+  .row-icon {
+    font-size: 20px;
+  }
+
+  .row-text-group {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .row-origin {
+    font-size: 10px;
+    color: #F9A8D4;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  .row-gamete {
+    font-size: 17px;
+    font-weight: 800;
+    color: #FFFFFF;
+    letter-spacing: -0.01em;
+  }
+
+  .badge-chromosome-pink {
+    background: #DB2777;
+    color: #FFFFFF;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 6px;
+    margin-left: 6px;
+  }
+
+  /* Offspring Cells */
+  .cell-offspring {
+    border-radius: 20px;
+    padding: 16px 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+  }
+
+  .cell-offspring-male {
+    background: linear-gradient(145deg, rgba(8, 25, 58, 0.85) 0%, rgba(12, 35, 75, 0.95) 100%);
+    border: 1.5px solid rgba(6, 182, 212, 0.45);
+    box-shadow: 0 8px 24px -6px rgba(0, 0, 0, 0.4), inset 0 0 20px rgba(6, 182, 212, 0.08);
+  }
+
+  .cell-offspring-female {
+    background: linear-gradient(145deg, rgba(48, 12, 38, 0.85) 0%, rgba(70, 16, 52, 0.95) 100%);
+    border: 1.5px solid rgba(236, 72, 153, 0.45);
+    box-shadow: 0 8px 24px -6px rgba(0, 0, 0, 0.4), inset 0 0 20px rgba(236, 72, 153, 0.08);
+  }
+
+  .cell-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .cell-karyotype {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 28px;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .karyotype-blue {
+    color: #38BDF8;
+    text-shadow: 0 0 16px rgba(56, 189, 248, 0.4);
+  }
+
+  .karyotype-pink {
+    color: #F472B6;
+    text-shadow: 0 0 16px rgba(244, 114, 182, 0.4);
+  }
+
+  .symbol-male {
+    font-size: 24px;
+    color: #38BDF8;
+  }
+
+  .symbol-female {
+    font-size: 24px;
+    color: #F472B6;
+  }
+
+  .prob-badge {
+    font-size: 11px;
+    font-weight: 700;
+    padding: 3px 9px;
+    border-radius: 999px;
+    letter-spacing: 0.04em;
+  }
+
+  .prob-badge-blue {
+    background: rgba(6, 182, 212, 0.2);
+    color: #67E8F9;
+    border: 1px solid rgba(6, 182, 212, 0.4);
+  }
+
+  .prob-badge-pink {
+    background: rgba(236, 72, 153, 0.2);
+    color: #F9A8D4;
+    border: 1px solid rgba(236, 72, 153, 0.4);
+  }
+
+  .cell-mid {
+    margin: 6px 0;
+  }
+
+  .phenotype-title {
+    font-size: 19px;
+    font-weight: 800;
+    color: #FFFFFF;
+    margin-bottom: 2px;
+  }
+
+  .cell-desc {
+    font-size: 11.5px;
+    color: #CBD5E1;
+    line-height: 1.35;
+  }
+
+  .cell-footer {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding-top: 8px;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  .allele-tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    font-weight: 600;
+    color: #94A3B8;
+  }
+
+  .allele-val {
+    color: #FFFFFF;
+    font-weight: 700;
+  }
+
+  /* Bottom Bar */
+  .bottom-bar {
+    margin-top: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(7, 13, 30, 0.7);
+    border: 1px solid rgba(148, 163, 184, 0.15);
+    border-radius: 16px;
+    padding: 12px 24px;
+  }
+
+  .bottom-left {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+
+  .stat-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .stat-dot-blue {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #06B6D4;
+    box-shadow: 0 0 8px #06B6D4;
+  }
+
+  .stat-dot-pink {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #EC4899;
+    box-shadow: 0 0 8px #EC4899;
+  }
+
+  .stat-text {
+    font-size: 12px;
+    font-weight: 700;
+    color: #E2E8F0;
+  }
+
+  .stat-sub {
+    font-weight: 400;
+    color: #94A3B8;
+  }
+
+  .bottom-rule {
+    font-size: 11.5px;
+    color: #94A3B8;
+    max-width: 580px;
+    text-align: right;
+  }
+
+  .bottom-rule strong {
+    color: #38BDF8;
+  }
+</style>
+</head>
+<body>
+
+<div class="canvas-card">
+  <!-- Header -->
+  <div class="header">
+    <div class="header-left">
+      <div class="tag-badge">
+        <span>🧬</span>
+        <span>Genética Aviar • Sistema ZW / ZZ</span>
+      </div>
+      <h1 class="title">
+        <span>Cuadro Correcto de Herencia Sexual</span>
+      </h1>
+      <p class="subtitle">Tablero de segregación cromosómica en pericos australianos (La hembra define el sexo de la descendencia)</p>
+    </div>
+    <div class="header-right">
+      <div class="cert-pill">PRECISIÓN PCR 99.9%</div>
+      <div class="cert-sub">Biología Molecular</div>
+    </div>
+  </div>
+
+  <!-- Punnett Grid -->
+  <div class="grid-container">
+    <!-- Corner -->
+    <div class="cell-corner">
+      <div class="corner-label-male">♂ Macho (ZZ) ➔</div>
+      <div class="corner-divider"></div>
+      <div class="corner-label-female">⬇ ♀ Hembra (ZW)</div>
+    </div>
+
+    <!-- Col 1 Header: Macho Z -->
+    <div class="cell-col-header">
+      <span class="col-icon">🧬</span>
+      <div class="col-text-group">
+        <span class="col-origin">Gameto Padre</span>
+        <span class="col-gamete">Macho: Z <span class="badge-chromosome-blue">Z</span></span>
+      </div>
+    </div>
+
+    <!-- Col 2 Header: Macho Z -->
+    <div class="cell-col-header">
+      <span class="col-icon">🧬</span>
+      <div class="col-text-group">
+        <span class="col-origin">Gameto Padre</span>
+        <span class="col-gamete">Macho: Z <span class="badge-chromosome-blue">Z</span></span>
+      </div>
+    </div>
+
+    <!-- Row 1 Header: Hembra Z -->
+    <div class="cell-row-header">
+      <span class="row-icon">💖</span>
+      <div class="row-text-group">
+        <span class="row-origin">Gameto Madre</span>
+        <span class="row-gamete">Hembra: Z <span class="badge-chromosome-pink">Z</span></span>
+      </div>
+    </div>
+
+    <!-- Cell 1,1: ZZ Macho -->
+    <div class="cell-offspring cell-offspring-male">
+      <div class="cell-top">
+        <div class="cell-karyotype karyotype-blue">
+          <span>ZZ</span>
+          <span class="symbol-male">♂</span>
+        </div>
+        <span class="prob-badge prob-badge-blue">25% (Total 50%)</span>
+      </div>
+      <div class="cell-mid">
+        <div class="phenotype-title">Macho</div>
+        <p class="cell-desc">Cariotipo homogamético. Recibe un cromosoma Z del padre y un cromosoma Z de la madre.</p>
+      </div>
+      <div class="cell-footer">
+        <span class="allele-tag">PCR CHD: <span class="allele-val" style="color:#38BDF8;">Banda Única (CHD-Z)</span></span>
+      </div>
+    </div>
+
+    <!-- Cell 1,2: ZZ Macho -->
+    <div class="cell-offspring cell-offspring-male">
+      <div class="cell-top">
+        <div class="cell-karyotype karyotype-blue">
+          <span>ZZ</span>
+          <span class="symbol-male">♂</span>
+        </div>
+        <span class="prob-badge prob-badge-blue">25% (Total 50%)</span>
+      </div>
+      <div class="cell-mid">
+        <div class="phenotype-title">Macho</div>
+        <p class="cell-desc">Cariotipo homogamético. Recibe un cromosoma Z del padre y un cromosoma Z de la madre.</p>
+      </div>
+      <div class="cell-footer">
+        <span class="allele-tag">PCR CHD: <span class="allele-val" style="color:#38BDF8;">Banda Única (CHD-Z)</span></span>
+      </div>
+    </div>
+
+    <!-- Row 2 Header: Hembra W -->
+    <div class="cell-row-header">
+      <span class="row-icon">💖</span>
+      <div class="row-text-group">
+        <span class="row-origin">Gameto Madre</span>
+        <span class="row-gamete">Hembra: W <span class="badge-chromosome-pink">W</span></span>
+      </div>
+    </div>
+
+    <!-- Cell 2,1: ZW Hembra -->
+    <div class="cell-offspring cell-offspring-female">
+      <div class="cell-top">
+        <div class="cell-karyotype karyotype-pink">
+          <span>ZW</span>
+          <span class="symbol-female">♀</span>
+        </div>
+        <span class="prob-badge prob-badge-pink">25% (Total 50%)</span>
+      </div>
+      <div class="cell-mid">
+        <div class="phenotype-title">Hembra</div>
+        <p class="cell-desc">Cariotipo heterogamético. Recibe el cromosoma Z del padre y el cromosoma W exclusivo de la madre.</p>
+      </div>
+      <div class="cell-footer">
+        <span class="allele-tag">PCR CHD: <span class="allele-val" style="color:#F472B6;">Doble Banda (CHD-Z / CHD-W)</span></span>
+      </div>
+    </div>
+
+    <!-- Cell 2,2: ZW Hembra -->
+    <div class="cell-offspring cell-offspring-female">
+      <div class="cell-top">
+        <div class="cell-karyotype karyotype-pink">
+          <span>ZW</span>
+          <span class="symbol-female">♀</span>
+        </div>
+        <span class="prob-badge prob-badge-pink">25% (Total 50%)</span>
+      </div>
+      <div class="cell-mid">
+        <div class="phenotype-title">Hembra</div>
+        <p class="cell-desc">Cariotipo heterogamético. Recibe el cromosoma Z del padre y el cromosoma W exclusivo de la madre.</p>
+      </div>
+      <div class="cell-footer">
+        <span class="allele-tag">PCR CHD: <span class="allele-val" style="color:#F472B6;">Doble Banda (CHD-Z / CHD-W)</span></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bottom Bar -->
+  <div class="bottom-bar">
+    <div class="bottom-left">
+      <div class="stat-item">
+        <span class="stat-dot-blue"></span>
+        <span class="stat-text">50% Machos <span class="stat-sub">(Homogaméticos ZZ)</span></span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-dot-pink"></span>
+        <span class="stat-text">50% Hembras <span class="stat-sub">(Heterogaméticas ZW)</span></span>
+      </div>
+    </div>
+    <div class="bottom-rule">
+      Regla biológica: <strong>El óvulo materno define el sexo</strong>. El macho solo aporta alelos Z.
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

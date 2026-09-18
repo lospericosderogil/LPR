@@ -185,6 +185,72 @@ class ShopController {
             client.release();
         }
     }
+
+    async guiaAnillado(req, res, next) {
+        try {
+            res.render('shop/anillado', {
+                title: 'Guía Oficial de Anillado & Linaje Trazable - AviPerú',
+                description: 'Manual técnico para el anillado de pericos australianos y pericos ingleses, medidas oficiales, días oportunos y trazabilidad genética.'
+            });
+        } catch (err) {
+            next(err);
+        }
+    }
+
+    async cuidadoParental(req, res, next) {
+        try {
+            res.render('shop/cuidado_parental', {
+                title: 'Guía de Cuidado Parental & Crianza Ética - AviPerú',
+                description: 'Principios de bienestar biológico, respeto de ciclos reproductivos, destete natural y voladeras de vuelo libre en pericos australianos e ingleses.'
+            });
+        } catch (err) {
+            next(err);
+        }
+    }
+
+    async saludPreventiva(req, res, next) {
+        try {
+            res.render('shop/salud_preventiva', {
+                title: 'Guía de Salud Preventiva & Sexado por ADN - AviPerú',
+                description: 'Protocolos de bioseguridad, sexado molecular por ADN (PCR), cuarentena profiláctica, desparasitación integral y checklist clínico para pericos australianos e ingleses.'
+            });
+        } catch (err) {
+            next(err);
+        }
+    }
+
+    async ecosistemaGenetico(req, res, next) {
+        try {
+            res.render('shop/ecosistema_genetico', {
+                title: 'Ecosistema Genético 2026 - Trazabilidad & Linaje Aviar',
+                description: 'Árboles genealógicos interactivos, pureza fenotípica, métricas del aviario y sistema de reserva blindada de 10 minutos.'
+            });
+        } catch (err) {
+            next(err);
+        }
+    }
+
+    async bienestar(req, res, next) {
+        try {
+            res.render('shop/bienestar', {
+                title: 'Compromiso con el Bienestar & Crianza Ética - AviPerú',
+                description: 'Principios de bienestar biológico, respeto de ciclos reproductivos, salud preventiva, cuidado parental y protocolo de adopción responsable.'
+            });
+        } catch (err) {
+            next(err);
+        }
+    }
+
+    async experiencias(req, res, next) {
+        try {
+            res.render('shop/experiencias', {
+                title: 'Experiencias Reales & Comunidad de Criadores - AviPerú',
+                description: 'Testimonios verificados de criadores federados y familias adoptantes, estándares de satisfacción y garantías de linaje.'
+            });
+        } catch (err) {
+            next(err);
+        }
+    }
 }
 
 module.exports = new ShopController();

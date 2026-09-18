@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Mockup Nueva Estructura: Barra de Menú & Home Focalizada</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@600;700&family=JetBrains+Mono:wght@500;700&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    width: 1320px;
+    height: 840px;
+    background: #050914;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    color: #F8FAFC;
+    padding: 24px 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    overflow: hidden;
+  }
+
+  /* Header Mockup Top Label */
+  .mockup-header-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(12, 21, 46, 0.8);
+    border: 1px solid rgba(6, 182, 212, 0.3);
+    border-radius: 16px;
+    padding: 10px 20px;
+  }
+  .mockup-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: #22D3EE;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .mockup-tag {
+    background: rgba(16, 185, 129, 0.15);
+    border: 1px solid rgba(16, 185, 129, 0.4);
+    color: #34D399;
+    padding: 3px 10px;
+    border-radius: 8px;
+    font-size: 11px;
+    font-weight: 700;
+  }
+
+  /* Browser Simulation Window */
+  .browser-window {
+    background: #080E1E;
+    border: 1px solid rgba(6, 182, 212, 0.25);
+    border-radius: 20px;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.8), 0 0 30px rgba(6, 182, 212, 0.1);
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    overflow: hidden;
+  }
+
+  /* Nav Simulation */
+  .sim-nav {
+    height: 72px;
+    background: #0B132B;
+    border-bottom: 1px solid rgba(6, 182, 212, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 28px;
+  }
+
+  .nav-brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .brand-logo {
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #0284C7, #06B6D4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+  }
+  .brand-text {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 18px;
+    font-weight: 800;
+    color: #FFF;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .brand-year {
+    font-size: 10px;
+    background: rgba(6, 182, 212, 0.2);
+    color: #22D3EE;
+    border: 1px solid rgba(6, 182, 212, 0.4);
+    padding: 1px 6px;
+    border-radius: 5px;
+  }
+
+  /* Menu Items */
+  .nav-menu {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(7, 13, 30, 0.6);
+    border: 1px solid rgba(148, 163, 184, 0.15);
+    padding: 6px 10px;
+    border-radius: 999px;
+  }
+  .menu-item {
+    font-size: 12.5px;
+    font-weight: 600;
+    color: #94A3B8;
+    padding: 6px 14px;
+    border-radius: 999px;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.2s;
+  }
+  .menu-item.active {
+    background: rgba(6, 182, 212, 0.15);
+    color: #22D3EE;
+    border: 1px solid rgba(6, 182, 212, 0.35);
+  }
+  .menu-item-badge {
+    background: #0284C7;
+    color: #FFF;
+    font-size: 9px;
+    font-weight: 800;
+    padding: 1px 5px;
+    border-radius: 4px;
+  }
+  .dropdown-arrow {
+    font-size: 9px;
+    color: #64748B;
+  }
+
+  .nav-right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .btn-cart {
+    background: rgba(6, 182, 212, 0.1);
+    border: 1px solid rgba(6, 182, 212, 0.3);
+    color: #22D3EE;
+    padding: 6px 14px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 700;
+  }
+  .btn-reg {
+    background: linear-gradient(135deg, #06B6D4, #14B8A6);
+    color: #040813;
+    padding: 7px 16px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 800;
+  }
+
+  /* Home Content Simulation: Clean Hero */
+  .home-hero-sim {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 30px 60px;
+    position: relative;
+    background: 
+      radial-gradient(circle at 50% 15%, rgba(6, 182, 212, 0.18) 0%, transparent 65%),
+      radial-gradient(circle at 85% 70%, rgba(59, 130, 246, 0.1) 0%, transparent 50%);
+  }
+
+  .hero-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 18px;
+    border-radius: 999px;
+    background: rgba(6, 182, 212, 0.1);
+    border: 1px solid rgba(6, 182, 212, 0.4);
+    color: #22D3EE;
+    font-size: 11px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 20px;
+  }
+
+  .hero-title {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 46px;
+    font-weight: 800;
+    line-height: 1.15;
+    letter-spacing: -0.03em;
+    color: #FFF;
+    margin-bottom: 16px;
+    max-width: 900px;
+  }
+  .title-highlight {
+    background: linear-gradient(135deg, #38BDF8, #2DD4BF);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .hero-subtitle {
+    font-size: 15px;
+    color: #CBD5E1;
+    max-width: 780px;
+    line-height: 1.5;
+    margin-bottom: 30px;
+  }
+  .hero-subtitle strong {
+    color: #FFFFFF;
+  }
+
+  /* Search Box */
+  .search-box {
+    background: rgba(12, 21, 46, 0.9);
+    border: 1.5px solid rgba(6, 182, 212, 0.4);
+    border-radius: 20px;
+    padding: 12px 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.6), 0 0 25px rgba(6, 182, 212, 0.15);
+    max-width: 940px;
+    width: 100%;
+    margin-bottom: 24px;
+  }
+  .search-field {
+    flex: 1;
+    background: rgba(7, 13, 30, 0.8);
+    border: 1px solid rgba(148, 163, 184, 0.2);
+    border-radius: 12px;
+    padding: 8px 12px;
+    text-align: left;
+  }
+  .field-label {
+    font-size: 9px;
+    font-weight: 800;
+    color: #67E8F9;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    display: block;
+    margin-bottom: 2px;
+  }
+  .field-val {
+    font-size: 12px;
+    font-weight: 600;
+    color: #FFFFFF;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .btn-search {
+    background: linear-gradient(135deg, #06B6D4, #14B8A6);
+    color: #040813;
+    font-size: 13px;
+    font-weight: 800;
+    padding: 14px 28px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 4px 14px rgba(6, 182, 212, 0.3);
+  }
+
+  /* Trust Badges */
+  .trust-badges {
+    display: flex;
+    align-items: center;
+    gap: 28px;
+  }
+  .badge-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    color: #94A3B8;
+  }
+  .badge-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #06B6D4;
+    box-shadow: 0 0 6px #06B6D4;
+  }
+
+  /* Dropdown preview panel */
+  .dropdown-preview {
+    position: absolute;
+    top: 14px;
+    right: 28px;
+    background: rgba(11, 19, 43, 0.95);
+    border: 1px solid rgba(6, 182, 212, 0.45);
+    border-radius: 16px;
+    padding: 12px 14px;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.8), 0 0 20px rgba(6, 182, 212, 0.15);
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    width: 230px;
+    text-align: left;
+    z-index: 100;
+  }
+  .dropdown-item {
+    padding: 8px 12px;
+    border-radius: 10px;
+    font-size: 11.5px;
+    font-weight: 600;
+    color: #E2E8F0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(7, 13, 30, 0.4);
+  }
+  .dropdown-item:hover {
+    background: rgba(6, 182, 212, 0.15);
+    color: #22D3EE;
+  }
+</style>
+</head>
+<body>
+
+<div class="mockup-header-bar">
+  <div class="mockup-title">
+    <span>💡 PROPUESTA 1: BARRA DE MENÚ ORDENADA + PORTADA (HOME) FOCALIZADA</span>
+  </div>
+  <div class="mockup-tag">Cero Scroll Interminable • Carga Instantánea</div>
+</div>
+
+<div class="browser-window">
+  <!-- Nav Bar -->
+  <div class="sim-nav">
+    <div class="nav-brand">
+      <div class="brand-logo">🦜</div>
+      <div>
+        <div class="brand-text">
+          AVIPERU <span class="brand-year">2026</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Menús Reorganizados -->
+    <div class="nav-menu">
+      <div class="menu-item active">
+        <span>🏠</span>
+        <span>Inicio</span>
+      </div>
+      <div class="menu-item">
+        <span>🛍️</span>
+        <span>Catálogo</span>
+        <span class="menu-item-badge">Multi-Rubro</span>
+      </div>
+      <div class="menu-item">
+        <span>🧬</span>
+        <span>Ecosistema Genético</span>
+      </div>
+      <div class="menu-item" style="border: 1px dashed rgba(6, 182, 212, 0.4); color: #22D3EE;">
+        <span>🛡️</span>
+        <span>Bienestar Aviar</span>
+        <span class="dropdown-arrow">▼</span>
+      </div>
+      <div class="menu-item">
+        <span>💬</span>
+        <span>Comunidad & Opiniones</span>
+      </div>
+    </div>
+
+    <!-- Auth / Cart -->
+    <div class="nav-right">
+      <div class="btn-cart">🛒 Carrito (0)</div>
+      <div class="btn-reg">Ingresar / Registro</div>
+    </div>
+  </div>
+
+  <!-- Hero Content -->
+  <div class="home-hero-sim">
+    <!-- Submenú flotante explicativo -->
+    <div class="dropdown-preview">
+      <div style="font-size: 10px; font-weight: 800; color: #67E8F9; text-transform: uppercase; padding: 2px 6px;">Menú Bienestar (Páginas ya listas):</div>
+      <div class="dropdown-item">🧬 1. Salud Preventiva & ADN</div>
+      <div class="dropdown-item">🐣 2. Cuidado Parental</div>
+      <div class="dropdown-item">🏷️ 3. Anillado Oficial & Trazabilidad</div>
+      <div class="dropdown-item">📋 4. Protocolo de Adopción</div>
+    </div>
+
+    <div class="hero-pill">
+      <span>●</span>
+      <span>PLATAFORMA BIO-TECH DE CRIANZA & TRAZABILIDAD AVIAR 2026 - 2027</span>
+    </div>
+
+    <h1 class="hero-title">
+      Cuna de Ejemplares con <br><span class="title-highlight">Genética Certificada & Pedigrí</span>
+    </h1>
+
+    <p class="hero-subtitle">
+      Especialistas en la selección y crianza responsable de <strong>Pericos Australianos e Ingleses</strong> de postura. Garantía de pureza de mutaciones, 0% consanguinidad y trazabilidad genealógica digital inmutable.
+    </p>
+
+    <!-- Search Box -->
+    <div class="search-box">
+      <div class="search-field">
+        <span class="field-label">Especie</span>
+        <div class="field-val">Perico Australiano <span>▾</span></div>
+      </div>
+      <div class="search-field">
+        <span class="field-label">Sexo</span>
+        <div class="field-val">Cualquier sexo <span>▾</span></div>
+      </div>
+      <div class="search-field">
+        <span class="field-label">Mutación</span>
+        <div class="field-val">Cualquier mutación <span>▾</span></div>
+      </div>
+      <div class="search-field">
+        <span class="field-label">Propósito</span>
+        <div class="field-val">Mascota de Compañía <span>▾</span></div>
+      </div>
+      <div class="btn-search">
+        <span>🔍</span>
+        <span>BUSCAR</span>
+      </div>
+    </div>
+
+    <!-- Badges -->
+    <div class="trust-badges">
+      <div class="badge-item">
+        <span class="badge-dot"></span>
+        <span>100% Pedigrí Digitalizado</span>
+      </div>
+      <div class="badge-item">
+        <span class="badge-dot"></span>
+        <span>Reserva Blindada de 10 min</span>
+      </div>
+      <div class="badge-item">
+        <span class="badge-dot"></span>
+        <span>Envíos Sanitarios Seguros</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

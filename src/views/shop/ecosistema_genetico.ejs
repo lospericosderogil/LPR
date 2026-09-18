@@ -1,0 +1,244 @@
+<%- include('../partials/header') %>
+
+<div class="space-y-16 pb-20 overflow-hidden">
+
+    <!-- HERO HEADER & BREADCRUMB -->
+    <section class="relative pt-10 pb-6 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+        <div class="space-y-3">
+            <div class="flex items-center gap-2 text-xs font-mono text-cyan-400">
+                <a href="/" class="hover:underline">Inicio</a>
+                <span>/</span>
+                <span class="text-slate-400">Ecosistema Genético 2026</span>
+            </div>
+            
+            <div class="flex flex-col sm:flex-row sm:items-end justify-between border-b border-slate-800/80 pb-6 gap-4">
+                <div>
+                    <span class="text-xs font-bold text-cyan-400 tracking-widest uppercase block mb-1">Ecosistema Genético 2026</span>
+                    <h1 class="text-3xl sm:text-5xl font-extrabold text-white font-display">Trazabilidad, Linaje & Control Biológico</h1>
+                    <p class="text-sm text-slate-400 mt-2 max-w-3xl">
+                        Plataforma de registro digital inmutable, control de coeficientes de endogamia, seguimiento reproductivo y reserva blindada en tiempo real.
+                    </p>
+                </div>
+                <a href="/catalogo" class="px-5 py-2.5 rounded-2xl bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 text-xs sm:text-sm font-bold flex items-center gap-2 group transition">
+                    <span>Explorar ejemplares en catálogo</span>
+                    <span class="group-hover:translate-x-1 transition-transform">&rarr;</span>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- GRID BENTO ASIMÉTRICO (ECOSISTEMA GENÉTICO COMPLETO) -->
+    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-6">
+
+            <!-- BENTO 1: ÁRBOL DE LINAJE & PEDIGRÍ (Cols 1 to 7) -->
+            <div class="md:col-span-7 bg-[#0C152E]/90 rounded-3xl p-6 sm:p-8 border border-cyan-500/25 shadow-xl flex flex-col justify-between relative overflow-hidden group hover:border-cyan-400/50 transition duration-300">
+                <div class="absolute -right-16 -bottom-16 w-56 h-56 bg-cyan-500/10 rounded-full blur-2xl pointer-events-none"></div>
+
+                <div>
+                    <div class="flex items-center justify-between mb-6">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-xl bg-cyan-950 border border-cyan-500/40 flex items-center justify-center text-cyan-400 text-lg">
+                                🧬
+                            </div>
+                            <div>
+                                <h3 class="text-lg font-bold text-white font-display">Pedigrí & Árbol de Linaje Interactivo</h3>
+                                <p class="text-xs text-slate-400">Verificación de pureza fenotípica y 0% consanguinidad</p>
+                            </div>
+                        </div>
+                        <span class="px-2.5 py-1 rounded-full text-[10px] font-black tracking-widest bg-cyan-500/20 text-cyan-300 border border-cyan-400/30">
+                            4 GENERACIONES
+                        </span>
+                    </div>
+
+                    <!-- DIAGRAMA VISUAL DEL ÁRBOL GENEALÓGICO -->
+                    <div class="bg-[#070D1E]/90 rounded-2xl p-5 border border-slate-800/90 relative">
+                        <!-- Nodo Principal (Ave) -->
+                        <div class="flex items-center justify-between pb-4 mb-4 border-b border-slate-800/80">
+                            <div class="flex items-center gap-3">
+                                <div class="w-11 h-11 rounded-xl bg-cyan-900/40 border border-cyan-400/50 flex items-center justify-center text-xl">
+                                    🦜
+                                </div>
+                                <div>
+                                    <span class="text-xs font-bold text-white block">Blue Diamond (Ejemplar Probanda)</span>
+                                    <span class="text-[11px] text-cyan-400 font-mono">AVPER-26-001 • Inglés Standard</span>
+                                </div>
+                            </div>
+                            <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-teal-500/20 text-teal-300 border border-teal-400/30">100% Puro</span>
+                        </div>
+
+                        <!-- Progenitores (Padre y Madre) -->
+                        <div class="grid grid-cols-2 gap-3 mb-3">
+                            <div class="bg-[#0C152E]/80 p-3 rounded-xl border border-slate-800/80">
+                                <div class="flex items-center justify-between mb-1">
+                                    <span class="text-[10px] font-bold text-cyan-400 uppercase tracking-wider">Sire (Padre)</span>
+                                    <span class="text-[10px] text-slate-400">♂ Kiko-24</span>
+                                </div>
+                                <span class="text-xs font-semibold text-white block">Cobalto Opalino / Porte Inglés</span>
+                                <div class="flex items-center justify-between mt-2 pt-2 border-t border-slate-800/60 text-[10px] text-slate-400">
+                                    <span>Abuelos: Zeus-22 x Freya-23</span>
+                                    <span class="text-cyan-300 font-mono">Cero Cruce</span>
+                                </div>
+                            </div>
+
+                            <div class="bg-[#0C152E]/80 p-3 rounded-xl border border-slate-800/80">
+                                <div class="flex items-center justify-between mb-1">
+                                    <span class="text-[10px] font-bold text-cyan-400 uppercase tracking-wider">Dam (Madre)</span>
+                                    <span class="text-[10px] text-slate-400">♀ Maia-24</span>
+                                </div>
+                                <span class="text-xs font-semibold text-white block">Canela Cielo / Fondo Limpio</span>
+                                <div class="flex items-center justify-between mt-2 pt-2 border-t border-slate-800/60 text-[10px] text-slate-400">
+                                    <span>Abuelos: Titan-21 x Luna-22</span>
+                                    <span class="text-cyan-300 font-mono">Trazable</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-4 pt-3 border-t border-slate-800/80 flex items-center justify-between">
+                    <span class="text-xs text-slate-400">Algoritmo genético calcula coeficiente de endogamia (F &lt; 0.01)</span>
+                    <a href="/catalogo" class="text-xs font-bold text-cyan-400 hover:text-cyan-300 flex items-center gap-1 group/link">
+                        <span>Ver Genealogía Completa</span>
+                        <span class="group-hover/link:translate-x-1 transition-transform">&rarr;</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- BENTO 2: EJEMPLAR INSIGNIA (Cols 8 to 12) -->
+            <div class="md:col-span-5 bg-[#0C152E]/90 rounded-3xl p-6 sm:p-8 border border-cyan-500/25 shadow-xl flex flex-col justify-between relative overflow-hidden group hover:border-cyan-400/50 transition duration-300">
+                <div class="space-y-4">
+                    <div class="flex items-center justify-between">
+                        <span class="px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-blue-600/20 text-blue-300 border border-blue-500/30">
+                            Ejemplar Insignia
+                        </span>
+                        <span class="inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-full bg-cyan-950 text-cyan-300 border border-cyan-500/40">
+                            <span>🎖️</span> Genética Certificada
+                        </span>
+                    </div>
+
+                    <div class="relative rounded-2xl overflow-hidden bg-[#070D1E] h-52 flex items-center justify-center border border-slate-800 group-hover:border-cyan-500/40 transition">
+                        <span class="text-7xl group-hover:scale-110 transition duration-300">🦜</span>
+                        <div class="absolute bottom-2 left-2 bg-[#080E1E]/90 backdrop-blur-md px-2.5 py-1 rounded-lg border border-cyan-500/30 text-[10px] font-mono text-cyan-300">
+                            Anilla: AVPER-26-001
+                        </div>
+                        <div class="absolute top-2 right-2 bg-cyan-500 text-slate-950 text-[10px] font-black px-2 py-0.5 rounded uppercase tracking-wider">
+                            Exhibición
+                        </div>
+                    </div>
+
+                    <div>
+                        <div class="flex items-center justify-between">
+                            <h3 class="text-xl font-bold text-white font-display">Perico Inglés 'Zeus'</h3>
+                            <span class="text-xs text-cyan-400 font-mono font-bold">100% Trazable</span>
+                        </div>
+                        <p class="text-xs text-slate-300 mt-1 leading-relaxed">
+                            Gran porte, postura erguida, cabeza ancha con máscara profunda y manchas gulares definidas. Cepa importada con 4 generaciones documentadas en los libros de linaje.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="pt-4 border-t border-slate-800/80 flex items-center justify-between mt-4">
+                    <div>
+                        <span class="text-[10px] text-slate-400 block uppercase font-bold">Valoración Genética</span>
+                        <span class="text-lg font-black text-cyan-300 font-display">Pie de Cría A+</span>
+                    </div>
+                    <a href="/catalogo" class="px-4 py-2 rounded-xl text-xs font-bold bg-cyan-400 hover:bg-cyan-300 text-slate-950 transition shadow-md shadow-cyan-500/20">
+                        Explorar Ejemplar
+                    </a>
+                </div>
+            </div>
+
+            <!-- BENTO 3: MÉTRICAS BIOLÓGICAS (Cols 1 to 6) -->
+            <div class="md:col-span-6 bg-[#0C152E]/90 rounded-3xl p-6 sm:p-7 border border-cyan-500/25 shadow-xl flex flex-col justify-between relative overflow-hidden">
+                <div class="flex items-center justify-between mb-2">
+                    <div class="flex items-center gap-3">
+                        <div class="w-9 h-9 rounded-xl bg-cyan-950 border border-cyan-500/40 flex items-center justify-center text-cyan-400">
+                            📊
+                        </div>
+                        <h3 class="text-base font-bold text-white font-display">Métricas Biológicas del Aviario</h3>
+                    </div>
+                    <span class="flex items-center gap-1.5 text-xs text-teal-300 font-medium">
+                        <span class="w-2 h-2 rounded-full bg-teal-400 animate-ping"></span> En Vivo
+                    </span>
+                </div>
+
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-center my-3">
+                    <div class="bg-[#070D1E] p-3 rounded-2xl border border-slate-800">
+                        <span class="text-2xl font-black text-white font-display block">312</span>
+                        <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mt-1">Aves Registradas</span>
+                    </div>
+                    <div class="bg-[#070D1E] p-3 rounded-2xl border border-slate-800">
+                        <span class="text-2xl font-black text-cyan-400 font-display block">94.8%</span>
+                        <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mt-1">Fertilidad Media</span>
+                    </div>
+                    <div class="bg-[#070D1E] p-3 rounded-2xl border border-slate-800">
+                        <span class="text-2xl font-black text-teal-300 font-display block">89%</span>
+                        <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mt-1">Tasa Eclosión</span>
+                    </div>
+                    <div class="bg-[#070D1E] p-3 rounded-2xl border border-slate-800">
+                        <span class="text-2xl font-black text-blue-400 font-display block">8+</span>
+                        <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mt-1">Mutaciones Fijas</span>
+                    </div>
+                </div>
+
+                <p class="text-xs text-slate-400 mt-2">
+                    Monitoreo de ciclos reproductivos, anillamiento oficial entre los 7 y 13 días de nacidos (edad ideal de 9 a 10 días) y registro digital de peso y fenotipo.
+                </p>
+            </div>
+
+            <!-- BENTO 4: TEMPORIZADOR DE RESERVA BLINDADA (Cols 7 to 12) -->
+            <div class="md:col-span-6 bg-[#0C152E]/90 rounded-3xl p-6 sm:p-7 border border-cyan-500/25 shadow-xl flex flex-col justify-between relative overflow-hidden">
+                <div class="flex items-center justify-between mb-3">
+                    <div class="flex items-center gap-3">
+                        <div class="w-9 h-9 rounded-xl bg-cyan-950 border border-cyan-500/40 flex items-center justify-center text-cyan-400">
+                            ⏱️
+                        </div>
+                        <h3 class="text-base font-bold text-white font-display">Sistema de Reserva Exclusiva</h3>
+                    </div>
+                    <span class="px-2 py-0.5 rounded text-[10px] font-black uppercase bg-teal-500/20 text-teal-300 border border-teal-400/30">
+                        Anti-Duplicidad
+                    </span>
+                </div>
+
+                <div class="bg-[#070D1E] p-4 rounded-2xl border border-cyan-900/50 flex flex-col sm:flex-row items-center justify-between gap-4 my-2">
+                    <div>
+                        <span class="text-xs text-slate-400 block">Temporizador al agregar al carrito</span>
+                        <span class="text-2xl sm:text-3xl font-black text-cyan-300 font-mono tracking-wider glow-cyan-sm">
+                            [ 10:00 ] Minutos
+                        </span>
+                    </div>
+                    <div class="text-right">
+                        <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-cyan-950 text-cyan-300 border border-cyan-500/40">
+                            🔒 Bloqueo en BD
+                        </span>
+                    </div>
+                </div>
+
+                <p class="text-xs text-slate-400 mt-1 leading-relaxed">
+                    Al seleccionar un ejemplar, el sistema activa un bloqueo transaccional en la base de datos para garantizar exclusividad temporal durante el proceso de reserva.
+                </p>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- BANNER DE CIERRE -->
+    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="rounded-3xl bg-gradient-to-r from-blue-950 via-[#0C152E] to-cyan-950 p-8 sm:p-12 border border-cyan-500/40 shadow-2xl flex flex-col sm:flex-row items-center justify-between gap-6">
+            <div class="space-y-2 text-center sm:text-left">
+                <span class="text-xs font-bold text-cyan-400 uppercase tracking-widest block">Garantía Inmutable</span>
+                <h3 class="text-xl sm:text-2xl font-bold text-white font-display">¿Deseas consultar el pedigrí de un ejemplar específico?</h3>
+                <p class="text-xs sm:text-sm text-slate-300">
+                    Ingresa a la ficha de cualquier perico disponible en nuestro catálogo para inspeccionar su árbol de ancestros hasta 4 generaciones.
+                </p>
+            </div>
+            <a href="/catalogo" class="px-6 py-3 rounded-2xl bg-cyan-400 hover:bg-cyan-300 text-slate-950 font-extrabold text-xs uppercase tracking-wider transition whitespace-nowrap shadow-lg shadow-cyan-500/20">
+                Ver Catálogo de Aves
+            </a>
+        </div>
+    </section>
+
+</div>
+
+<%- include('../partials/footer') %>

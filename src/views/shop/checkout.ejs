@@ -1,62 +1,72 @@
 <%- include('../partials/header') %>
-<div class="max-w-4xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
-    <div class="mb-8">
-        <h2 class="text-3xl font-extrabold tracking-tight text-gray-900">Tu Carrito de Compra</h2>
-        <p class="text-sm text-gray-500 mt-1">Completa tu pago dentro del tiempo límite para garantizar tu reserva.</p>
+<div class="max-w-4xl mx-auto px-4 py-10 sm:px-6 lg:px-8 space-y-8">
+    <div class="border-b border-slate-800 pb-6">
+        <span class="text-xs font-bold text-cyan-400 tracking-widest uppercase block mb-1">Módulo de Adquisición</span>
+        <h2 class="text-3xl font-extrabold tracking-tight text-white font-display">Tu Carrito de Compra</h2>
+        <p class="text-sm text-slate-400 mt-1">Completa tu pago dentro del tiempo límite para garantizar la reserva blindada de tus ejemplares.</p>
     </div>
 
     <% if (reservas.length === 0) { %>
-        <div class="bg-white shadow rounded-lg p-12 text-center text-gray-500 border">
-            <p class="text-lg">Tu carrito está vacío.</p>
-            <a href="/catalogo" class="mt-4 inline-block bg-blue-600 text-white px-6 py-2 rounded-md font-semibold text-sm hover:bg-blue-700">Ver Catálogo</a>
+        <div class="bg-[#0C152E]/80 shadow-2xl rounded-3xl p-12 text-center text-slate-400 border border-dashed border-slate-800 space-y-4">
+            <span class="text-5xl">🛒</span>
+            <p class="text-lg font-bold text-white font-display">Tu carrito está vacío</p>
+            <p class="text-sm text-slate-400">No tienes aves reservadas en este momento.</p>
+            <a href="/catalogo" class="mt-4 inline-block bg-cyan-400 hover:bg-cyan-300 text-slate-950 px-6 py-2.5 rounded-xl font-bold text-xs uppercase tracking-wider transition">Explorar Catálogo</a>
         </div>
     <% } else { %>
-        <div class="grid grid-cols-1 gap-6 lg:grid-cols-3">
+        <div class="grid grid-cols-1 gap-8 lg:grid-cols-3 items-start">
             
             <!-- Items list -->
             <div class="lg:col-span-2 space-y-4">
                 <% reservas.forEach(r => { %>
-                    <div class="bg-white shadow rounded-lg border p-4 flex items-center justify-between" id="item-<%= r.ave_id %>">
+                    <div class="bg-[#0C152E]/90 shadow-xl rounded-3xl border border-cyan-500/25 p-5 flex items-center justify-between transition hover:border-cyan-400/50" id="item-<%= r.ave_id %>">
                         <div class="flex items-center space-x-4">
                             <% if (r.foto) { %>
-                                <img src="<%= r.foto %>" class="h-16 w-16 object-cover rounded-md border">
+                                <img src="<%= r.foto %>" class="h-20 w-20 object-cover rounded-2xl border border-slate-700">
                             <% } else { %>
-                                <div class="h-16 w-16 bg-gray-100 flex items-center justify-center rounded-md border text-2xl">🦜</div>
+                                <div class="h-20 w-20 bg-[#070D1E] flex items-center justify-center rounded-2xl border border-slate-800 text-3xl">🦜</div>
                             <% } %>
                             <div>
-                                <h4 class="font-bold text-gray-900"><%= r.anilla ? 'Anilla ' + r.anilla : 'Ave #' + r.ave_id %></h4>
+                                <h4 class="font-bold text-white font-display text-base"><%= r.anilla ? 'Anilla ' + r.anilla : 'Ejemplar #' + r.ave_id %></h4>
                                 
-                                <!-- Temporizador -->
-                                <div class="mt-1 flex items-center text-xs text-red-600 font-semibold">
-                                    <span class="mr-1">⏳</span>
-                                    <span class="countdown" data-expire="<%= new Date(r.expira_at).getTime() %>">Cargando...</span>
+                                <!-- Temporizador de Reserva -->
+                                <div class="mt-1.5 flex items-center text-xs text-cyan-300 font-mono font-bold bg-cyan-950/60 px-2.5 py-1 rounded-lg border border-cyan-500/30 glow-cyan-sm">
+                                    <span class="mr-1.5">⏳</span>
+                                    <span class="countdown" data-expire="<%= new Date(r.expira_at).getTime() %>">Calculando...</span>
                                 </div>
                             </div>
                         </div>
-                        <div class="text-right">
-                            <span class="font-bold text-gray-900 block">S/. <%= r.precio_venta %></span>
-                            <button onclick="quitarDelCarrito(<%= r.ave_id %>)" class="text-xs text-red-500 hover:text-red-700 mt-1 block">Quitar</button>
+                        <div class="text-right space-y-1">
+                            <span class="font-black text-white font-display text-xl block">S/. <%= r.precio_venta %></span>
+                            <button onclick="quitarDelCarrito(<%= r.ave_id %>)" class="text-xs text-rose-400 hover:text-rose-300 transition font-semibold">Liberar Reserva</button>
                         </div>
                     </div>
                 <% }) %>
             </div>
 
             <!-- Checkout Form / Summary -->
-            <div class="bg-white shadow rounded-lg border p-6 flex flex-col justify-between h-fit">
+            <div class="bg-[#0C152E]/90 shadow-2xl rounded-3xl border border-cyan-500/30 p-6 flex flex-col justify-between space-y-6">
                 <div>
-                    <h3 class="text-lg font-bold text-gray-900 border-b pb-2 mb-4">Resumen</h3>
-                    <div class="flex justify-between text-base font-bold text-gray-900 mb-6">
-                        <span>Total:</span>
-                        <span>S/. <%= total.toFixed(2) %></span>
+                    <h3 class="text-base font-bold text-white font-display border-b border-slate-800 pb-3 mb-4 flex items-center gap-2">
+                        <span class="text-cyan-400">💳</span>
+                        <span>Resumen de Orden</span>
+                    </h3>
+                    <div class="flex justify-between items-center text-sm font-semibold text-slate-300 mb-2">
+                        <span>Ejemplares:</span>
+                        <span class="text-white"><%= reservas.length %></span>
+                    </div>
+                    <div class="flex justify-between items-center text-lg font-black text-white font-display pt-3 border-t border-slate-800">
+                        <span>Total a pagar:</span>
+                        <span class="text-cyan-300 text-2xl">S/. <%= total.toFixed(2) %></span>
                     </div>
                 </div>
 
                 <form method="POST" action="/checkout" class="space-y-4">
                     <div>
-                        <label for="referencia_pago" class="block text-xs font-semibold text-gray-500 uppercase mb-1">Referencia de Pago *</label>
-                        <input type="text" name="referencia_pago" id="referencia_pago" required placeholder="Nro de Operación Yape/Plin/Transferencia" class="block w-full px-3 py-2 border rounded-md text-sm">
+                        <label for="referencia_pago" class="block text-[11px] font-bold text-cyan-400 uppercase tracking-wider mb-1.5">Referencia de Pago *</label>
+                        <input type="text" name="referencia_pago" id="referencia_pago" required placeholder="Nro de Operación Yape/Plin/Transferencia" class="block w-full px-3.5 py-2.5 bg-[#070D1E] border border-slate-800 rounded-2xl text-sm text-white placeholder-slate-500 focus:outline-none focus:border-cyan-400 transition">
                     </div>
-                    <button type="submit" class="w-full bg-green-600 text-white py-3 rounded-md font-bold text-sm hover:bg-green-700">
+                    <button type="submit" class="w-full bg-gradient-to-r from-cyan-400 via-teal-400 to-cyan-500 hover:from-cyan-300 hover:to-teal-300 text-slate-950 py-3.5 rounded-2xl font-extrabold text-sm uppercase tracking-wider shadow-lg shadow-cyan-500/30 transition transform hover:scale-[1.02]">
                         Confirmar y Finalizar Compra
                     </button>
                 </form>

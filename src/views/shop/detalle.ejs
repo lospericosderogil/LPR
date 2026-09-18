@@ -1,20 +1,29 @@
 <%- include('../partials/header') %>
 <div class="max-w-7xl mx-auto px-4 py-12 sm:px-6 lg:px-8">
-    <div class="lg:grid lg:grid-cols-2 lg:gap-x-8 lg:items-start">
+    <div class="lg:grid lg:grid-cols-2 lg:gap-x-12 lg:items-start">
         
         <!-- Galería de Fotos (Máx 2) -->
-        <div class="flex flex-col">
-            <div class="w-full aspect-w-1 aspect-h-1 bg-gray-100 rounded-lg overflow-hidden border">
+        <div class="flex flex-col space-y-4">
+            <div class="w-full aspect-w-1 aspect-h-1 bg-[#070D1E] rounded-3xl overflow-hidden border border-cyan-500/30 shadow-2xl relative group">
                 <% if (ave.imagenes && ave.imagenes.length > 0) { %>
-                    <img src="<%= ave.imagenes[0].url %>" id="principalImg" alt="Foto Principal" class="w-full h-96 object-center object-cover">
+                    <img src="<%= ave.imagenes[0].url %>" id="principalImg" alt="Foto Principal" class="w-full h-96 sm:h-[480px] object-center object-cover">
                 <% } else { %>
-                    <div class="w-full h-96 flex items-center justify-center text-gray-300 text-7xl bg-gray-50">🦜</div>
+                    <div class="w-full h-96 sm:h-[480px] flex flex-col items-center justify-center text-slate-600 text-7xl bg-[#070D1E] space-y-3">
+                        <span>🦜</span>
+                        <span class="text-xs text-slate-500 font-bold uppercase tracking-widest">Fotografía Oficial en Proceso</span>
+                    </div>
                 <% } %>
+                <!-- Badge Especie Flotante -->
+                <div class="absolute top-4 left-4">
+                    <span class="px-3 py-1 rounded-full text-xs font-black uppercase tracking-wider bg-[#080E1E]/90 text-cyan-300 border border-cyan-500/30 backdrop-blur-md">
+                        <%= ave.especie_nombre %>
+                    </span>
+                </div>
             </div>
             <% if (ave.imagenes && ave.imagenes.length > 1) { %>
-                <div class="mt-4 grid grid-cols-4 gap-4">
+                <div class="grid grid-cols-4 gap-4">
                     <% ave.imagenes.forEach(img => { %>
-                        <button onclick="cambiarFoto('<%= img.url %>')" class="relative h-20 bg-white rounded-md overflow-hidden border hover:opacity-85 focus:outline-none">
+                        <button onclick="cambiarFoto('<%= img.url %>')" class="relative h-20 bg-[#070D1E] rounded-2xl overflow-hidden border border-slate-800 hover:border-cyan-400 focus:border-cyan-400 transition focus:outline-none">
                             <img src="<%= img.url %>" class="w-full h-full object-center object-cover">
                         </button>
                     <% }) %>
@@ -23,104 +32,122 @@
         </div>
 
         <!-- Ficha técnica pública del ave -->
-        <div class="mt-10 px-4 sm:px-0 sm:mt-16 lg:mt-0">
-            <div class="flex justify-between items-center border-b pb-4">
-                <h1 class="text-3xl font-extrabold tracking-tight text-gray-900"><%= ave.anilla || ('Ave #' + ave.id) %></h1>
-                <% if (ave.estado_biologico === 'EN_VENTA' && ave.estado_comercial !== 'RESERVADA') { %>
-                    <span class="text-3xl font-bold text-blue-600">S/. <%= parseFloat(ave.precio_venta || 0).toFixed(2) %></span>
-                <% } else if (ave.estado_biologico === 'VENDIDO') { %>
-                    <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-bold bg-purple-100 text-purple-800 border border-purple-200">
-                        ✓ Ejemplar Vendido
-                    </span>
-                <% } else if (ave.estado_biologico === 'INTERCAMBIADO') { %>
-                    <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-bold bg-amber-100 text-amber-800 border border-amber-200">
-                        Ejemplar Intercambiado
-                    </span>
-                <% } else { %>
-                    <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-bold bg-blue-50 text-blue-700 border border-blue-200">
-                        Solo Exhibición
-                    </span>
-                <% } %>
+        <div class="mt-10 px-4 sm:px-0 sm:mt-16 lg:mt-0 space-y-8">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between border-b border-slate-800 pb-6 gap-4">
+                <div>
+                    <span class="text-xs font-bold text-cyan-400 tracking-widest uppercase block mb-1">Ficha Biológica Oficial</span>
+                    <h1 class="text-3xl sm:text-4xl font-extrabold tracking-tight text-white font-display"><%= ave.anilla || ('Ejemplar #' + ave.id) %></h1>
+                </div>
+                <div>
+                    <% if (ave.estado_biologico === 'EN_VENTA' && ave.estado_comercial !== 'RESERVADA') { %>
+                        <div class="text-right">
+                            <span class="text-[10px] text-slate-400 uppercase block font-semibold">Inversión</span>
+                            <span class="text-3xl font-black text-cyan-300 font-display glow-cyan-sm">S/. <%= parseFloat(ave.precio_venta || 0).toFixed(2) %></span>
+                        </div>
+                    <% } else if (ave.estado_biologico === 'VENDIDO') { %>
+                        <span class="inline-flex items-center px-3.5 py-1.5 rounded-full text-xs font-bold bg-purple-950/80 text-purple-300 border border-purple-500/30">
+                            ✓ Ejemplar Vendido
+                        </span>
+                    <% } else if (ave.estado_biologico === 'INTERCAMBIADO') { %>
+                        <span class="inline-flex items-center px-3.5 py-1.5 rounded-full text-xs font-bold bg-amber-950/80 text-amber-300 border border-amber-500/30">
+                            Ejemplar Intercambiado
+                        </span>
+                    <% } else { %>
+                        <span class="inline-flex items-center px-3.5 py-1.5 rounded-full text-xs font-bold bg-blue-950/80 text-blue-300 border border-blue-500/30">
+                            Solo Exhibición
+                        </span>
+                    <% } %>
+                </div>
             </div>
 
-            <div class="mt-6 space-y-6 text-sm text-gray-700">
-                <h3 class="font-bold text-gray-900">Ficha del Ejemplar</h3>
-                <div class="grid grid-cols-2 gap-4 bg-white p-4 rounded-lg border border-gray-150">
-                    <div><strong class="text-gray-500">Número de Anilla:</strong></div>
-                    <div class="font-semibold text-gray-900"><%= ave.anilla || 'Sin anilla' %></div>
-                    
-                    <div><strong class="text-gray-500">Sexo:</strong></div>
-                    <div>
-                        <span class="px-2.5 py-0.5 rounded-full text-xs font-semibold capitalize <%= ave.sexo === 'M' ? 'bg-blue-100 text-blue-800' : 'bg-pink-100 text-pink-800' %>">
-                            <%= ave.sexo === 'M' ? 'Macho' : 'Hembra' %>
+            <!-- Ficha Técnica Bento Card -->
+            <div class="bg-[#0C152E]/90 rounded-3xl p-6 sm:p-7 border border-cyan-500/25 shadow-xl space-y-6">
+                <h3 class="text-base font-bold text-white font-display flex items-center gap-2">
+                    <span class="text-cyan-400">📋</span>
+                    <span>Especificaciones del Ejemplar</span>
+                </h3>
+
+                <div class="grid grid-cols-2 gap-4 text-xs">
+                    <div class="bg-[#070D1E] p-3.5 rounded-2xl border border-slate-800">
+                        <span class="text-[10px] font-bold text-cyan-400 uppercase block mb-1">Número de Anilla</span>
+                        <span class="font-mono text-sm font-bold text-white"><%= ave.anilla || 'Sin anilla registrada' %></span>
+                    </div>
+
+                    <div class="bg-[#070D1E] p-3.5 rounded-2xl border border-slate-800">
+                        <span class="text-[10px] font-bold text-cyan-400 uppercase block mb-1">Sexo Biológico</span>
+                        <span class="text-sm font-bold text-white flex items-center gap-1.5">
+                            <%= ave.sexo === 'M' ? '♂ Macho' : (ave.sexo === 'F' ? '♀ Hembra' : 'Indeterminado') %>
                         </span>
                     </div>
 
-                    <div><strong class="text-gray-500">Especie:</strong></div>
-                    <div class="font-semibold text-gray-900"><%= ave.especie_nombre %></div>
+                    <div class="bg-[#070D1E] p-3.5 rounded-2xl border border-slate-800">
+                        <span class="text-[10px] font-bold text-cyan-400 uppercase block mb-1">Especie</span>
+                        <span class="text-sm font-bold text-white"><%= ave.especie_nombre %></span>
+                    </div>
 
-                    <div><strong class="text-gray-500">Fecha de Nacimiento:</strong></div>
-                    <div class="font-semibold text-gray-900"><%= new Date(ave.fecha_nacimiento).toLocaleDateString('es') %></div>
+                    <div class="bg-[#070D1E] p-3.5 rounded-2xl border border-slate-800">
+                        <span class="text-[10px] font-bold text-cyan-400 uppercase block mb-1">Nacimiento</span>
+                        <span class="text-sm font-bold text-white"><%= ave.fecha_nacimiento ? new Date(ave.fecha_nacimiento).toLocaleDateString('es') : 'Registro verificado' %></span>
+                    </div>
                 </div>
 
                 <!-- Genética / Mutaciones -->
                 <div>
-                    <h4 class="font-bold text-gray-900 mb-2">Composición Genética</h4>
+                    <span class="text-[10px] font-bold text-cyan-400 uppercase tracking-wider block mb-2">Composición Genética</span>
                     <% if (ave.mutaciones && ave.mutaciones.length > 0) { %>
                         <div class="flex flex-wrap gap-2">
                             <% ave.mutaciones.forEach(m => { %>
-                                <span class="px-3 py-1 rounded bg-gray-100 text-xs font-semibold text-gray-700 capitalize" title="Tipo: <%= m.tipo %>">
+                                <span class="px-3 py-1 rounded-xl bg-cyan-950/80 text-xs font-bold text-cyan-300 border border-cyan-500/30" title="Tipo: <%= m.tipo %>">
                                     <%= m.nombre %> (<%= m.tipo %>)
                                 </span>
                             <% }) %>
                         </div>
                     <% } else { %>
-                        <p class="text-xs text-gray-400 italic">No se han registrado mutaciones fenotípicas/genotípicas.</p>
+                        <p class="text-xs text-slate-500 italic">Línea Clásica / Ancestral.</p>
                     <% } %>
                 </div>
 
-                <!-- Descripción comercial pública -->
+                <!-- Notas del Criador -->
                 <% if (ave.observaciones_comerciales) { %>
-                    <div class="mt-4 pt-4 border-t">
-                        <h4 class="font-bold text-gray-900 mb-2">Notas del Criador</h4>
-                        <p class="text-gray-600 leading-relaxed italic">"<%= ave.observaciones_comerciales %>"</p>
+                    <div class="pt-4 border-t border-slate-800/80">
+                        <span class="text-[10px] font-bold text-cyan-400 uppercase tracking-wider block mb-1.5">Notas del Criador</span>
+                        <p class="text-xs text-slate-300 leading-relaxed italic bg-[#070D1E] p-3.5 rounded-2xl border border-slate-800">
+                            "<%= ave.observaciones_comerciales %>"
+                        </p>
                     </div>
                 <% } %>
-
-                <!-- Botón de compra / Carrito -->
-                <div class="mt-10 pt-6 border-t">
-                    <% if (ave.estado_biologico === 'EN_VENTA' && ave.estado_comercial !== 'RESERVADA') { %>
-                        <% if (user) { %>
-                            <button onclick="agregarAlCarrito(<%= ave.id %>)" class="w-full bg-blue-600 text-white py-3 px-8 rounded-md font-bold text-base hover:bg-blue-700 focus:outline-none">
-                                Reservar y Añadir al Carrito
-                            </button>
-                        <% } else { %>
-                            <a href="/login" class="w-full flex items-center justify-center bg-gray-200 text-gray-700 py-3 px-8 rounded-md font-bold text-base hover:bg-gray-300">
-                                Inicie sesión para comprar
-                            </a>
-                        <% } %>
-                    <% } else if (ave.estado_comercial === 'RESERVADA') { %>
-                        <button disabled class="w-full bg-gray-300 text-gray-500 py-3 px-8 rounded-md font-bold text-base cursor-not-allowed">
-                            Ejemplar Reservado Temporalmente
-                        </button>
-                    <% } else if (ave.estado_biologico === 'VENDIDO') { %>
-                        <div class="text-center p-4 bg-purple-50 rounded-lg border border-purple-200">
-                            <p class="text-sm font-bold text-purple-800">✓ Este ejemplar fue vendido</p>
-                            <p class="text-xs text-purple-600 mt-1">Permanece visible en el catálogo de exhibición durante 10 días.</p>
-                        </div>
-                    <% } else if (ave.estado_biologico === 'INTERCAMBIADO') { %>
-                        <div class="text-center p-4 bg-amber-50 rounded-lg border border-amber-200">
-                            <p class="text-sm font-bold text-amber-800">Ejemplar Intercambiado</p>
-                            <p class="text-xs text-amber-600 mt-1">Permanece visible en el catálogo de exhibición durante 10 días.</p>
-                        </div>
-                    <% } else { %>
-                        <div class="text-center p-4 bg-gray-50 rounded-lg border border-gray-200">
-                            <p class="text-sm font-semibold text-gray-700">Ejemplar en Exhibición del Criadero</p>
-                            <p class="text-xs text-gray-500 mt-1">Este ejemplar forma parte del plantel genético y no está disponible para venta.</p>
-                        </div>
-                    <% } %>
-                </div>
             </div>
+
+            <!-- Botón de compra / Carrito -->
+            <div class="pt-4">
+                <% if (ave.estado_biologico === 'EN_VENTA' && ave.estado_comercial !== 'RESERVADA') { %>
+                    <% if (user) { %>
+                        <button onclick="agregarAlCarrito(<%= ave.id %>)" class="w-full py-4 px-8 rounded-2xl bg-gradient-to-r from-cyan-400 via-teal-400 to-cyan-500 hover:from-cyan-300 hover:to-teal-300 text-slate-950 font-extrabold text-base uppercase tracking-wider shadow-lg shadow-cyan-500/30 transition transform hover:scale-[1.02] flex items-center justify-center gap-3">
+                            <span>⏱️</span>
+                            <span>Reservar y Añadir al Carrito (10 min)</span>
+                        </button>
+                    <% } else { %>
+                        <a href="/login" class="w-full flex items-center justify-center py-4 px-8 rounded-2xl bg-[#0C152E] text-cyan-300 border border-cyan-500/40 font-bold text-base hover:bg-slate-900 transition">
+                            Inicia sesión para reservar este ejemplar
+                        </a>
+                    <% } %>
+                <% } else if (ave.estado_comercial === 'RESERVADA') { %>
+                    <button disabled class="w-full bg-slate-800 text-slate-500 py-4 px-8 rounded-2xl font-bold text-base cursor-not-allowed border border-slate-700">
+                        ⏰ Ejemplar Reservado Temporalmente
+                    </button>
+                <% } else if (ave.estado_biologico === 'VENDIDO') { %>
+                    <div class="text-center p-4 bg-purple-950/60 rounded-2xl border border-purple-500/30 text-purple-300">
+                        <p class="text-sm font-bold">✓ Este ejemplar fue transferido/vendido</p>
+                        <p class="text-xs text-purple-400 mt-1">Permanece visible en el catálogo de exhibición durante 10 días.</p>
+                    </div>
+                <% } else { %>
+                    <div class="text-center p-4 bg-[#0C152E] rounded-2xl border border-slate-800 text-slate-400">
+                        <p class="text-sm font-semibold text-white">Ejemplar en Exhibición del Criadero</p>
+                        <p class="text-xs text-slate-500 mt-1">Forma parte del plantel genético de reproductores y no está a la venta.</p>
+                    </div>
+                <% } %>
+            </div>
+
         </div>
 
     </div>

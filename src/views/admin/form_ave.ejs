@@ -3,62 +3,62 @@
 <style>
     /* Estilos dinámicos para los botones de selección de Sexo */
     .sexo-btn {
-        background-color: #ffffff;
-        border: 1.5px solid #d1d5db;
-        color: #4b5563;
-        font-weight: 500;
+        background-color: #070D1E;
+        border: 1.5px solid rgba(6, 182, 212, 0.2);
+        color: #94A3B8;
+        font-weight: 600;
         cursor: pointer;
-        transition: all 0.15s ease-in-out;
+        transition: all 0.2s ease-in-out;
         user-select: none;
     }
     .sexo-label:hover .sexo-btn {
-        background-color: #f9fafb;
-        border-color: #9ca3af;
+        background-color: #0C152E;
+        border-color: rgba(6, 182, 212, 0.4);
+        color: #E2E8F0;
     }
-    /* Macho: Azul brillante */
+    /* Macho: Azul/Cian brillante */
     .radio-sexo[value="M"]:checked + .sexo-btn {
-        background-color: #2563eb !important;
-        border-color: #1d4ed8 !important;
-        color: #ffffff !important;
-        font-weight: 700 !important;
-        box-shadow: 0 4px 10px -1px rgba(37, 99, 235, 0.4) !important;
+        background-color: #06B6D4 !important;
+        border-color: #22D3EE !important;
+        color: #080E1E !important;
+        font-weight: 800 !important;
+        box-shadow: 0 0 15px rgba(6, 182, 212, 0.4) !important;
     }
-    /* Hembra: Rosado / Magenta brillante */
+    /* Hembra: Magenta/Fucsia brillante */
     .radio-sexo[value="F"]:checked + .sexo-btn {
-        background-color: #db2777 !important;
-        border-color: #be185d !important;
-        color: #ffffff !important;
-        font-weight: 700 !important;
-        box-shadow: 0 4px 10px -1px rgba(219, 39, 119, 0.4) !important;
+        background-color: #D946EF !important;
+        border-color: #F0ABFC !important;
+        color: #080E1E !important;
+        font-weight: 800 !important;
+        box-shadow: 0 0 15px rgba(217, 70, 239, 0.4) !important;
     }
-    /* Desconocido: Grafito / Gris oscuro */
+    /* Desconocido: Slate */
     .radio-sexo[value="D"]:checked + .sexo-btn {
-        background-color: #4b5563 !important;
-        border-color: #374151 !important;
-        color: #ffffff !important;
-        font-weight: 700 !important;
-        box-shadow: 0 4px 10px -1px rgba(75, 85, 99, 0.4) !important;
+        background-color: #334155 !important;
+        border-color: #64748B !important;
+        color: #FFFFFF !important;
+        font-weight: 800 !important;
     }
 </style>
 
 <div class="max-w-6xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
     <!-- Encabezado de Página -->
-    <div class="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between border-b pb-5">
+    <div class="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between border-b border-cyan-900/40 pb-5">
         <div>
             <div class="flex items-center space-x-3">
-                <span class="inline-flex items-center justify-center p-2 bg-blue-100 text-blue-700 rounded-lg">
+                <span class="inline-flex items-center justify-center p-2.5 bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 rounded-xl">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
                     </svg>
                 </span>
-                <h1 class="text-2xl font-extrabold text-gray-900 sm:text-3xl">
+                <h1 class="text-2xl font-extrabold text-white sm:text-3xl tracking-tight">
                     <%= ave ? 'Editar Ave: ' + (ave.anilla ? 'Anilla ' + ave.anilla : ('ID #' + ave.id)) : 'Registro de Nueva Ave' %>
                 </h1>
             </div>
-            <p class="mt-1 text-sm text-gray-500 ml-11">Navegue por las pestañas para completar cada bloque de información del ejemplar.</p>
+            <p class="mt-1 text-sm text-slate-400 ml-12">Navegue por las pestañas para completar cada bloque de información del ejemplar.</p>
         </div>
         <div class="mt-4 sm:mt-0">
-            <a href="/admin/aves" class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 shadow-sm transition">
+            <a href="/admin/aves" class="inline-flex items-center px-4 py-2 border border-slate-700 rounded-xl text-sm font-semibold text-slate-300 bg-[#070D1E] hover:bg-[#0F1D3D] transition">
                 <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
                 Volver a la lista
             </a>
@@ -66,47 +66,47 @@
     </div>
 
     <% if (error) { %>
-        <div class="bg-red-50 border-l-4 border-red-500 p-4 rounded-md shadow-sm mb-6 flex items-start">
-            <svg class="h-5 w-5 text-red-500 mr-3 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+        <div class="bg-red-500/15 border-l-4 border-red-500 p-4 rounded-xl shadow-sm mb-6 flex items-start text-red-300">
+            <svg class="h-5 w-5 text-red-400 mr-3 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                 <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/>
             </svg>
-            <span class="text-sm font-medium text-red-800"><%= error %></span>
+            <span class="text-sm font-medium"><%= error %></span>
         </div>
     <% } %>
 
     <!-- ================================================================= -->
     <!-- BARRA DE NAVEGACIÓN POR PESTAÑAS (TABS) -->
     <!-- ================================================================= -->
-    <div class="mb-6 bg-white p-1.5 rounded-xl shadow-xs border border-gray-200 overflow-x-auto">
+    <div class="mb-6 bg-[#0C152E]/90 p-1.5 rounded-2xl shadow-xl border border-cyan-500/20 overflow-x-auto">
         <nav class="flex space-x-1.5 min-w-max" aria-label="Tabs" id="tabs-nav">
             <button type="button" onclick="cambiarPestana(0)" id="tab-btn-0"
-                class="tab-btn flex items-center px-4 py-2.5 text-xs sm:text-sm font-bold rounded-lg transition-all bg-blue-600 text-white shadow-sm">
-                <span id="tab-num-0" class="w-5 h-5 rounded-full flex items-center justify-center bg-white text-blue-600 mr-2 text-xs font-extrabold">1</span>
+                class="tab-btn flex items-center px-4 py-2.5 text-xs sm:text-sm font-bold rounded-xl transition-all bg-gradient-to-r from-cyan-400 to-teal-400 text-navy-950 shadow-[0_0_15px_rgba(6,182,212,0.35)]">
+                <span id="tab-num-0" class="w-5 h-5 rounded-full flex items-center justify-center bg-navy-950 text-cyan-300 mr-2 text-xs font-black">1</span>
                 <span>DATOS DE AVE</span>
             </button>
             <button type="button" onclick="cambiarPestana(1)" id="tab-btn-1"
-                class="tab-btn flex items-center px-4 py-2.5 text-xs sm:text-sm font-medium rounded-lg text-gray-600 hover:text-gray-900 hover:bg-gray-100 transition-all">
-                <span id="tab-num-1" class="w-5 h-5 rounded-full flex items-center justify-center bg-gray-200 text-gray-700 mr-2 text-xs font-bold">2</span>
+                class="tab-btn flex items-center px-4 py-2.5 text-xs sm:text-sm font-medium rounded-xl text-slate-400 hover:text-cyan-300 hover:bg-cyan-950/30 transition-all">
+                <span id="tab-num-1" class="w-5 h-5 rounded-full flex items-center justify-center bg-[#070D1E] text-slate-400 border border-cyan-900/40 mr-2 text-xs font-bold">2</span>
                 <span>ORIGEN</span>
             </button>
             <button type="button" onclick="cambiarPestana(2)" id="tab-btn-2"
-                class="tab-btn flex items-center px-4 py-2.5 text-xs sm:text-sm font-medium rounded-lg text-gray-600 hover:text-gray-900 hover:bg-gray-100 transition-all">
-                <span id="tab-num-2" class="w-5 h-5 rounded-full flex items-center justify-center bg-gray-200 text-gray-700 mr-2 text-xs font-bold">3</span>
+                class="tab-btn flex items-center px-4 py-2.5 text-xs sm:text-sm font-medium rounded-xl text-slate-400 hover:text-cyan-300 hover:bg-cyan-950/30 transition-all">
+                <span id="tab-num-2" class="w-5 h-5 rounded-full flex items-center justify-center bg-[#070D1E] text-slate-400 border border-cyan-900/40 mr-2 text-xs font-bold">3</span>
                 <span>GENÉTICA</span>
             </button>
             <button type="button" onclick="cambiarPestana(3)" id="tab-btn-3"
-                class="tab-btn flex items-center px-4 py-2.5 text-xs sm:text-sm font-medium rounded-lg text-gray-600 hover:text-gray-900 hover:bg-gray-100 transition-all">
-                <span id="tab-num-3" class="w-5 h-5 rounded-full flex items-center justify-center bg-gray-200 text-gray-700 mr-2 text-xs font-bold">4</span>
+                class="tab-btn flex items-center px-4 py-2.5 text-xs sm:text-sm font-medium rounded-xl text-slate-400 hover:text-cyan-300 hover:bg-cyan-950/30 transition-all">
+                <span id="tab-num-3" class="w-5 h-5 rounded-full flex items-center justify-center bg-[#070D1E] text-slate-400 border border-cyan-900/40 mr-2 text-xs font-bold">4</span>
                 <span>IMÁGENES</span>
             </button>
             <button type="button" onclick="cambiarPestana(4)" id="tab-btn-4"
-                class="tab-btn flex items-center px-4 py-2.5 text-xs sm:text-sm font-medium rounded-lg text-gray-600 hover:text-gray-900 hover:bg-gray-100 transition-all">
-                <span id="tab-num-4" class="w-5 h-5 rounded-full flex items-center justify-center bg-gray-200 text-gray-700 mr-2 text-xs font-bold">5</span>
+                class="tab-btn flex items-center px-4 py-2.5 text-xs sm:text-sm font-medium rounded-xl text-slate-400 hover:text-cyan-300 hover:bg-cyan-950/30 transition-all">
+                <span id="tab-num-4" class="w-5 h-5 rounded-full flex items-center justify-center bg-[#070D1E] text-slate-400 border border-cyan-900/40 mr-2 text-xs font-bold">5</span>
                 <span>APUNTES</span>
             </button>
             <button type="button" onclick="cambiarPestana(5)" id="tab-btn-5"
-                class="tab-btn flex items-center px-4 py-2.5 text-xs sm:text-sm font-medium rounded-lg text-gray-600 hover:text-gray-900 hover:bg-gray-100 transition-all">
-                <span id="tab-num-5" class="w-5 h-5 rounded-full flex items-center justify-center bg-gray-200 text-gray-700 mr-2 text-xs font-bold">6</span>
+                class="tab-btn flex items-center px-4 py-2.5 text-xs sm:text-sm font-medium rounded-xl text-slate-400 hover:text-cyan-300 hover:bg-cyan-950/30 transition-all">
+                <span id="tab-num-5" class="w-5 h-5 rounded-full flex items-center justify-center bg-[#070D1E] text-slate-400 border border-cyan-900/40 mr-2 text-xs font-bold">6</span>
                 <span>CONCURSOS</span>
             </button>
         </nav>
@@ -118,38 +118,38 @@
         <!-- PESTAÑA 1: BLOQUE 1 - DATOS DE AVE -->
         <!-- ================================================================= -->
         <div id="tab-pane-0" class="tab-pane">
-            <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-                <div class="bg-gradient-to-r from-blue-50 to-indigo-50 px-6 py-4 border-b border-gray-200 flex items-center justify-between">
+            <div class="bg-[#0C152E]/90 rounded-2xl shadow-xl border border-cyan-500/20 overflow-hidden">
+                <div class="bg-[#070D1E] px-6 py-4 border-b border-cyan-500/20 flex items-center justify-between">
                     <div class="flex items-center space-x-3">
-                        <span class="flex items-center justify-center w-8 h-8 rounded-full bg-blue-600 text-white font-bold text-sm shadow-sm">1</span>
-                        <h2 class="text-lg font-bold text-gray-900 tracking-wide">DATOS DE AVE</h2>
+                        <span class="flex items-center justify-center w-8 h-8 rounded-full bg-cyan-500 text-navy-950 font-black text-sm shadow-sm">1</span>
+                        <h2 class="text-lg font-extrabold text-white tracking-wide">DATOS DE AVE</h2>
                     </div>
-                    <span class="text-xs font-semibold px-2.5 py-1 rounded bg-blue-100 text-blue-800">Ficha Principal</span>
+                    <span class="text-xs font-bold px-2.5 py-1 rounded-full bg-cyan-500/15 text-cyan-300 border border-cyan-500/30">Ficha Principal</span>
                 </div>
                 
                 <div class="p-6 space-y-6">
                     <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
                         <!-- Número de Anilla / Identificador del Ave -->
                         <div>
-                            <label for="anilla" class="block text-sm font-semibold text-gray-700">
+                            <label for="anilla" class="block text-xs font-semibold text-cyan-300 uppercase tracking-wider mb-1.5">
                                 Número de Anilla
                             </label>
-                            <div class="mt-1 relative rounded-md shadow-sm">
+                            <div class="mt-1 relative rounded-xl shadow-sm">
                                 <input type="text" name="anilla" id="anilla" 
                                     value="<%= ave ? ave.anilla || '' : '' %>" 
                                     placeholder="Ej. FOA-24-9842"
-                                    class="block w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-blue-500 focus:border-blue-500">
+                                    class="block w-full px-3.5 py-2.5 bg-[#070D1E] border border-cyan-900/60 rounded-xl text-slate-200 text-sm placeholder-slate-500 focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400 transition">
                             </div>
-                            <p class="mt-1 text-xs text-gray-400">Identificador principal del ave. Si no posee, se generará un ID automáticamente.</p>
+                            <p class="mt-1 text-xs text-slate-400">Identificador principal del ave. Si no posee, se generará un ID automáticamente.</p>
                         </div>
 
                         <!-- Especie -->
                         <div>
-                            <label for="especie_id" class="block text-sm font-semibold text-gray-700">
-                                Especie <span class="text-red-500">*</span>
+                            <label for="especie_id" class="block text-xs font-semibold text-cyan-300 uppercase tracking-wider mb-1.5">
+                                Especie <span class="text-red-400">*</span>
                             </label>
                             <select name="especie_id" id="especie_id" required 
-                                class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-blue-500 focus:border-blue-500 bg-white">
+                                class="block w-full px-3.5 py-2.5 bg-[#070D1E] border border-cyan-900/60 rounded-xl text-slate-200 text-sm focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400 transition">
                                 <% especies.forEach(e => { %>
                                     <option value="<%= e.id %>" <%= ave && ave.especie_id === e.id ? 'selected' : '' %>><%= e.nombre %></option>
                                 <% }) %>
@@ -158,25 +158,25 @@
 
                         <!-- Sexo -->
                         <div>
-                            <label class="block text-sm font-semibold text-gray-700 mb-1">
-                                Sexo <span class="text-red-500">*</span>
+                            <label class="block text-xs font-semibold text-cyan-300 uppercase tracking-wider mb-1.5">
+                                Sexo <span class="text-red-400">*</span>
                             </label>
                             <div class="grid grid-cols-3 gap-2">
                                 <label class="sexo-label cursor-pointer">
                                     <input type="radio" name="sexo" value="M" <%= ave && ave.sexo === 'M' ? 'checked' : '' %> class="sr-only radio-sexo" required>
-                                    <div class="sexo-btn flex items-center justify-center p-2.5 rounded-lg text-xs font-semibold text-center shadow-xs">
+                                    <div class="sexo-btn flex items-center justify-center p-2.5 rounded-xl text-xs font-bold text-center">
                                         ♂ Macho
                                     </div>
                                 </label>
                                 <label class="sexo-label cursor-pointer">
                                     <input type="radio" name="sexo" value="F" <%= ave && ave.sexo === 'F' ? 'checked' : '' %> class="sr-only radio-sexo">
-                                    <div class="sexo-btn flex items-center justify-center p-2.5 rounded-lg text-xs font-semibold text-center shadow-xs">
+                                    <div class="sexo-btn flex items-center justify-center p-2.5 rounded-xl text-xs font-bold text-center">
                                         ♀ Hembra
                                     </div>
                                 </label>
                                 <label class="sexo-label cursor-pointer">
                                     <input type="radio" name="sexo" value="D" <%= !ave || ave.sexo === 'D' ? 'checked' : '' %> class="sr-only radio-sexo">
-                                    <div class="sexo-btn flex items-center justify-center p-2.5 rounded-lg text-xs font-semibold text-center shadow-xs">
+                                    <div class="sexo-btn flex items-center justify-center p-2.5 rounded-xl text-xs font-bold text-center">
                                         ? Desc.
                                     </div>
                                 </label>
@@ -185,38 +185,38 @@
 
                         <!-- Fecha de Nacimiento -->
                         <div>
-                            <label for="fecha_nacimiento" class="block text-sm font-semibold text-gray-700">
-                                Fecha de Nacimiento <span class="text-red-500">*</span>
+                            <label for="fecha_nacimiento" class="block text-xs font-semibold text-cyan-300 uppercase tracking-wider mb-1.5">
+                                Fecha de Nacimiento <span class="text-red-400">*</span>
                             </label>
                             <input type="date" name="fecha_nacimiento" id="fecha_nacimiento" 
                                 value="<%= ave && ave.fecha_nacimiento ? (new Date(ave.fecha_nacimiento)).toISOString().split('T')[0] : '' %>" required 
-                                class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-blue-500 focus:border-blue-500">
+                                class="block w-full px-3.5 py-2.5 bg-[#070D1E] border border-cyan-900/60 rounded-xl text-slate-200 text-sm focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400 transition">
                         </div>
 
                         <!-- Fecha de Anillado -->
                         <div>
-                            <label for="fecha_anillado" class="block text-sm font-semibold text-gray-700">
+                            <label for="fecha_anillado" class="block text-xs font-semibold text-cyan-300 uppercase tracking-wider mb-1.5">
                                 Fecha de Anillado
                             </label>
                             <input type="date" name="fecha_anillado" id="fecha_anillado" 
                                 value="<%= ave && ave.fecha_anillado ? (new Date(ave.fecha_anillado)).toISOString().split('T')[0] : '' %>" 
-                                class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-blue-500 focus:border-blue-500">
+                                class="block w-full px-3.5 py-2.5 bg-[#070D1E] border border-cyan-900/60 rounded-xl text-slate-200 text-sm focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400 transition">
                         </div>
                     </div>
 
                     <!-- Subsección Estado con Campos Condicionales -->
-                    <div class="pt-4 border-t border-gray-150">
+                    <div class="pt-4 border-t border-cyan-900/40">
                         <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
                             <div class="sm:col-span-1">
-                                <label for="estado_biologico" class="block text-sm font-bold text-gray-800">
-                                    Estado del Ejemplar <span class="text-red-500">*</span>
+                                <label for="estado_biologico" class="block text-xs font-semibold text-cyan-300 uppercase tracking-wider mb-1.5">
+                                    Estado del Ejemplar <span class="text-red-400">*</span>
                                 </label>
                                 <% 
                                     const estadoActual = ave ? ave.estado_biologico : 'DISPONIBLE';
                                     const estadoDet = (ave && ave.estado_detalles) ? ave.estado_detalles : {};
                                 %>
                                 <select name="estado_biologico" id="estado_biologico" onchange="toggleEstadoCampos()" 
-                                    class="mt-1 block w-full px-3 py-2 border-2 border-blue-200 rounded-lg text-sm font-medium focus:ring-blue-500 focus:border-blue-500 bg-white">
+                                    class="block w-full px-3.5 py-2.5 bg-[#070D1E] border border-cyan-500/40 rounded-xl text-slate-200 text-sm font-semibold focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400 transition">
                                     <option value="DISPONIBLE" <%= estadoActual === 'DISPONIBLE' ? 'selected' : '' %>>1. Disponible</option>
                                     <option value="EN_VENTA" <%= estadoActual === 'EN_VENTA' ? 'selected' : '' %>>2. En Venta</option>
                                     <option value="VENDIDO" <%= estadoActual === 'VENDIDO' ? 'selected' : '' %>>3. Vendido</option>
@@ -229,136 +229,136 @@
                             </div>
 
                             <!-- Contenedor dinámico según estado -->
-                            <div class="sm:col-span-2 bg-gray-50 p-4 rounded-lg border border-gray-200">
+                            <div class="sm:col-span-2 bg-[#070D1E] p-4 rounded-2xl border border-cyan-900/50">
                                 <!-- 1. DISPONIBLE -->
                                 <div id="campo-estado-disponible" class="estado-dinamico">
-                                    <p class="text-sm text-gray-500 italic">El ejemplar está activo y disponible en el aviario.</p>
+                                    <p class="text-sm text-slate-400 italic">El ejemplar está activo y disponible en el aviario.</p>
                                 </div>
 
                                 <!-- 2. EN VENTA -->
                                 <div id="campo-estado-en_venta" class="estado-dinamico hidden">
-                                    <label for="precio_venta_en_venta" class="block text-sm font-semibold text-gray-700">Precio de Venta (S/.) *</label>
+                                    <label for="precio_venta_en_venta" class="block text-xs font-semibold text-cyan-300 uppercase tracking-wider mb-1.5">Precio de Venta (S/.) *</label>
                                     <input type="number" step="0.01" name="precio_venta" id="precio_venta_en_venta" 
                                         value="<%= ave && (estadoActual === 'EN_VENTA' || estadoActual === 'VENDIDO') ? ave.precio_venta || '' : '' %>" 
-                                        placeholder="0.00" class="mt-1 block w-full sm:w-1/2 px-3 py-2 border border-gray-300 rounded-md text-sm">
+                                        placeholder="0.00" class="block w-full sm:w-1/2 px-3.5 py-2.5 bg-[#0C152E] border border-cyan-900/60 rounded-xl text-cyan-300 font-mono text-sm focus:outline-none focus:border-cyan-400 transition">
                                 </div>
 
                                 <!-- 3. VENDIDO -->
                                 <div id="campo-estado-vendido" class="estado-dinamico hidden grid grid-cols-1 sm:grid-cols-2 gap-4">
                                     <div>
-                                        <label for="precio_venta_vendido" class="block text-sm font-semibold text-gray-700">Precio de Venta (S/.) *</label>
+                                        <label for="precio_venta_vendido" class="block text-xs font-semibold text-cyan-300 uppercase tracking-wider mb-1.5">Precio de Venta (S/.) *</label>
                                         <input type="number" step="0.01" id="precio_venta_vendido" 
                                             value="<%= ave && estadoActual === 'VENDIDO' ? ave.precio_venta || '' : '' %>" 
                                             oninput="syncPrecioVendido(this.value)"
-                                            placeholder="0.00" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md text-sm">
+                                            placeholder="0.00" class="block w-full px-3.5 py-2.5 bg-[#0C152E] border border-cyan-900/60 rounded-xl text-cyan-300 font-mono text-sm focus:outline-none focus:border-cyan-400 transition">
                                     </div>
                                     <div>
-                                        <label for="fecha_venta" class="block text-sm font-semibold text-gray-700">Fecha de Venta *</label>
+                                        <label for="fecha_venta" class="block text-xs font-semibold text-cyan-300 uppercase tracking-wider mb-1.5">Fecha de Venta *</label>
                                         <input type="date" name="fecha_venta" id="fecha_venta" 
                                             value="<%= estadoDet.fecha_venta || '' %>" 
-                                            class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md text-sm">
+                                            class="block w-full px-3.5 py-2.5 bg-[#0C152E] border border-cyan-900/60 rounded-xl text-slate-200 text-sm focus:outline-none focus:border-cyan-400 transition">
                                     </div>
                                 </div>
 
                                 <!-- 4. MUERTO -->
                                 <div id="campo-estado-muerto" class="estado-dinamico hidden grid grid-cols-1 sm:grid-cols-2 gap-4">
                                     <div>
-                                        <label for="fecha_fallecimiento" class="block text-sm font-semibold text-gray-700">Fecha de Muerte *</label>
+                                        <label for="fecha_fallecimiento" class="block text-xs font-semibold text-red-400 uppercase tracking-wider mb-1.5">Fecha de Muerte *</label>
                                         <input type="date" name="fecha_fallecimiento" id="fecha_fallecimiento" 
                                             value="<%= ave && ave.fecha_fallecimiento ? (new Date(ave.fecha_fallecimiento)).toISOString().split('T')[0] : '' %>" 
-                                            class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md text-sm">
+                                            class="block w-full px-3.5 py-2.5 bg-[#0C152E] border border-cyan-900/60 rounded-xl text-slate-200 text-sm focus:outline-none focus:border-cyan-400 transition">
                                     </div>
                                     <div>
-                                        <label for="motivo_fallecimiento" class="block text-sm font-semibold text-gray-700">Motivo de Muerte *</label>
+                                        <label for="motivo_fallecimiento" class="block text-xs font-semibold text-red-400 uppercase tracking-wider mb-1.5">Motivo de Muerte *</label>
                                         <input type="text" name="motivo_fallecimiento" id="motivo_fallecimiento" 
                                             value="<%= ave ? ave.motivo_fallecimiento || '' : '' %>" 
                                             placeholder="Ej. Infección respiratoria, edad avanzada"
-                                            class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md text-sm">
+                                            class="block w-full px-3.5 py-2.5 bg-[#0C152E] border border-cyan-900/60 rounded-xl text-slate-200 text-sm placeholder-slate-500 focus:outline-none focus:border-cyan-400 transition">
                                     </div>
                                 </div>
 
                                 <!-- 5. INTERCAMBIADO -->
                                 <div id="campo-estado-intercambiado" class="estado-dinamico hidden grid grid-cols-1 sm:grid-cols-3 gap-3">
                                     <div>
-                                        <label for="fecha_cambio" class="block text-xs font-semibold text-gray-700">Fecha de Cambio</label>
+                                        <label for="fecha_cambio" class="block text-xs font-semibold text-cyan-300 uppercase tracking-wider mb-1.5">Fecha de Cambio</label>
                                         <input type="date" name="fecha_cambio" id="fecha_cambio" 
                                             value="<%= estadoDet.fecha_cambio || '' %>" 
-                                            class="mt-1 block w-full px-2 py-1.5 border border-gray-300 rounded text-sm">
+                                            class="block w-full px-3 py-2 bg-[#0C152E] border border-cyan-900/60 rounded-xl text-slate-200 text-sm focus:outline-none focus:border-cyan-400 transition">
                                     </div>
                                     <div>
-                                        <label for="motivo_cambio" class="block text-xs font-semibold text-gray-700">Motivo de Cambio</label>
+                                        <label for="motivo_cambio" class="block text-xs font-semibold text-cyan-300 uppercase tracking-wider mb-1.5">Motivo de Cambio</label>
                                         <input type="text" name="motivo_cambio" id="motivo_cambio" 
                                             value="<%= estadoDet.motivo_cambio || '' %>" 
                                             placeholder="Ej. Renovación de sangre"
-                                            class="mt-1 block w-full px-2 py-1.5 border border-gray-300 rounded text-sm">
+                                            class="block w-full px-3 py-2 bg-[#0C152E] border border-cyan-900/60 rounded-xl text-slate-200 text-sm placeholder-slate-500 focus:outline-none focus:border-cyan-400 transition">
                                     </div>
                                     <div>
-                                        <label for="cambiado_con" class="block text-xs font-semibold text-gray-700">Cambiado Con</label>
+                                        <label for="cambiado_con" class="block text-xs font-semibold text-cyan-300 uppercase tracking-wider mb-1.5">Cambiado Con</label>
                                         <input type="text" name="cambiado_con" id="cambiado_con" 
                                             value="<%= estadoDet.cambiado_con || '' %>" 
                                             placeholder="Ej. Aviario Los Andes"
-                                            class="mt-1 block w-full px-2 py-1.5 border border-gray-300 rounded text-sm">
+                                            class="block w-full px-3 py-2 bg-[#0C152E] border border-cyan-900/60 rounded-xl text-slate-200 text-sm placeholder-slate-500 focus:outline-none focus:border-cyan-400 transition">
                                     </div>
                                 </div>
 
                                 <!-- 6. PERDIDO -->
                                 <div id="campo-estado-perdido" class="estado-dinamico hidden grid grid-cols-1 sm:grid-cols-2 gap-4">
                                     <div>
-                                        <label for="fecha_perdida" class="block text-sm font-semibold text-gray-700">Fecha de Pérdida</label>
+                                        <label for="fecha_perdida" class="block text-xs font-semibold text-cyan-300 uppercase tracking-wider mb-1.5">Fecha de Pérdida</label>
                                         <input type="date" name="fecha_perdida" id="fecha_perdida" 
                                             value="<%= estadoDet.fecha_perdida || '' %>" 
-                                            class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md text-sm">
+                                            class="block w-full px-3.5 py-2.5 bg-[#0C152E] border border-cyan-900/60 rounded-xl text-slate-200 text-sm focus:outline-none focus:border-cyan-400 transition">
                                     </div>
                                     <div>
-                                        <label for="detalles_perdida" class="block text-sm font-semibold text-gray-700">Detalles de Pérdida</label>
+                                        <label for="detalles_perdida" class="block text-xs font-semibold text-cyan-300 uppercase tracking-wider mb-1.5">Detalles de Pérdida</label>
                                         <input type="text" name="detalles_perdida" id="detalles_perdida" 
                                             value="<%= estadoDet.detalles_perdida || '' %>" 
                                             placeholder="Ej. Escape en jaula exterior"
-                                            class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md text-sm">
+                                            class="block w-full px-3.5 py-2.5 bg-[#0C152E] border border-cyan-900/60 rounded-xl text-slate-200 text-sm placeholder-slate-500 focus:outline-none focus:border-cyan-400 transition">
                                     </div>
                                 </div>
 
                                 <!-- 7. DONADO -->
                                 <div id="campo-estado-donado" class="estado-dinamico hidden grid grid-cols-1 sm:grid-cols-2 gap-4">
                                     <div>
-                                        <label for="fecha_donacion" class="block text-sm font-semibold text-gray-700">Fecha de Donación</label>
+                                        <label for="fecha_donacion" class="block text-xs font-semibold text-cyan-300 uppercase tracking-wider mb-1.5">Fecha de Donación</label>
                                         <input type="date" name="fecha_donacion" id="fecha_donacion" 
                                             value="<%= estadoDet.fecha_donacion || '' %>" 
-                                            class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md text-sm">
+                                            class="block w-full px-3.5 py-2.5 bg-[#0C152E] border border-cyan-900/60 rounded-xl text-slate-200 text-sm focus:outline-none focus:border-cyan-400 transition">
                                     </div>
                                     <div>
-                                        <label for="donado_a" class="block text-sm font-semibold text-gray-700">Donado a</label>
+                                        <label for="donado_a" class="block text-xs font-semibold text-cyan-300 uppercase tracking-wider mb-1.5">Donado a</label>
                                         <input type="text" name="donado_a" id="donado_a" 
                                             value="<%= estadoDet.donado_a || '' %>" 
                                             placeholder="Ej. Juan Pérez"
-                                            class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md text-sm">
+                                            class="block w-full px-3.5 py-2.5 bg-[#0C152E] border border-cyan-900/60 rounded-xl text-slate-200 text-sm placeholder-slate-500 focus:outline-none focus:border-cyan-400 transition">
                                     </div>
                                 </div>
 
                                 <!-- 8. OTRO -->
                                 <div id="campo-estado-otro" class="estado-dinamico hidden">
-                                    <label for="comentario_otro" class="block text-sm font-semibold text-gray-700">Comentarios sobre el Estado</label>
+                                    <label for="comentario_otro" class="block text-xs font-semibold text-cyan-300 uppercase tracking-wider mb-1.5">Comentarios sobre el Estado</label>
                                     <textarea name="comentario_otro" id="comentario_otro" rows="2" 
                                         placeholder="Especifique cualquier detalle..."
-                                        class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md text-sm"><%= estadoDet.comentario || '' %></textarea>
+                                        class="block w-full px-3.5 py-2.5 bg-[#0C152E] border border-cyan-900/60 rounded-xl text-slate-200 text-sm placeholder-slate-500 focus:outline-none focus:border-cyan-400 transition"><%= estadoDet.comentario || '' %></textarea>
                                 </div>
                             </div>
                         </div>
                     </div>
 
                     <!-- Subsección Publicación en Catálogo Web / Tienda -->
-                    <div class="pt-5 border-t border-gray-150">
-                        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between p-4 bg-indigo-50/70 rounded-xl border border-indigo-200/80 gap-3">
+                    <div class="pt-5 border-t border-cyan-900/40">
+                        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between p-4 bg-gradient-to-r from-cyan-950/40 to-blue-950/40 rounded-2xl border border-cyan-500/30 gap-3">
                             <div class="flex items-start sm:items-center space-x-3">
-                                <span class="p-2.5 bg-indigo-100 text-indigo-700 rounded-xl shrink-0 mt-0.5 sm:mt-0 shadow-xs">
+                                <span class="p-2.5 bg-cyan-500/15 text-cyan-400 rounded-xl shrink-0 mt-0.5 sm:mt-0 border border-cyan-500/20">
                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
                                     </svg>
                                 </span>
                                 <div>
-                                    <label for="publicado_web" class="text-sm font-bold text-gray-900 cursor-pointer block">Exhibición / Publicación en Catálogo Web</label>
-                                    <p id="publicado-help-text" class="text-xs text-gray-500">
+                                    <label for="publicado_web" class="text-sm font-bold text-white cursor-pointer block">Exhibición / Publicación en Catálogo Web</label>
+                                    <p id="publicado-help-text" class="text-xs text-slate-400">
                                         <% if (!ave || estadoActual === 'DISPONIBLE') { %>
                                             Solo disponible en registros internos del criadero. Si activa esta opción, se exhibirá en el catálogo como <strong>"Solo Exhibición"</strong>.
                                         <% } else if (estadoActual === 'EN_VENTA') { %>
@@ -375,12 +375,12 @@
                             </div>
                             <div class="flex items-center space-x-3 self-end sm:self-auto shrink-0">
                                 <% const estaPublicado = ave ? (ave.estado_publicacion === 'EXHIBICION') : false; %>
-                                <span id="publicado-status-badge" class="text-xs font-bold px-3 py-1 rounded-full border <%= estaPublicado ? 'bg-emerald-100 text-emerald-800 border-emerald-300' : 'bg-gray-200 text-gray-700 border-gray-300' %>">
+                                <span id="publicado-status-badge" class="text-xs font-bold px-3 py-1 rounded-full border <%= estaPublicado ? 'bg-emerald-500/15 text-emerald-300 border-emerald-500/30' : 'bg-slate-800 text-slate-400 border-slate-700' %>">
                                     <%= estaPublicado ? '✓ Exhibición Activa' : '🔒 No Publicado' %>
                                 </span>
                                 <label class="relative inline-flex items-center cursor-pointer">
                                     <input type="checkbox" name="publicado_web" id="publicado_web" value="1" <%= estaPublicado ? 'checked' : '' %> onchange="actualizarBadgePublicacion(this.checked)" class="sr-only peer">
-                                    <div class="w-11 h-6 bg-gray-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-indigo-600"></div>
+                                    <div class="w-11 h-6 bg-[#070D1E] border border-slate-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-slate-400 after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-cyan-500 peer-checked:after:bg-navy-950"></div>
                                 </label>
                             </div>
                         </div>
@@ -389,7 +389,7 @@
                     <!-- Botón de navegación al siguiente bloque -->
                     <div class="pt-4 flex justify-end">
                         <button type="button" onclick="cambiarPestana(1)" 
-                            class="inline-flex items-center px-4 py-2 bg-blue-50 text-blue-700 font-semibold rounded-lg hover:bg-blue-100 transition text-sm">
+                            class="inline-flex items-center px-5 py-2.5 bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 font-bold rounded-xl transition text-sm">
                             <span>Siguiente: 2. Origen</span>
                             <svg class="w-4 h-4 ml-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
                         </button>
@@ -402,22 +402,22 @@
         <!-- PESTAÑA 2: BLOQUE 2 - ORIGEN -->
         <!-- ================================================================= -->
         <div id="tab-pane-1" class="tab-pane hidden">
-            <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-                <div class="bg-gradient-to-r from-green-50 to-emerald-50 px-6 py-4 border-b border-gray-200 flex items-center justify-between">
+            <div class="bg-[#0C152E]/90 rounded-2xl shadow-xl border border-cyan-500/20 overflow-hidden">
+                <div class="bg-[#070D1E] px-6 py-4 border-b border-cyan-500/20 flex items-center justify-between">
                     <div class="flex items-center space-x-3">
-                        <span class="flex items-center justify-center w-8 h-8 rounded-full bg-green-600 text-white font-bold text-sm shadow-sm">2</span>
-                        <h2 class="text-lg font-bold text-gray-900 tracking-wide">ORIGEN Y GENEALOGÍA</h2>
+                        <span class="flex items-center justify-center w-8 h-8 rounded-full bg-teal-400 text-navy-950 font-black text-sm shadow-sm">2</span>
+                        <h2 class="text-lg font-extrabold text-white tracking-wide">ORIGEN Y GENEALOGÍA</h2>
                     </div>
-                    <span class="text-xs font-semibold px-2.5 py-1 rounded bg-green-100 text-green-800">Ascendencia</span>
+                    <span class="text-xs font-bold px-2.5 py-1 rounded-full bg-teal-500/15 text-teal-300 border border-teal-500/30">Ascendencia</span>
                 </div>
 
                 <div class="p-6 space-y-6">
                     <!-- Padres -->
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
                         <div>
-                            <label for="padre_id" class="block text-sm font-semibold text-gray-700">Padre (Macho)</label>
+                            <label for="padre_id" class="block text-xs font-semibold text-cyan-300 uppercase tracking-wider mb-1.5">Padre (Macho)</label>
                             <select name="padre_id" id="padre_id" 
-                                class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-lg text-sm bg-white focus:ring-green-500 focus:border-green-500">
+                                class="block w-full px-3.5 py-2.5 bg-[#070D1E] border border-cyan-900/60 rounded-xl text-slate-200 text-sm focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400 transition">
                                 <option value="">-- Sin padre registrado / Externo --</option>
                                 <% machos.forEach(m => { %>
                                     <option value="<%= m.id %>" <%= ave && ave.padre_id === m.id ? 'selected' : '' %>>
@@ -428,9 +428,9 @@
                         </div>
 
                         <div>
-                            <label for="madre_id" class="block text-sm font-semibold text-gray-700">Madre (Hembra)</label>
+                            <label for="madre_id" class="block text-xs font-semibold text-fuchsia-300 uppercase tracking-wider mb-1.5">Madre (Hembra)</label>
                             <select name="madre_id" id="madre_id" 
-                                class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-lg text-sm bg-white focus:ring-green-500 focus:border-green-500">
+                                class="block w-full px-3.5 py-2.5 bg-[#070D1E] border border-cyan-900/60 rounded-xl text-slate-200 text-sm focus:outline-none focus:border-fuchsia-400 focus:ring-1 focus:ring-fuchsia-400 transition">
                                 <option value="">-- Sin madre registrada / Externa --</option>
                                 <% hembras.forEach(f => { %>
                                     <option value="<%= f.id %>" <%= ave && ave.madre_id === f.id ? 'selected' : '' %>>
@@ -442,12 +442,12 @@
                     </div>
 
                     <!-- Procedencia Reactiva -->
-                    <div class="pt-4 border-t border-gray-150">
-                        <label for="procedencia" class="block text-sm font-bold text-gray-800 mb-2">Procedencia del Ave *</label>
+                    <div class="pt-4 border-t border-cyan-900/40">
+                        <label for="procedencia" class="block text-xs font-semibold text-cyan-300 uppercase tracking-wider mb-2">Procedencia del Ave *</label>
                         <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
                             <div>
                                 <select name="procedencia" id="procedencia" onchange="toggleProcedenciaCampos()" required
-                                    class="block w-full px-3 py-2 border border-gray-300 rounded-lg text-sm bg-white focus:ring-green-500 focus:border-green-500">
+                                    class="block w-full px-3.5 py-2.5 bg-[#070D1E] border border-cyan-900/60 rounded-xl text-slate-200 text-sm focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400 transition">
                                     <option value="YO" <%= !ave || ave.procedencia === 'YO' ? 'selected' : '' %>>1. Yo (Criado internamente)</option>
                                     <option value="COMPRA" <%= ave && ave.procedencia === 'COMPRA' ? 'selected' : '' %>>2. Compra a Tercero</option>
                                     <option value="OTRO" <%= ave && ave.procedencia === 'OTRO' ? 'selected' : '' %>>3. Otro</option>
@@ -459,41 +459,41 @@
                             %>
                             <div class="sm:col-span-2">
                                 <!-- Procedencia: COMPRA -->
-                                <div id="campo-proc-compra" class="hidden grid grid-cols-1 sm:grid-cols-3 gap-3 bg-gray-50 p-3 rounded-lg border">
+                                <div id="campo-proc-compra" class="hidden grid grid-cols-1 sm:grid-cols-3 gap-3 bg-[#070D1E] p-4 rounded-xl border border-cyan-900/50">
                                     <div>
-                                        <label for="criador_origen_compra" class="block text-xs font-semibold text-gray-700">Criador / Proveedor</label>
+                                        <label for="criador_origen_compra" class="block text-xs font-semibold text-cyan-300 uppercase tracking-wider mb-1">Criador / Proveedor</label>
                                         <input type="text" name="criador_origen" id="criador_origen_compra" 
                                             value="<%= procDet.criador || '' %>" 
                                             placeholder="Ej. Criadero San José"
-                                            class="mt-1 block w-full px-2 py-1.5 border border-gray-300 rounded text-sm">
+                                            class="block w-full px-3 py-2 bg-[#0C152E] border border-cyan-900/60 rounded-xl text-slate-200 text-sm focus:outline-none focus:border-cyan-400 transition">
                                     </div>
                                     <div>
-                                        <label for="costo_compra" class="block text-xs font-semibold text-gray-700">Precio Compra (S/.)</label>
+                                        <label for="costo_compra" class="block text-xs font-semibold text-cyan-300 uppercase tracking-wider mb-1">Precio Compra (S/.)</label>
                                         <input type="number" step="0.01" name="costo_compra" id="costo_compra" 
                                             value="<%= procDet.costo || '' %>" 
                                             placeholder="0.00"
-                                            class="mt-1 block w-full px-2 py-1.5 border border-gray-300 rounded text-sm">
+                                            class="block w-full px-3 py-2 bg-[#0C152E] border border-cyan-900/60 rounded-xl text-cyan-300 font-mono text-sm focus:outline-none focus:border-cyan-400 transition">
                                     </div>
                                     <div>
-                                        <label for="fecha_compra" class="block text-xs font-semibold text-gray-700">Fecha de Compra</label>
+                                        <label for="fecha_compra" class="block text-xs font-semibold text-cyan-300 uppercase tracking-wider mb-1">Fecha de Compra</label>
                                         <input type="date" name="fecha_compra" id="fecha_compra" 
                                             value="<%= procDet.fecha_compra || '' %>" 
-                                            class="mt-1 block w-full px-2 py-1.5 border border-gray-300 rounded text-sm">
+                                            class="block w-full px-3 py-2 bg-[#0C152E] border border-cyan-900/60 rounded-xl text-slate-200 text-sm focus:outline-none focus:border-cyan-400 transition">
                                     </div>
                                 </div>
 
                                 <!-- Procedencia: OTRO -->
-                                <div id="campo-proc-otro" class="hidden bg-gray-50 p-3 rounded-lg border">
-                                    <label for="criador_origen_otro" class="block text-xs font-semibold text-gray-700">Criador / Contacto</label>
+                                <div id="campo-proc-otro" class="hidden bg-[#070D1E] p-4 rounded-xl border border-cyan-900/50">
+                                    <label for="criador_origen_otro" class="block text-xs font-semibold text-cyan-300 uppercase tracking-wider mb-1">Criador / Contacto</label>
                                     <input type="text" id="criador_origen_otro" 
                                         value="<%= procDet.criador || '' %>" 
                                         oninput="syncCriadorOtro(this.value)"
                                         placeholder="Nombre del criador o procedencia específica"
-                                        class="mt-1 block w-full px-3 py-1.5 border border-gray-300 rounded text-sm">
+                                        class="block w-full px-3.5 py-2 bg-[#0C152E] border border-cyan-900/60 rounded-xl text-slate-200 text-sm placeholder-slate-500 focus:outline-none focus:border-cyan-400 transition">
                                 </div>
 
                                 <!-- Procedencia: YO -->
-                                <div id="campo-proc-yo" class="text-sm text-gray-500 italic p-2">
+                                <div id="campo-proc-yo" class="text-sm text-slate-400 italic p-3">
                                     Ejemplar nacido y criado en nuestras instalaciones.
                                 </div>
                             </div>
@@ -503,12 +503,12 @@
                     <!-- Botones de navegación -->
                     <div class="pt-4 flex justify-between">
                         <button type="button" onclick="cambiarPestana(0)" 
-                            class="inline-flex items-center px-4 py-2 border border-gray-300 text-gray-700 font-semibold rounded-lg hover:bg-gray-50 transition text-sm">
+                            class="inline-flex items-center px-4 py-2.5 border border-slate-700 text-slate-300 font-semibold rounded-xl bg-[#070D1E] hover:bg-[#0F1D3D] transition text-sm">
                             <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
                             <span>Anterior: 1. Datos</span>
                         </button>
                         <button type="button" onclick="cambiarPestana(2)" 
-                            class="inline-flex items-center px-4 py-2 bg-green-50 text-green-700 font-semibold rounded-lg hover:bg-green-100 transition text-sm">
+                            class="inline-flex items-center px-5 py-2.5 bg-teal-500/10 hover:bg-teal-500/20 text-teal-300 border border-teal-500/30 font-bold rounded-xl transition text-sm">
                             <span>Siguiente: 3. Genética</span>
                             <svg class="w-4 h-4 ml-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
                         </button>
@@ -521,49 +521,49 @@
         <!-- PESTAÑA 3: BLOQUE 3 - GENÉTICA -->
         <!-- ================================================================= -->
         <div id="tab-pane-2" class="tab-pane hidden">
-            <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-                <div class="bg-gradient-to-r from-purple-50 to-pink-50 px-6 py-4 border-b border-gray-200 flex items-center justify-between">
+            <div class="bg-[#0C152E]/90 rounded-2xl shadow-xl border border-cyan-500/20 overflow-hidden">
+                <div class="bg-[#070D1E] px-6 py-4 border-b border-cyan-500/20 flex items-center justify-between">
                     <div class="flex items-center space-x-3">
-                        <span class="flex items-center justify-center w-8 h-8 rounded-full bg-purple-600 text-white font-bold text-sm shadow-sm">3</span>
-                        <h2 class="text-lg font-bold text-gray-900 tracking-wide">GENÉTICA Y MUTACIONES</h2>
+                        <span class="flex items-center justify-center w-8 h-8 rounded-full bg-purple-500 text-navy-950 font-black text-sm shadow-sm">3</span>
+                        <h2 class="text-lg font-extrabold text-white tracking-wide">GENÉTICA Y MUTACIONES</h2>
                     </div>
-                    <span class="text-xs font-semibold px-2.5 py-1 rounded bg-purple-100 text-purple-800">Variedades</span>
+                    <span class="text-xs font-bold px-2.5 py-1 rounded-full bg-purple-500/15 text-purple-300 border border-purple-500/30">Variedades</span>
                 </div>
 
                 <div class="p-6 space-y-6">
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
                         <!-- Genotipo -->
                         <div>
-                            <label for="genotipo" class="block text-sm font-semibold text-gray-700">
+                            <label for="genotipo" class="block text-xs font-semibold text-cyan-300 uppercase tracking-wider mb-1.5">
                                 1. Genotipo (Genes portados / Composición genética)
                             </label>
                             <input type="text" name="genotipo" id="genotipo" 
                                 value="<%= ave ? ave.genotipo || '' : '' %>" 
                                 placeholder="Ej. Verde / Azul, Ino, Alas Claras" 
-                                class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-purple-500 focus:border-purple-500">
-                            <p class="mt-1 text-xs text-gray-400">Factores recesivos portados que no se expresan visualmente.</p>
+                                class="block w-full px-3.5 py-2.5 bg-[#070D1E] border border-cyan-900/60 rounded-xl text-slate-200 text-sm placeholder-slate-500 focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400 transition">
+                            <p class="mt-1 text-xs text-slate-400">Factores recesivos portados que no se expresan visualmente.</p>
                         </div>
 
                         <!-- Fenotipo -->
                         <div>
-                            <label for="fenotipo" class="block text-sm font-semibold text-gray-700">
+                            <label for="fenotipo" class="block text-xs font-semibold text-cyan-300 uppercase tracking-wider mb-1.5">
                                 2. Fenotipo (Color y apariencia física visible)
                             </label>
                             <input type="text" name="fenotipo" id="fenotipo" 
                                 value="<%= ave ? ave.fenotipo || '' : '' %>" 
                                 placeholder="Ej. Azul Cobalto Cara Amarilla Tipo II" 
-                                class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-purple-500 focus:border-purple-500">
-                            <p class="mt-1 text-xs text-gray-400">Aspecto fenotípico directo del ejemplar.</p>
+                                class="block w-full px-3.5 py-2.5 bg-[#070D1E] border border-cyan-900/60 rounded-xl text-slate-200 text-sm placeholder-slate-500 focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400 transition">
+                            <p class="mt-1 text-xs text-slate-400">Aspecto fenotípico directo del ejemplar.</p>
                         </div>
                     </div>
 
                     <!-- Mutaciones registradas -->
-                    <div class="pt-4 border-t border-gray-150">
+                    <div class="pt-4 border-t border-cyan-900/40">
                         <div class="flex items-center justify-between mb-3">
-                            <label class="block text-sm font-bold text-gray-800">
+                            <label class="block text-xs font-semibold text-cyan-300 uppercase tracking-wider">
                                 3. Lista de Mutaciones Registradas
                             </label>
-                            <span class="text-xs text-gray-500">Marque las que correspondan e indique su tipo</span>
+                            <span class="text-xs text-slate-400">Marque las que correspondan e indique su tipo</span>
                         </div>
 
                         <% 
@@ -578,40 +578,40 @@
 
                         <div class="space-y-5">
                             <% Object.keys(mutPorCat).forEach(cat => { %>
-                                <div class="bg-gray-50/70 p-3.5 rounded-xl border border-gray-200/80">
-                                    <div class="flex items-center space-x-2 mb-3 pb-1 border-b border-gray-200">
-                                        <span class="text-xs font-extrabold uppercase tracking-wider text-purple-800 bg-purple-100 px-2.5 py-0.5 rounded-md">
+                                <div class="bg-[#070D1E]/70 p-4 rounded-2xl border border-cyan-900/40">
+                                    <div class="flex items-center space-x-2 mb-3 pb-1 border-b border-cyan-950/60">
+                                        <span class="text-xs font-extrabold uppercase tracking-wider text-purple-300 bg-purple-500/20 px-2.5 py-0.5 rounded-md border border-purple-500/30">
                                             <%= cat %>
                                         </span>
-                                        <span class="text-xs text-gray-500 font-medium">(<%= mutPorCat[cat].length %> <%= mutPorCat[cat].length === 1 ? 'variedad' : 'variedades' %>)</span>
+                                        <span class="text-xs text-slate-400 font-medium">(<%= mutPorCat[cat].length %> <%= mutPorCat[cat].length === 1 ? 'variedad' : 'variedades' %>)</span>
                                     </div>
 
                                     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5">
                                         <% mutPorCat[cat].forEach(m => { 
                                             const assoc = ave && ave.mutaciones ? ave.mutaciones.find(am => am.id === m.id) : null;
                                         %>
-                                            <div class="flex items-start justify-between p-2.5 border rounded-lg hover:border-purple-300 transition-colors bg-white shadow-xs">
+                                            <div class="flex items-start justify-between p-3 border border-cyan-900/60 rounded-xl hover:border-cyan-500/40 transition-colors bg-[#0A1227]">
                                                 <div class="flex items-start space-x-2 mr-1">
                                                     <input type="checkbox" name="mutaciones[]" value="<%= m.id %>" id="m-<%= m.id %>" 
                                                         <%= assoc ? 'checked' : '' %> 
                                                         onchange="toggleMutacionItem(<%= m.id %>)"
-                                                        class="mt-0.5 h-4 w-4 text-purple-600 border-gray-300 rounded focus:ring-purple-500">
+                                                        class="mt-0.5 h-4 w-4 text-cyan-400 bg-[#070D1E] border-cyan-900/60 rounded focus:ring-cyan-400">
                                                     <div>
-                                                        <label for="m-<%= m.id %>" class="text-xs font-bold text-gray-800 cursor-pointer block leading-tight">
+                                                        <label for="m-<%= m.id %>" class="text-xs font-bold text-white cursor-pointer block leading-tight">
                                                             <%= m.nombre %>
                                                         </label>
                                                         <% if (m.herencia) { %>
                                                             <span class="inline-block mt-1 text-3xs px-1.5 py-0.5 rounded font-bold
-                                                                <%= m.herencia.includes('Ligada al Sexo') ? 'bg-pink-100 text-pink-700 border border-pink-200' : 
-                                                                   (m.herencia.includes('Recesiva') ? 'bg-blue-100 text-blue-700 border border-blue-200' : 
-                                                                   (m.herencia.includes('Dominante') ? 'bg-green-100 text-green-700 border border-green-200' : 'bg-gray-100 text-gray-700 border border-gray-200')) %>">
+                                                                <%= m.herencia.includes('Ligada al Sexo') ? 'bg-fuchsia-500/20 text-fuchsia-300 border border-fuchsia-500/30' : 
+                                                                   (m.herencia.includes('Recesiva') ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/30' : 
+                                                                   (m.herencia.includes('Dominante') ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30' : 'bg-slate-800 text-slate-400 border border-slate-700')) %>">
                                                                 <%= m.herencia %>
                                                             </span>
                                                         <% } %>
                                                     </div>
                                                 </div>
                                                 <div id="mut-tipo-<%= m.id %>" class="<%= assoc ? '' : 'hidden' %> flex-shrink-0">
-                                                    <select name="mutaciones_tipo[<%= m.id %>]" class="text-3xs border border-purple-200 rounded px-1.5 py-1 bg-purple-50 text-purple-900 font-bold focus:outline-none">
+                                                    <select name="mutaciones_tipo[<%= m.id %>]" class="text-3xs border border-purple-500/40 rounded-lg px-2 py-1 bg-[#070D1E] text-purple-300 font-bold focus:outline-none">
                                                         <option value="FENOTIPO" <%= assoc && assoc.tipo === 'FENOTIPO' ? 'selected' : '' %>>Fenotipo</option>
                                                         <option value="GENOTIPO" <%= assoc && assoc.tipo === 'GENOTIPO' ? 'selected' : '' %>>Genotipo</option>
                                                     </select>
@@ -627,12 +627,12 @@
                     <!-- Botones de navegación -->
                     <div class="pt-4 flex justify-between">
                         <button type="button" onclick="cambiarPestana(1)" 
-                            class="inline-flex items-center px-4 py-2 border border-gray-300 text-gray-700 font-semibold rounded-lg hover:bg-gray-50 transition text-sm">
+                            class="inline-flex items-center px-4 py-2.5 border border-slate-700 text-slate-300 font-semibold rounded-xl bg-[#070D1E] hover:bg-[#0F1D3D] transition text-sm">
                             <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
                             <span>Anterior: 2. Origen</span>
                         </button>
                         <button type="button" onclick="cambiarPestana(3)" 
-                            class="inline-flex items-center px-4 py-2 bg-purple-50 text-purple-700 font-semibold rounded-lg hover:bg-purple-100 transition text-sm">
+                            class="inline-flex items-center px-5 py-2.5 bg-purple-500/15 hover:bg-purple-500/25 text-purple-300 border border-purple-500/30 font-bold rounded-xl transition text-sm">
                             <span>Siguiente: 4. Imágenes</span>
                             <svg class="w-4 h-4 ml-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
                         </button>
@@ -645,17 +645,17 @@
         <!-- PESTAÑA 4: BLOQUE 4 - IMÁGENES -->
         <!-- ================================================================= -->
         <div id="tab-pane-3" class="tab-pane hidden">
-            <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-                <div class="bg-gradient-to-r from-amber-50 to-yellow-50 px-6 py-4 border-b border-gray-200 flex items-center justify-between">
+            <div class="bg-[#0C152E]/90 rounded-2xl shadow-xl border border-cyan-500/20 overflow-hidden">
+                <div class="bg-[#070D1E] px-6 py-4 border-b border-cyan-500/20 flex items-center justify-between">
                     <div class="flex items-center space-x-3">
-                        <span class="flex items-center justify-center w-8 h-8 rounded-full bg-amber-600 text-white font-bold text-sm shadow-sm">4</span>
-                        <h2 class="text-lg font-bold text-gray-900 tracking-wide">FOTOGRAFÍAS (MÁXIMO 2)</h2>
+                        <span class="flex items-center justify-center w-8 h-8 rounded-full bg-amber-400 text-navy-950 font-black text-sm shadow-sm">4</span>
+                        <h2 class="text-lg font-extrabold text-white tracking-wide">FOTOGRAFÍAS (MÁXIMO 2)</h2>
                     </div>
-                    <span class="text-xs font-semibold px-2.5 py-1 rounded bg-amber-100 text-amber-800">Galería</span>
+                    <span class="text-xs font-bold px-2.5 py-1 rounded-full bg-amber-500/15 text-amber-300 border border-amber-500/30">Galería</span>
                 </div>
 
                 <div class="p-6">
-                    <p class="text-xs text-gray-500 mb-4">
+                    <p class="text-xs text-slate-400 mb-5">
                         Permite adjuntar hasta 2 fotos del ejemplar. Puede cambiar cada foto y elegir cuál será la <strong>predeterminada</strong> (portada del catálogo). Formatos: JPG, PNG, WEBP (Máx 2MB c/u).
                     </p>
 
@@ -667,25 +667,25 @@
 
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
                         <!-- SLOT FOTO 1 -->
-                        <div class="border-2 border-dashed border-gray-300 rounded-xl p-4 bg-gray-50 text-center relative flex flex-col justify-between" id="slot-container-0">
+                        <div class="border-2 border-dashed border-cyan-900/60 rounded-2xl p-5 bg-[#070D1E] text-center relative flex flex-col justify-between" id="slot-container-0">
                             <div>
-                                <div class="flex justify-between items-center mb-2">
-                                    <span class="text-xs font-bold uppercase text-gray-600">Foto 1</span>
-                                    <label class="inline-flex items-center text-xs font-semibold text-gray-700 cursor-pointer">
+                                <div class="flex justify-between items-center mb-3">
+                                    <span class="text-xs font-bold uppercase tracking-wider text-cyan-300">Foto 1</span>
+                                    <label class="inline-flex items-center text-xs font-bold text-amber-300 cursor-pointer">
                                         <input type="radio" name="foto_predeterminada" value="<%= img1 ? img1.url : 'nueva_0' %>" 
                                             <%= (img1 && img1.es_principal) || (!img1 && !img2) ? 'checked' : '' %> 
-                                            id="radio-pred-0" class="h-4 w-4 text-amber-600 border-gray-300 focus:ring-amber-500 mr-1.5">
+                                            id="radio-pred-0" class="h-4 w-4 text-amber-400 bg-[#0C152E] border-cyan-900/60 focus:ring-amber-400 mr-1.5">
                                         ⭐ Predeterminada
                                     </label>
-                            </div>
+                                </div>
 
                                 <!-- Preview Área -->
-                                <div class="h-48 rounded-lg overflow-hidden bg-white border flex items-center justify-center relative mb-3">
+                                <div class="h-48 rounded-xl overflow-hidden bg-[#050A16] border border-cyan-900/50 flex items-center justify-center relative mb-4">
                                     <img id="preview-0" src="<%= img1 ? img1.url : '' %>" 
                                         class="<%= img1 ? '' : 'hidden' %> w-full h-full object-cover">
                                     
-                                    <div id="placeholder-0" class="<%= img1 ? 'hidden' : 'flex' %> flex-col items-center justify-center p-4 text-gray-400">
-                                        <svg class="w-10 h-10 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <div id="placeholder-0" class="<%= img1 ? 'hidden' : 'flex' %> flex-col items-center justify-center p-4 text-slate-500">
+                                        <svg class="w-10 h-10 mb-2 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
                                         </svg>
                                         <span class="text-xs font-medium">Sin foto asignada</span>
@@ -701,11 +701,11 @@
                                 <input type="file" name="fotos" id="input-foto-0" accept="image/*" class="hidden" onchange="handleFileSelect(0, event)">
                                 <div class="flex space-x-2">
                                     <button type="button" onclick="document.getElementById('input-foto-0').click()" 
-                                        class="flex-1 py-1.5 px-3 bg-white border border-gray-300 rounded-lg text-xs font-semibold text-gray-700 hover:bg-gray-100 shadow-sm transition">
+                                        class="flex-1 py-2 px-3 bg-[#0C152E] border border-cyan-500/30 rounded-xl text-xs font-bold text-cyan-300 hover:bg-cyan-950/40 shadow-sm transition">
                                         <%= img1 ? 'Cambiar Foto 1' : '+ Subir Foto 1' %>
                                     </button>
                                     <button type="button" onclick="quitarFoto(0)" 
-                                        class="py-1.5 px-3 bg-red-50 text-red-600 rounded-lg text-xs font-semibold hover:bg-red-100 transition <%= img1 ? '' : 'hidden' %>" id="btn-quitar-0">
+                                        class="py-2 px-4 bg-red-500/15 text-red-300 border border-red-500/30 rounded-xl text-xs font-bold hover:bg-red-500/25 transition <%= img1 ? '' : 'hidden' %>" id="btn-quitar-0">
                                         Quitar
                                     </button>
                                 </div>
@@ -713,25 +713,25 @@
                         </div>
 
                         <!-- SLOT FOTO 2 -->
-                        <div class="border-2 border-dashed border-gray-300 rounded-xl p-4 bg-gray-50 text-center relative flex flex-col justify-between" id="slot-container-1">
+                        <div class="border-2 border-dashed border-cyan-900/60 rounded-2xl p-5 bg-[#070D1E] text-center relative flex flex-col justify-between" id="slot-container-1">
                             <div>
-                                <div class="flex justify-between items-center mb-2">
-                                    <span class="text-xs font-bold uppercase text-gray-600">Foto 2</span>
-                                    <label class="inline-flex items-center text-xs font-semibold text-gray-700 cursor-pointer">
+                                <div class="flex justify-between items-center mb-3">
+                                    <span class="text-xs font-bold uppercase tracking-wider text-cyan-300">Foto 2</span>
+                                    <label class="inline-flex items-center text-xs font-bold text-amber-300 cursor-pointer">
                                         <input type="radio" name="foto_predeterminada" value="<%= img2 ? img2.url : 'nueva_1' %>" 
                                             <%= img2 && img2.es_principal ? 'checked' : '' %> 
-                                            id="radio-pred-1" class="h-4 w-4 text-amber-600 border-gray-300 focus:ring-amber-500 mr-1.5">
+                                            id="radio-pred-1" class="h-4 w-4 text-amber-400 bg-[#0C152E] border-cyan-900/60 focus:ring-amber-400 mr-1.5">
                                         ⭐ Predeterminada
                                     </label>
                                 </div>
 
                                 <!-- Preview Área -->
-                                <div class="h-48 rounded-lg overflow-hidden bg-white border flex items-center justify-center relative mb-3">
+                                <div class="h-48 rounded-xl overflow-hidden bg-[#050A16] border border-cyan-900/50 flex items-center justify-center relative mb-4">
                                     <img id="preview-1" src="<%= img2 ? img2.url : '' %>" 
                                         class="<%= img2 ? '' : 'hidden' %> w-full h-full object-cover">
                                     
-                                    <div id="placeholder-1" class="<%= img2 ? 'hidden' : 'flex' %> flex-col items-center justify-center p-4 text-gray-400">
-                                        <svg class="w-10 h-10 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <div id="placeholder-1" class="<%= img2 ? 'hidden' : 'flex' %> flex-col items-center justify-center p-4 text-slate-500">
+                                        <svg class="w-10 h-10 mb-2 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
                                         </svg>
                                         <span class="text-xs font-medium">Sin foto asignada</span>
@@ -747,11 +747,11 @@
                                 <input type="file" name="fotos" id="input-foto-1" accept="image/*" class="hidden" onchange="handleFileSelect(1, event)">
                                 <div class="flex space-x-2">
                                     <button type="button" onclick="document.getElementById('input-foto-1').click()" 
-                                        class="flex-1 py-1.5 px-3 bg-white border border-gray-300 rounded-lg text-xs font-semibold text-gray-700 hover:bg-gray-100 shadow-sm transition">
+                                        class="flex-1 py-2 px-3 bg-[#0C152E] border border-cyan-500/30 rounded-xl text-xs font-bold text-cyan-300 hover:bg-cyan-950/40 shadow-sm transition">
                                         <%= img2 ? 'Cambiar Foto 2' : '+ Subir Foto 2' %>
                                     </button>
                                     <button type="button" onclick="quitarFoto(1)" 
-                                        class="py-1.5 px-3 bg-red-50 text-red-600 rounded-lg text-xs font-semibold hover:bg-red-100 transition <%= img2 ? '' : 'hidden' %>" id="btn-quitar-1">
+                                        class="py-2 px-4 bg-red-500/15 text-red-300 border border-red-500/30 rounded-xl text-xs font-bold hover:bg-red-500/25 transition <%= img2 ? '' : 'hidden' %>" id="btn-quitar-1">
                                         Quitar
                                     </button>
                                 </div>
@@ -762,12 +762,12 @@
                     <!-- Botones de navegación -->
                     <div class="pt-6 flex justify-between">
                         <button type="button" onclick="cambiarPestana(2)" 
-                            class="inline-flex items-center px-4 py-2 border border-gray-300 text-gray-700 font-semibold rounded-lg hover:bg-gray-50 transition text-sm">
+                            class="inline-flex items-center px-4 py-2.5 border border-slate-700 text-slate-300 font-semibold rounded-xl bg-[#070D1E] hover:bg-[#0F1D3D] transition text-sm">
                             <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
                             <span>Anterior: 3. Genética</span>
                         </button>
                         <button type="button" onclick="cambiarPestana(4)" 
-                            class="inline-flex items-center px-4 py-2 bg-amber-50 text-amber-700 font-semibold rounded-lg hover:bg-amber-100 transition text-sm">
+                            class="inline-flex items-center px-5 py-2.5 bg-amber-500/15 hover:bg-amber-500/25 text-amber-300 border border-amber-500/30 font-bold rounded-xl transition text-sm">
                             <span>Siguiente: 5. Apuntes</span>
                             <svg class="w-4 h-4 ml-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
                         </button>
@@ -780,31 +780,34 @@
         <!-- PESTAÑA 5: BLOQUE 5 - APUNTES -->
         <!-- ================================================================= -->
         <div id="tab-pane-4" class="tab-pane hidden">
-            <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-                <div class="bg-gradient-to-r from-teal-50 to-cyan-50 px-6 py-4 border-b border-gray-200 flex items-center justify-between">
+            <div class="bg-[#0C152E]/90 rounded-2xl shadow-xl border border-cyan-500/20 overflow-hidden">
+                <div class="bg-[#070D1E] px-6 py-4 border-b border-cyan-500/20 flex items-center justify-between">
                     <div class="flex items-center space-x-3">
-                        <span class="flex items-center justify-center w-8 h-8 rounded-full bg-teal-600 text-white font-bold text-sm shadow-sm">5</span>
-                        <h2 class="text-lg font-bold text-gray-900 tracking-wide">APUNTES Y NOTAS</h2>
+                        <span class="flex items-center justify-center w-8 h-8 rounded-full bg-teal-400 text-navy-950 font-black text-sm shadow-sm">5</span>
+                        <h2 class="text-lg font-extrabold text-white tracking-wide">APUNTES Y NOTAS</h2>
                     </div>
-                    <span class="text-xs font-semibold px-2.5 py-1 rounded bg-teal-100 text-teal-800">Bitácora</span>
+                    <span class="text-xs font-bold px-2.5 py-1 rounded-full bg-teal-500/15 text-teal-300 border border-teal-500/30">Bitácora</span>
                 </div>
 
                 <div class="p-6 space-y-6">
                     <!-- Formulario para agregar una nota -->
-                    <div class="bg-gray-50 p-4 rounded-xl border border-gray-200">
-                        <h3 class="text-sm font-bold text-gray-800 mb-3">Registrar Nueva Nota / Apunte</h3>
-                        <div class="space-y-3">
+                    <div class="bg-[#070D1E] p-5 rounded-2xl border border-cyan-900/50">
+                        <h3 class="text-sm font-bold text-white mb-3 flex items-center">
+                            <span class="w-2 h-2 rounded-full bg-cyan-400 mr-2"></span>
+                            Registrar Nueva Nota / Apunte
+                        </h3>
+                        <div class="space-y-4">
                             <div>
-                                <label for="apunte_titulo" class="block text-xs font-semibold text-gray-700">Título del Apunte</label>
+                                <label for="apunte_titulo" class="block text-xs font-semibold text-cyan-300 uppercase tracking-wider mb-1.5">Título del Apunte</label>
                                 <input type="text" name="apunte_titulo" id="apunte_titulo" 
                                     placeholder="Ej. Control de muda, Comportamiento en cría..." 
-                                    class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-lg text-sm bg-white focus:ring-teal-500 focus:border-teal-500">
+                                    class="block w-full px-3.5 py-2.5 bg-[#0C152E] border border-cyan-900/60 rounded-xl text-slate-200 text-sm placeholder-slate-500 focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400 transition">
                             </div>
                             <div>
-                                <label for="apunte_contenido" class="block text-xs font-semibold text-gray-700">Contenido</label>
+                                <label for="apunte_contenido" class="block text-xs font-semibold text-cyan-300 uppercase tracking-wider mb-1.5">Contenido</label>
                                 <textarea name="apunte_contenido" id="apunte_contenido" rows="3" 
                                     placeholder="Detalles u observaciones del ejemplar..." 
-                                    class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-lg text-sm bg-white focus:ring-teal-500 focus:border-teal-500"></textarea>
+                                    class="block w-full px-3.5 py-2.5 bg-[#0C152E] border border-cyan-900/60 rounded-xl text-slate-200 text-sm placeholder-slate-500 focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400 transition"></textarea>
                             </div>
                         </div>
                     </div>
@@ -812,15 +815,15 @@
                     <!-- Historial de Apuntes Existentes si aplica -->
                     <% if (ave && ave.apuntes && ave.apuntes.length > 0) { %>
                         <div>
-                            <h4 class="text-xs font-bold uppercase text-gray-500 mb-3 tracking-wider">Historial de Apuntes Guardados (<%= ave.apuntes.length %>)</h4>
+                            <h4 class="text-xs font-bold uppercase text-cyan-300 mb-3 tracking-wider">Historial de Apuntes Guardados (<%= ave.apuntes.length %>)</h4>
                             <div class="space-y-3">
                                 <% ave.apuntes.forEach(ap => { %>
-                                    <div class="p-3 bg-white rounded-lg border border-gray-200 shadow-xs">
-                                        <div class="flex justify-between items-center mb-1">
-                                            <h5 class="text-sm font-bold text-gray-900"><%= ap.titulo %></h5>
-                                            <span class="text-xs text-gray-400"><%= (new Date(ap.created_at)).toLocaleDateString('es-PE') %></span>
+                                    <div class="p-4 bg-[#070D1E] rounded-xl border border-cyan-900/40 shadow-xs">
+                                        <div class="flex justify-between items-center mb-1.5">
+                                            <h5 class="text-sm font-bold text-white"><%= ap.titulo %></h5>
+                                            <span class="text-xs text-slate-400 font-mono"><%= (new Date(ap.created_at)).toLocaleDateString('es-PE') %></span>
                                         </div>
-                                        <p class="text-xs text-gray-700 whitespace-pre-line"><%= ap.contenido %></p>
+                                        <p class="text-xs text-slate-300 whitespace-pre-line leading-relaxed"><%= ap.contenido %></p>
                                     </div>
                                 <% }) %>
                             </div>
@@ -830,12 +833,12 @@
                     <!-- Botones de navegación -->
                     <div class="pt-4 flex justify-between">
                         <button type="button" onclick="cambiarPestana(3)" 
-                            class="inline-flex items-center px-4 py-2 border border-gray-300 text-gray-700 font-semibold rounded-lg hover:bg-gray-50 transition text-sm">
+                            class="inline-flex items-center px-4 py-2.5 border border-slate-700 text-slate-300 font-semibold rounded-xl bg-[#070D1E] hover:bg-[#0F1D3D] transition text-sm">
                             <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
                             <span>Anterior: 4. Imágenes</span>
                         </button>
                         <button type="button" onclick="cambiarPestana(5)" 
-                            class="inline-flex items-center px-4 py-2 bg-teal-50 text-teal-700 font-semibold rounded-lg hover:bg-teal-100 transition text-sm">
+                            class="inline-flex items-center px-5 py-2.5 bg-teal-500/15 hover:bg-teal-500/25 text-teal-300 border border-teal-500/30 font-bold rounded-xl transition text-sm">
                             <span>Siguiente: 6. Concursos</span>
                             <svg class="w-4 h-4 ml-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
                         </button>
@@ -848,50 +851,53 @@
         <!-- PESTAÑA 6: BLOQUE 6 - CONCURSOS -->
         <!-- ================================================================= -->
         <div id="tab-pane-5" class="tab-pane hidden">
-            <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-                <div class="bg-gradient-to-r from-yellow-50 to-orange-50 px-6 py-4 border-b border-gray-200 flex items-center justify-between">
+            <div class="bg-[#0C152E]/90 rounded-2xl shadow-xl border border-cyan-500/20 overflow-hidden">
+                <div class="bg-[#070D1E] px-6 py-4 border-b border-cyan-500/20 flex items-center justify-between">
                     <div class="flex items-center space-x-3">
-                        <span class="flex items-center justify-center w-8 h-8 rounded-full bg-yellow-600 text-white font-bold text-sm shadow-sm">6</span>
-                        <h2 class="text-lg font-bold text-gray-900 tracking-wide">CONCURSOS Y PREMIOS</h2>
+                        <span class="flex items-center justify-center w-8 h-8 rounded-full bg-yellow-400 text-navy-950 font-black text-sm shadow-sm">6</span>
+                        <h2 class="text-lg font-extrabold text-white tracking-wide">CONCURSOS Y PREMIOS</h2>
                     </div>
-                    <span class="text-xs font-semibold px-2.5 py-1 rounded bg-yellow-100 text-yellow-800">Palmarés</span>
+                    <span class="text-xs font-bold px-2.5 py-1 rounded-full bg-yellow-500/15 text-yellow-300 border border-yellow-500/30">Palmarés</span>
                 </div>
 
                 <div class="p-6 space-y-6">
                     <!-- Formulario de nuevo concurso -->
-                    <div class="bg-gray-50 p-4 rounded-xl border border-gray-200">
-                        <h3 class="text-sm font-bold text-gray-800 mb-3">Registrar Participación en Concurso</h3>
+                    <div class="bg-[#070D1E] p-5 rounded-2xl border border-cyan-900/50">
+                        <h3 class="text-sm font-bold text-white mb-3 flex items-center">
+                            <span class="w-2 h-2 rounded-full bg-yellow-400 mr-2"></span>
+                            Registrar Participación en Concurso
+                        </h3>
                         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-3">
                             <div class="sm:col-span-2">
-                                <label for="concurso_nombre" class="block text-xs font-semibold text-gray-700">Nombre del Concurso</label>
+                                <label for="concurso_nombre" class="block text-xs font-semibold text-cyan-300 uppercase tracking-wider mb-1.5">Nombre del Concurso</label>
                                 <input type="text" name="concurso_nombre" id="concurso_nombre" 
                                     placeholder="Ej. Campeonato Nacional FOA 2025" 
-                                    class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-lg text-sm bg-white focus:ring-yellow-500 focus:border-yellow-500">
+                                    class="block w-full px-3.5 py-2.5 bg-[#0C152E] border border-cyan-900/60 rounded-xl text-slate-200 text-sm placeholder-slate-500 focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400 transition">
                             </div>
                             <div>
-                                <label for="concurso_fecha" class="block text-xs font-semibold text-gray-700">Fecha del Concurso</label>
+                                <label for="concurso_fecha" class="block text-xs font-semibold text-cyan-300 uppercase tracking-wider mb-1.5">Fecha del Concurso</label>
                                 <input type="date" name="concurso_fecha" id="concurso_fecha" 
-                                    class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-lg text-sm bg-white focus:ring-yellow-500 focus:border-yellow-500">
+                                    class="block w-full px-3.5 py-2.5 bg-[#0C152E] border border-cyan-900/60 rounded-xl text-slate-200 text-sm focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400 transition">
                             </div>
                             <div>
-                                <label for="concurso_puntuacion" class="block text-xs font-semibold text-gray-700">Puntuación</label>
+                                <label for="concurso_puntuacion" class="block text-xs font-semibold text-cyan-300 uppercase tracking-wider mb-1.5">Puntuación</label>
                                 <input type="number" name="concurso_puntuacion" id="concurso_puntuacion" min="0" max="100" 
                                     placeholder="Ej. 92" 
-                                    class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-lg text-sm bg-white focus:ring-yellow-500 focus:border-yellow-500">
+                                    class="block w-full px-3.5 py-2.5 bg-[#0C152E] border border-cyan-900/60 rounded-xl text-cyan-300 font-mono text-sm placeholder-slate-500 focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400 transition">
                             </div>
                         </div>
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <div>
-                                <label for="concurso_premio" class="block text-xs font-semibold text-gray-700">Premio / Puesto</label>
+                                <label for="concurso_premio" class="block text-xs font-semibold text-cyan-300 uppercase tracking-wider mb-1.5">Premio / Puesto</label>
                                 <input type="text" name="concurso_premio" id="concurso_premio" 
                                     placeholder="Ej. 1er Premio / Campeón de Variedad" 
-                                    class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-lg text-sm bg-white focus:ring-yellow-500 focus:border-yellow-500">
+                                    class="block w-full px-3.5 py-2.5 bg-[#0C152E] border border-cyan-900/60 rounded-xl text-slate-200 text-sm placeholder-slate-500 focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400 transition">
                             </div>
                             <div>
-                                <label for="concurso_comentario" class="block text-xs font-semibold text-gray-700">Comentario del Juez</label>
+                                <label for="concurso_comentario" class="block text-xs font-semibold text-cyan-300 uppercase tracking-wider mb-1.5">Comentario del Juez</label>
                                 <input type="text" name="concurso_comentario" id="concurso_comentario" 
                                     placeholder="Ej. Excelente porte y máscara simétrica" 
-                                    class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-lg text-sm bg-white focus:ring-yellow-500 focus:border-yellow-500">
+                                    class="block w-full px-3.5 py-2.5 bg-[#0C152E] border border-cyan-900/60 rounded-xl text-slate-200 text-sm placeholder-slate-500 focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400 transition">
                             </div>
                         </div>
                     </div>
@@ -899,26 +905,26 @@
                     <!-- Historial de Concursos si aplica -->
                     <% if (ave && ave.concursos && ave.concursos.length > 0) { %>
                         <div>
-                            <h4 class="text-xs font-bold uppercase text-gray-500 mb-3 tracking-wider">Historial de Concursos (<%= ave.concursos.length %>)</h4>
-                            <div class="overflow-x-auto border border-gray-200 rounded-lg">
-                                <table class="min-w-full divide-y divide-gray-200 text-xs">
-                                    <thead class="bg-gray-50 text-gray-700 font-bold uppercase">
+                            <h4 class="text-xs font-bold uppercase text-cyan-300 mb-3 tracking-wider">Historial de Concursos (<%= ave.concursos.length %>)</h4>
+                            <div class="overflow-x-auto border border-cyan-900/40 rounded-xl">
+                                <table class="min-w-full divide-y divide-cyan-900/30 text-xs">
+                                    <thead class="bg-[#050A16] text-cyan-300 font-bold uppercase">
                                         <tr>
-                                            <th class="px-4 py-2 text-left">Concurso</th>
-                                            <th class="px-4 py-2 text-left">Fecha</th>
-                                            <th class="px-4 py-2 text-left">Puntuación</th>
-                                            <th class="px-4 py-2 text-left">Premio</th>
-                                            <th class="px-4 py-2 text-left">Comentarios</th>
+                                            <th class="px-4 py-3 text-left">Concurso</th>
+                                            <th class="px-4 py-3 text-left">Fecha</th>
+                                            <th class="px-4 py-3 text-left">Puntuación</th>
+                                            <th class="px-4 py-3 text-left">Premio</th>
+                                            <th class="px-4 py-3 text-left">Comentarios</th>
                                         </tr>
                                     </thead>
-                                    <tbody class="divide-y divide-gray-200 bg-white">
+                                    <tbody class="divide-y divide-cyan-900/20 bg-[#070D1E] text-slate-300">
                                         <% ave.concursos.forEach(c => { %>
-                                            <tr>
-                                                <td class="px-4 py-2 font-medium text-gray-900"><%= c.nombre_concurso %></td>
-                                                <td class="px-4 py-2 text-gray-500"><%= (new Date(c.fecha)).toLocaleDateString('es-PE') %></td>
-                                                <td class="px-4 py-2 font-bold text-blue-600"><%= c.puntuacion || '-' %> pts</td>
-                                                <td class="px-4 py-2 text-amber-700 font-semibold"><%= c.premio || '-' %></td>
-                                                <td class="px-4 py-2 text-gray-600"><%= c.comentarios || '-' %></td>
+                                            <tr class="hover:bg-cyan-950/20 transition">
+                                                <td class="px-4 py-2.5 font-bold text-white"><%= c.nombre_concurso %></td>
+                                                <td class="px-4 py-2.5 text-slate-400 font-mono"><%= (new Date(c.fecha)).toLocaleDateString('es-PE') %></td>
+                                                <td class="px-4 py-2.5 font-bold text-cyan-400 font-mono"><%= c.puntuacion || '-' %> pts</td>
+                                                <td class="px-4 py-2.5 text-amber-300 font-semibold"><%= c.premio || '-' %></td>
+                                                <td class="px-4 py-2.5 text-slate-400"><%= c.comentarios || '-' %></td>
                                             </tr>
                                         <% }) %>
                                     </tbody>
@@ -930,7 +936,7 @@
                     <!-- Botón de navegación anterior -->
                     <div class="pt-4 flex justify-start">
                         <button type="button" onclick="cambiarPestana(4)" 
-                            class="inline-flex items-center px-4 py-2 border border-gray-300 text-gray-700 font-semibold rounded-lg hover:bg-gray-50 transition text-sm">
+                            class="inline-flex items-center px-4 py-2.5 border border-slate-700 text-slate-300 font-semibold rounded-xl bg-[#070D1E] hover:bg-[#0F1D3D] transition text-sm">
                             <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
                             <span>Anterior: 5. Apuntes</span>
                         </button>
@@ -942,17 +948,17 @@
         <!-- ================================================================= -->
         <!-- BARRA GLOBAL DE ACCIÓN (GUARDAR / CANCELAR) -->
         <!-- ================================================================= -->
-        <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-200 flex items-center justify-between">
-            <div class="text-xs text-gray-500">
+        <div class="bg-[#0C152E]/90 p-5 rounded-2xl shadow-xl border border-cyan-500/20 flex items-center justify-between">
+            <div class="text-xs text-slate-400">
                 Puede guardar en cualquier momento sin importar en qué pestaña se encuentre.
             </div>
             <div class="flex items-center space-x-3">
                 <a href="/admin/aves" 
-                    class="px-5 py-2.5 border border-gray-300 rounded-lg shadow-xs text-sm font-semibold text-gray-700 bg-white hover:bg-gray-50 transition">
+                    class="px-5 py-2.5 border border-slate-700 rounded-xl text-sm font-semibold text-slate-300 bg-[#070D1E] hover:bg-[#0F1D3D] transition">
                     Cancelar
                 </a>
                 <button type="submit" id="btn-submit-form"
-                    class="px-7 py-2.5 border border-transparent rounded-lg shadow-md text-sm font-bold text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition flex items-center">
+                    class="px-7 py-2.5 rounded-xl shadow-lg text-sm font-bold text-navy-950 bg-gradient-to-r from-cyan-400 to-teal-400 hover:from-cyan-300 hover:to-teal-300 transition-all shadow-[0_0_20px_rgba(6,182,212,0.35)] flex items-center">
                     <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
                     <span id="btn-submit-text"><%= ave ? 'Actualizar Ave' : 'Guardar Ave' %></span>
                 </button>
@@ -967,33 +973,33 @@
 <div id="modal-guardado" class="fixed inset-0 z-50 hidden overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
     <div class="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
         <!-- Backdrop -->
-        <div class="fixed inset-0 bg-gray-900 bg-opacity-50 backdrop-blur-xs transition-opacity" aria-hidden="true" onclick="cerrarModalGuardado()"></div>
+        <div class="fixed inset-0 bg-black/80 backdrop-blur-sm transition-opacity" aria-hidden="true" onclick="cerrarModalGuardado()"></div>
 
         <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
 
         <!-- Contenedor del Modal -->
-        <div class="inline-block align-bottom bg-white rounded-2xl px-6 pt-6 pb-6 text-left overflow-hidden shadow-2xl transform transition-all sm:my-8 sm:align-middle sm:max-w-md sm:w-full border border-gray-100">
+        <div class="inline-block align-bottom bg-[#0C152E] rounded-3xl px-8 pt-7 pb-7 text-left overflow-hidden shadow-2xl border border-cyan-500/30 transform transition-all sm:my-8 sm:align-middle sm:max-w-md sm:w-full">
             <div class="text-center">
                 <!-- Icono de Éxito animado -->
-                <div class="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-green-100 text-green-600 mb-4 shadow-inner">
+                <div class="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-cyan-500/15 text-cyan-400 border border-cyan-500/30 mb-4 shadow-[0_0_15px_rgba(6,182,212,0.3)]">
                     <svg class="h-10 w-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"></path>
                     </svg>
                 </div>
-                <h3 class="text-xl font-extrabold text-gray-900 mb-2" id="modal-titulo">
+                <h3 class="text-2xl font-extrabold text-white mb-2" id="modal-titulo">
                     <%= ave ? '¡Ave Actualizada con Éxito!' : '¡Ave Registrada con Éxito!' %>
                 </h3>
-                <p class="text-sm text-gray-600 mb-6" id="modal-mensaje">
+                <p class="text-sm text-slate-300 mb-6" id="modal-mensaje">
                     Los datos del ejemplar han sido guardados correctamente en el sistema.
                 </p>
             </div>
             <div class="mt-4 flex flex-col sm:flex-row gap-3">
                 <a href="/admin/aves" 
-                    class="w-full inline-flex justify-center items-center rounded-xl border border-transparent shadow-sm px-4 py-2.5 bg-blue-600 text-sm font-bold text-white hover:bg-blue-700 transition">
+                    class="w-full inline-flex justify-center items-center rounded-xl px-4 py-2.5 bg-gradient-to-r from-cyan-400 to-teal-400 text-sm font-bold text-navy-950 hover:from-cyan-300 hover:to-teal-300 transition shadow-[0_0_15px_rgba(6,182,212,0.3)]">
                     Ir a Lista de Aves
                 </a>
                 <button type="button" onclick="cerrarModalGuardado()" 
-                    class="w-full inline-flex justify-center items-center rounded-xl border border-gray-300 shadow-xs px-4 py-2.5 bg-white text-sm font-semibold text-gray-700 hover:bg-gray-50 transition" id="modal-btn-secundario">
+                    class="w-full inline-flex justify-center items-center rounded-xl border border-slate-700 px-4 py-2.5 bg-[#070D1E] text-sm font-semibold text-slate-300 hover:bg-[#0F1D3D] transition" id="modal-btn-secundario">
                     <%= ave ? 'Continuar Editando' : 'Registrar Otra Ave' %>
                 </button>
             </div>
@@ -1021,11 +1027,11 @@
             const btn = document.getElementById('tab-btn-' + i);
             const num = document.getElementById('tab-num-' + i);
             if (i === index) {
-                btn.className = 'tab-btn flex items-center px-4 py-2.5 text-xs sm:text-sm font-bold rounded-lg transition-all bg-blue-600 text-white shadow-sm';
-                num.className = 'w-5 h-5 rounded-full flex items-center justify-center bg-white text-blue-600 mr-2 text-xs font-extrabold';
+                btn.className = 'tab-btn flex items-center px-4 py-2.5 text-xs sm:text-sm font-bold rounded-xl transition-all bg-gradient-to-r from-cyan-400 to-teal-400 text-navy-950 shadow-[0_0_15px_rgba(6,182,212,0.35)]';
+                num.className = 'w-5 h-5 rounded-full flex items-center justify-center bg-navy-950 text-cyan-300 mr-2 text-xs font-black';
             } else {
-                btn.className = 'tab-btn flex items-center px-4 py-2.5 text-xs sm:text-sm font-medium rounded-lg text-gray-600 hover:text-gray-900 hover:bg-gray-100 transition-all';
-                num.className = 'w-5 h-5 rounded-full flex items-center justify-center bg-gray-200 text-gray-700 mr-2 text-xs font-bold';
+                btn.className = 'tab-btn flex items-center px-4 py-2.5 text-xs sm:text-sm font-medium rounded-xl text-slate-400 hover:text-cyan-300 hover:bg-cyan-950/30 transition-all';
+                num.className = 'w-5 h-5 rounded-full flex items-center justify-center bg-[#070D1E] text-slate-400 border border-cyan-900/40 mr-2 text-xs font-bold';
             }
         }
 
@@ -1193,10 +1199,10 @@
         const badge = document.getElementById('publicado-status-badge');
         if (badge) {
             if (checked) {
-                badge.className = 'text-xs font-bold px-3 py-1 rounded-full border bg-emerald-100 text-emerald-800 border-emerald-300';
+                badge.className = 'text-xs font-bold px-3 py-1 rounded-full border bg-emerald-500/15 text-emerald-300 border-emerald-500/30';
                 badge.innerHTML = '✓ Exhibición Activa';
             } else {
-                badge.className = 'text-xs font-bold px-3 py-1 rounded-full border bg-gray-200 text-gray-700 border-gray-300';
+                badge.className = 'text-xs font-bold px-3 py-1 rounded-full border bg-slate-800 text-slate-400 border-slate-700';
                 badge.innerHTML = '🔒 No Publicado';
             }
         }

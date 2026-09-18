@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Mockup Catálogo Multi-Categoría (Aves + Insumos + Kits)</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@600;700&family=JetBrains+Mono:wght@500;700&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    width: 1320px;
+    height: 840px;
+    background: #050914;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    color: #F8FAFC;
+    padding: 24px 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    overflow: hidden;
+  }
+
+  .mockup-header-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(12, 21, 46, 0.8);
+    border: 1px solid rgba(6, 182, 212, 0.3);
+    border-radius: 16px;
+    padding: 10px 20px;
+  }
+  .mockup-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: #22D3EE;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .mockup-tag {
+    background: rgba(14, 165, 233, 0.15);
+    border: 1px solid rgba(14, 165, 233, 0.4);
+    color: #38BDF8;
+    padding: 3px 10px;
+    border-radius: 8px;
+    font-size: 11px;
+    font-weight: 700;
+  }
+
+  .browser-window {
+    background: #080E1E;
+    border: 1px solid rgba(6, 182, 212, 0.25);
+    border-radius: 20px;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.8);
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    overflow: hidden;
+    padding: 24px 32px;
+    gap: 20px;
+  }
+
+  /* Catalog Header */
+  .cat-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    border-bottom: 1px solid rgba(148, 163, 184, 0.12);
+    padding-bottom: 16px;
+  }
+  .cat-title {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 28px;
+    font-weight: 800;
+    color: #FFF;
+  }
+  .cat-sub {
+    font-size: 13px;
+    color: #94A3B8;
+  }
+
+  /* Category Tabs */
+  .category-tabs {
+    display: flex;
+    gap: 10px;
+    background: rgba(12, 21, 46, 0.7);
+    padding: 6px;
+    border-radius: 16px;
+    border: 1px solid rgba(148, 163, 184, 0.15);
+    width: fit-content;
+  }
+  .tab-btn {
+    padding: 8px 18px;
+    border-radius: 12px;
+    font-size: 12.5px;
+    font-weight: 700;
+    color: #94A3B8;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+  }
+  .tab-btn.active {
+    background: rgba(6, 182, 212, 0.2);
+    color: #22D3EE;
+    border: 1px solid rgba(6, 182, 212, 0.4);
+  }
+  .tab-count {
+    font-size: 10px;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 2px 6px;
+    border-radius: 999px;
+  }
+
+  /* Product Grid Preview */
+  .products-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    flex: 1;
+  }
+
+  .prod-card {
+    background: #0C152E;
+    border: 1px solid rgba(148, 163, 184, 0.15);
+    border-radius: 18px;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: all 0.2s;
+  }
+  .prod-card:hover {
+    border-color: rgba(6, 182, 212, 0.5);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.5), 0 0 15px rgba(6, 182, 212, 0.1);
+  }
+
+  .prod-badge {
+    align-self: flex-start;
+    font-size: 10px;
+    font-weight: 800;
+    text-transform: uppercase;
+    padding: 3px 8px;
+    border-radius: 6px;
+    margin-bottom: 12px;
+  }
+  .badge-bird { background: rgba(56, 189, 248, 0.2); color: #38BDF8; border: 1px solid rgba(56, 189, 248, 0.4); }
+  .badge-kit { background: rgba(16, 185, 129, 0.2); color: #34D399; border: 1px solid rgba(16, 185, 129, 0.4); }
+  .badge-supp { background: rgba(236, 72, 153, 0.2); color: #F472B6; border: 1px solid rgba(236, 72, 153, 0.4); }
+  .badge-acc { background: rgba(245, 158, 11, 0.2); color: #FBBF24; border: 1px solid rgba(245, 158, 11, 0.4); }
+
+  .prod-visual {
+    height: 110px;
+    background: rgba(7, 13, 30, 0.8);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 40px;
+    margin-bottom: 12px;
+    border: 1px dashed rgba(148, 163, 184, 0.2);
+  }
+
+  .prod-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: #FFF;
+    margin-bottom: 4px;
+  }
+  .prod-seller {
+    font-size: 11px;
+    color: #67E8F9;
+    margin-bottom: 8px;
+  }
+  .prod-desc {
+    font-size: 11px;
+    color: #94A3B8;
+    line-height: 1.3;
+    margin-bottom: 12px;
+  }
+
+  .prod-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    padding-top: 12px;
+  }
+  .prod-price {
+    font-size: 16px;
+    font-weight: 800;
+    color: #FFF;
+  }
+  .btn-add {
+    background: rgba(6, 182, 212, 0.15);
+    border: 1px solid rgba(6, 182, 212, 0.4);
+    color: #22D3EE;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 6px 12px;
+    border-radius: 8px;
+  }
+
+  /* Seller Note Banner */
+  .seller-banner {
+    background: linear-gradient(135deg, rgba(12, 21, 46, 0.95), rgba(7, 13, 30, 0.95));
+    border: 1px solid rgba(6, 182, 212, 0.35);
+    border-radius: 16px;
+    padding: 12px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 12px;
+  }
+  .seller-text strong { color: #38BDF8; }
+</style>
+</head>
+<body>
+
+<div class="mockup-header-bar">
+  <div class="mockup-title">
+    <span>💡 PROPUESTA 2: CATÁLOGO MULTI-CATEGORÍA (AVES + KITS + ALIMENTOS + ACCESORIOS)</span>
+  </div>
+  <div class="mockup-tag">Marketplace Escalable para Criadores & Usuarios</div>
+</div>
+
+<div class="browser-window">
+  <!-- Header -->
+  <div class="cat-header">
+    <div>
+      <h1 class="cat-title">Catálogo Comercial Unificado</h1>
+      <p class="cat-sub">Explora ejemplares con genética certificada, kits de iniciación, suplementación y accesorios para criadores.</p>
+    </div>
+    <div style="font-size: 12px; color: #34D399; background: rgba(16, 185, 129, 0.15); padding: 6px 14px; border-radius: 10px; border: 1px solid rgba(16, 185, 129, 0.3);">
+      ✓ Stock en Tiempo Real
+    </div>
+  </div>
+
+  <!-- Category Tabs -->
+  <div class="category-tabs">
+    <div class="tab-btn active">
+      <span>Todos</span>
+      <span class="tab-count">36</span>
+    </div>
+    <div class="tab-btn">
+      <span>🦜 Aves con Pedigrí</span>
+      <span class="tab-count">18</span>
+    </div>
+    <div class="tab-btn">
+      <span>🌾 Semillas & Alimento</span>
+      <span class="tab-count">6</span>
+    </div>
+    <div class="tab-btn">
+      <span>🧪 Vitaminas & Suplementos</span>
+      <span class="tab-count">5</span>
+    </div>
+    <div class="tab-btn">
+      <span>🪵 Accesorios & Forrajeo</span>
+      <span class="tab-count">4</span>
+    </div>
+    <div class="tab-btn">
+      <span>🎁 Kits de Bienvenida</span>
+      <span class="tab-count">3</span>
+    </div>
+  </div>
+
+  <!-- Product Cards Grid -->
+  <div class="products-grid">
+    <!-- Bird Card -->
+    <div class="prod-card">
+      <div>
+        <span class="prod-badge badge-bird">Ejemplar de Postura</span>
+        <div class="prod-visual">🦜</div>
+        <h3 class="prod-title">Perico Inglés 'Zeus'</h3>
+        <div class="prod-seller">Criador: Aviario Central (Anilla AVPER-26)</div>
+        <p class="prod-desc">Línea cobalto opalino, 4 generaciones de pedigrí trazable y sexado por ADN certificado.</p>
+      </div>
+      <div class="prod-footer">
+        <span class="prod-price">S/. 180.00</span>
+        <div class="btn-add">Reservar 10 min</div>
+      </div>
+    </div>
+
+    <!-- Seed Card -->
+    <div class="prod-card">
+      <div>
+        <span class="prod-badge badge-kit">Nutrición Base</span>
+        <div class="prod-visual">🌾</div>
+        <h3 class="prod-title">Mezcla Semillas Premium (1 kg)</h3>
+        <div class="prod-seller">Vendido por: NutriAviar Perú</div>
+        <p class="prod-desc">Alpiste canadiense ventilado 0% polvo, mijo blanco, perilla y chía para brillo y postura.</p>
+      </div>
+      <div class="prod-footer">
+        <span class="prod-price">S/. 35.00</span>
+        <div class="btn-add">+ Carrito</div>
+      </div>
+    </div>
+
+    <!-- Vitamin Card -->
+    <div class="prod-card">
+      <div>
+        <span class="prod-badge badge-supp">Suplementación</span>
+        <div class="prod-visual">🧪</div>
+        <h3 class="prod-title">Pack Vitaminas & Calcio Orgánico</h3>
+        <div class="prod-seller">Vendido por: BioVet Aviar</div>
+        <p class="prod-desc">Complejo multivitamínico con aminoácidos esenciales y bloque mineral de conchuela de ostra.</p>
+      </div>
+      <div class="prod-footer">
+        <span class="prod-price">S/. 45.00</span>
+        <div class="btn-add">+ Carrito</div>
+      </div>
+    </div>
+
+    <!-- Foraging Card -->
+    <div class="prod-card">
+      <div>
+        <span class="prod-badge badge-acc">Enriquecimiento</span>
+        <div class="prod-visual">🪵</div>
+        <h3 class="prod-title">Kit Forrajeo & Estimulación</h3>
+        <div class="prod-seller">Vendido por: Aviary Crafts</div>
+        <p class="prod-desc">Perchas naturales ergonómicas y juguetes de madera no tóxicos para ejercitar pico y patas.</p>
+      </div>
+      <div class="prod-footer">
+        <span class="prod-price">S/. 40.00</span>
+        <div class="btn-add">+ Carrito</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Seller Note -->
+  <div class="seller-banner">
+    <div class="seller-text">
+      🏪 <strong>Apertura para múltiples usuarios:</strong> El catálogo permite que cualquier criador verificado publique tanto <strong>ejemplares vivos</strong> con su anilla oficial como <strong>alimentos, suplementos y accesorios</strong> en un único checkout unificado.
+    </div>
+    <div style="color: #22D3EE; font-weight: 700;">Marketplace Listo ➔</div>
+  </div>
+</div>
+
+</body>
+</html>

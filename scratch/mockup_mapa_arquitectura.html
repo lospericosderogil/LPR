@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Diagrama de Reestructuración de Navegación & Páginas</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@600;700&family=JetBrains+Mono:wght@500;700&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    width: 1320px;
+    height: 840px;
+    background: #050914;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    color: #F8FAFC;
+    padding: 24px 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    overflow: hidden;
+  }
+
+  .mockup-header-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(12, 21, 46, 0.8);
+    border: 1px solid rgba(6, 182, 212, 0.3);
+    border-radius: 16px;
+    padding: 10px 20px;
+  }
+  .mockup-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: #22D3EE;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .main-split {
+    display: grid;
+    grid-template-columns: 360px 1fr;
+    gap: 20px;
+    flex: 1;
+  }
+
+  /* Before Column */
+  .col-before {
+    background: #0A0F1E;
+    border: 1px dashed rgba(239, 68, 68, 0.4);
+    border-radius: 20px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .col-label-red {
+    font-size: 11px;
+    font-weight: 800;
+    color: #F87171;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .col-title {
+    font-size: 15px;
+    font-weight: 800;
+    color: #FFF;
+    margin-bottom: 4px;
+  }
+  .before-block {
+    background: rgba(12, 21, 46, 0.6);
+    border: 1px solid rgba(148, 163, 184, 0.15);
+    border-radius: 10px;
+    padding: 9px 12px;
+    font-size: 11px;
+    color: #CBD5E1;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .badge-issue {
+    font-size: 9px;
+    font-weight: 700;
+    padding: 2px 6px;
+    border-radius: 4px;
+    background: rgba(239, 68, 68, 0.2);
+    color: #FCA5A5;
+  }
+
+  /* After Column */
+  .col-after {
+    background: #080E1E;
+    border: 1.5px solid rgba(6, 182, 212, 0.35);
+    border-radius: 20px;
+    padding: 20px 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+  }
+  .col-label-green {
+    font-size: 11px;
+    font-weight: 800;
+    color: #34D399;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  /* Nav Flow in After */
+  .nav-strip {
+    background: #0B132B;
+    border: 1px solid rgba(6, 182, 212, 0.3);
+    border-radius: 14px;
+    padding: 10px 16px;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+  }
+  .nav-pill {
+    background: rgba(7, 13, 30, 0.8);
+    border: 1px solid rgba(6, 182, 212, 0.25);
+    padding: 6px 14px;
+    border-radius: 10px;
+    font-size: 11.5px;
+    font-weight: 700;
+    color: #E2E8F0;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .nav-pill.active {
+    border-color: #06B6D4;
+    color: #22D3EE;
+    background: rgba(6, 182, 212, 0.15);
+  }
+
+  /* Destination Cards Grid */
+  .dest-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    flex: 1;
+  }
+  .dest-card {
+    background: #0C152E;
+    border: 1px solid rgba(148, 163, 184, 0.15);
+    border-radius: 14px;
+    padding: 12px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .dest-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .dest-name {
+    font-size: 13px;
+    font-weight: 800;
+    color: #FFF;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .dest-route {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: #38BDF8;
+    background: rgba(56, 189, 248, 0.1);
+    padding: 2px 6px;
+    border-radius: 4px;
+  }
+  .dest-desc {
+    font-size: 11px;
+    color: #94A3B8;
+    line-height: 1.35;
+  }
+  .dest-tag {
+    font-size: 10px;
+    color: #34D399;
+    font-weight: 700;
+  }
+
+  .footer-summary {
+    background: rgba(7, 13, 30, 0.8);
+    border: 1px solid rgba(148, 163, 184, 0.12);
+    border-radius: 12px;
+    padding: 10px 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 11.5px;
+    color: #CBD5E1;
+  }
+  .footer-summary strong { color: #22D3EE; }
+</style>
+</head>
+<body>
+
+<div class="mockup-header-bar">
+  <div class="mockup-title">
+    <span>🗺️ MAPA DE ARQUITECTURA: COMPARATIVA DE ESTRUCTURA Y FLUJO</span>
+  </div>
+  <div style="font-size: 11px; color: #34D399; font-weight: 700;">
+    Modular • Sin Redundancias • Preparado para Marketplace
+  </div>
+</div>
+
+<div class="main-split">
+  <!-- Before -->
+  <div class="col-before">
+    <div class="col-label-red">⚠️ Estructura Anterior</div>
+    <div class="col-title">Portada en Scroll Infinito</div>
+    <div style="font-size: 11px; color: #94A3B8; margin-bottom: 6px;">Todo apilado en una sola página gigante:</div>
+
+    <div class="before-block">
+      <span>1. Hero & Buscador</span>
+      <span class="badge-issue" style="background:rgba(52,211,153,0.15); color:#34D399;">Conservar</span>
+    </div>
+    <div class="before-block">
+      <span>2. Ecosistema Genético</span>
+      <span class="badge-issue">Sobrecarga la Home</span>
+    </div>
+    <div class="before-block">
+      <span>3. Disponibilidad en Vivo</span>
+      <span class="badge-issue">Duplica el Catálogo</span>
+    </div>
+    <div class="before-block">
+      <span>4. Compromiso Bienestar</span>
+      <span class="badge-issue">Pilar muy extenso</span>
+    </div>
+    <div class="before-block">
+      <span>5. Kits de Bienvenida</span>
+      <span class="badge-issue">Inflexible / Estático</span>
+    </div>
+    <div class="before-block">
+      <span>6. Experiencias Reales</span>
+      <span class="badge-issue">Scroll al final</span>
+    </div>
+
+    <div style="margin-top: auto; padding: 8px; background: rgba(239, 68, 68, 0.1); border-radius: 10px; font-size: 10.5px; color: #FCA5A5;">
+      ❌ Problema: El usuario debe desplazarse cientos de píxeles, la carga es lenta y no se distinguen los servicios.
+    </div>
+  </div>
+
+  <!-- After -->
+  <div class="col-after">
+    <div class="col-label-green">✨ Nueva Arquitectura Sugerida (Basada en tu propuesta)</div>
+    
+    <!-- Barra de Menú Global -->
+    <div class="nav-strip">
+      <div class="nav-pill active">🏠 1. Inicio</div>
+      <div class="nav-pill">🛍️ 2. Catálogo Multi-Rubro</div>
+      <div class="nav-pill">🧬 3. Ecosistema Genético</div>
+      <div class="nav-pill">🛡️ 4. Bienestar Aviar ▾</div>
+      <div class="nav-pill">💬 5. Comunidad</div>
+    </div>
+
+    <!-- Grid de Páginas Especializadas -->
+    <div class="dest-grid">
+      <!-- 1. Home -->
+      <div class="dest-card" style="border-color: rgba(6, 182, 212, 0.4);">
+        <div class="dest-top">
+          <span class="dest-name">🏠 Portada (Home)</span>
+          <span class="dest-route">/</span>
+        </div>
+        <p class="dest-desc">Muestra <strong>únicamente la Imagen 01</strong>: Hero de bienvenida, buscador rápido de mutaciones/especies y garantías de confianza. Carga instantánea.</p>
+        <span class="dest-tag">✓ 100% Limpia y Focalizada</span>
+      </div>
+
+      <!-- 2. Catálogo con Kits -->
+      <div class="dest-card">
+        <div class="dest-top">
+          <span class="dest-name">🛍️ Catálogo Expandido</span>
+          <span class="dest-route">/catalogo</span>
+        </div>
+        <p class="dest-desc">Aloja la <strong>Imagen 04 (Kits)</strong> + Alimentos + Suplementos + Accesorios junto con las Aves. Habilita a usuarios/criadores a vender productos e insumos.</p>
+        <span class="dest-tag">✓ Elimina la duplicidad del Bloque 3</span>
+      </div>
+
+      <!-- 3. Ecosistema Genético -->
+      <div class="dest-card">
+        <div class="dest-top">
+          <span class="dest-name">🧬 Ecosistema Genético</span>
+          <span class="dest-route">/ecosistema-genetico</span>
+        </div>
+        <p class="dest-desc">Página dedicada para la <strong>Imagen 02</strong>: Pedigrí interactivo, ejemplar insignia 'Zeus', métricas biológicas en vivo y temporizador de reserva de 10 min.</p>
+        <span class="dest-tag">✓ Transparencia Técnica & Pedigrí</span>
+      </div>
+
+      <!-- 4. Bienestar Aviar -->
+      <div class="dest-card">
+        <div class="dest-top">
+          <span class="dest-name">🛡️ Bienestar & Crianza</span>
+          <span class="dest-route">/bienestar</span>
+        </div>
+        <p class="dest-desc">Reúne la <strong>Imagen 03</strong> y enlaza a las 3 guías especializadas creadas: <em>Salud Preventiva & ADN</em>, <em>Cuidado Parental</em> y <em>Anillado Oficial</em>.</p>
+        <span class="dest-tag">✓ Centro Integral de Bienestar</span>
+      </div>
+
+      <!-- 5. Experiencias Reales -->
+      <div class="dest-card" style="grid-column: span 2;">
+        <div class="dest-top">
+          <span class="dest-name">💬 Comunidad & Experiencias Reales</span>
+          <span class="dest-route">/experiencias</span>
+        </div>
+        <p class="dest-desc">Página dedicada para la <strong>Imagen 05</strong>: Testimonios de criadores federados, familias adoptantes en provincias, garantías sanitarias y llamada a la acción para integrarse al ecosistema.</p>
+        <span class="dest-tag">✓ Prueba Social & Fidelización</span>
+      </div>
+    </div>
+
+    <div class="footer-summary">
+      <span>Resultado: <strong>5 accesos directos</strong> claros, <strong>0 redundancias</strong> y espacio comercial ilimitado.</span>
+      <span style="color: #34D399; font-weight: 700;">Listo para confirmación del usuario</span>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

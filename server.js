@@ -84,16 +84,27 @@ app.use('/', authRoutes);
 app.use('/admin', adminRoutes);
 app.use('/', shopRoutes);
 
-// Home principal con ejemplares destacados
+// Home principal con ejemplares destacados y datos para Smart Matchmaker
 app.get('/', async (req, res) => {
     try {
         const aves = await aveService.listarAves({ catalogo_publico: true });
-        // Tomar las últimas 3 aves registradas y en exhibición
-        const destacadas = aves.slice(0, 3);
-        res.render('shop/home', { title: 'Inicio - AviPeru', aves: destacadas });
+        const especiesRes = await db.query('SELECT id, nombre FROM especies WHERE activo = true ORDER BY id');
+        const mutacionesRes = await db.query('SELECT id, nombre FROM mutaciones WHERE activo = true ORDER BY nombre');
+
+        res.render('shop/home', { 
+            title: 'AviPeru 2026 - Genética & Crianza de Élite', 
+            aves: aves.slice(0, 6),
+            especies: especiesRes.rows || [],
+            mutaciones: mutacionesRes.rows || []
+        });
     } catch (err) {
-        console.error('❌ Error cargando aves para la home:', err.message);
-        res.render('shop/home', { title: 'Inicio - AviPeru', aves: [] });
+        console.error('❌ Error cargando datos para la home:', err.message);
+        res.render('shop/home', { 
+            title: 'Inicio - AviPeru', 
+            aves: [],
+            especies: [],
+            mutaciones: []
+        });
     }
 });
 

@@ -1,19 +1,23 @@
 <%- include('../partials/header') %>
-<div class="max-w-2xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
+<div class="max-w-3xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
     <div class="mb-8">
-        <h2 class="text-2xl font-bold leading-7 text-gray-900 sm:text-3xl">Crear Pareja Reproductiva</h2>
-        <p class="text-sm text-gray-500 mt-1">El sistema solo mostrará ejemplares machos y hembras que no se encuentren en parejas activas.</p>
+        <a href="/admin/parejas" class="inline-flex items-center text-xs font-bold text-cyan-400 hover:text-cyan-300 mb-3 transition">
+            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+            Volver a Parejas
+        </a>
+        <h2 class="text-3xl font-extrabold text-white tracking-tight">Crear Pareja Reproductiva</h2>
+        <p class="text-sm text-slate-400 mt-1">El sistema solo mostrará ejemplares machos y hembras que no se encuentren en uniones activas.</p>
     </div>
 
     <% if (error) { %>
-        <div class="bg-red-50 border-l-4 border-red-400 p-4 text-sm text-red-700 mb-6"><%= error %></div>
+        <div class="bg-red-500/15 border-l-4 border-red-500 p-4 rounded-xl text-sm text-red-300 mb-6 backdrop-blur-md"><%= error %></div>
     <% } %>
 
-    <form class="space-y-6 bg-white p-8 rounded-lg shadow-md border border-gray-150" method="POST" action="/admin/parejas/nuevo">
+    <form class="space-y-6 bg-[#0C152E]/90 backdrop-blur-md p-8 rounded-2xl shadow-2xl border border-cyan-500/20" method="POST" action="/admin/parejas/nuevo">
         <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
             <div>
-                <label for="macho_id" class="block text-sm font-semibold text-gray-700">Macho (Sexo M) *</label>
-                <select name="macho_id" id="macho_id" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md text-sm">
+                <label for="macho_id" class="block text-xs font-semibold text-cyan-300 uppercase tracking-wider mb-1.5">Macho (Sexo M) *</label>
+                <select name="macho_id" id="macho_id" required class="block w-full px-3.5 py-2.5 bg-[#070D1E] border border-cyan-900/60 rounded-xl text-slate-200 text-sm focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400 transition">
                     <option value="">Seleccione ejemplar</option>
                     <% machos.forEach(m => { %>
                         <option value="<%= m.id %>"><%= m.anilla ? 'Anilla: ' + m.anilla : 'Macho #' + m.id %></option>
@@ -22,8 +26,8 @@
             </div>
             
             <div>
-                <label for="hembra_id" class="block text-sm font-semibold text-gray-700">Hembra (Sexo F) *</label>
-                <select name="hembra_id" id="hembra_id" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md text-sm">
+                <label for="hembra_id" class="block text-xs font-semibold text-fuchsia-300 uppercase tracking-wider mb-1.5">Hembra (Sexo F) *</label>
+                <select name="hembra_id" id="hembra_id" required class="block w-full px-3.5 py-2.5 bg-[#070D1E] border border-cyan-900/60 rounded-xl text-slate-200 text-sm focus:outline-none focus:border-fuchsia-400 focus:ring-1 focus:ring-fuchsia-400 transition">
                     <option value="">Seleccione ejemplar</option>
                     <% hembras.forEach(f => { %>
                         <option value="<%= f.id %>"><%= f.anilla ? 'Anilla: ' + f.anilla : 'Hembra #' + f.id %></option>
@@ -32,29 +36,29 @@
             </div>
 
             <div>
-                <label for="fecha_inicio" class="block text-sm font-semibold text-gray-700">Fecha de Unión *</label>
-                <input type="date" name="fecha_inicio" id="fecha_inicio" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md text-sm">
+                <label for="fecha_inicio" class="block text-xs font-semibold text-cyan-300 uppercase tracking-wider mb-1.5">Fecha de Unión *</label>
+                <input type="date" name="fecha_inicio" id="fecha_inicio" required class="block w-full px-3.5 py-2.5 bg-[#070D1E] border border-cyan-900/60 rounded-xl text-slate-200 text-sm focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400 transition">
             </div>
 
             <div>
-                <label for="jaula" class="block text-sm font-semibold text-gray-700">Jaula (Ubicación)</label>
-                <input type="text" name="jaula" id="jaula" placeholder="e.g. J-05, Voladora" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md text-sm">
+                <label for="jaula" class="block text-xs font-semibold text-cyan-300 uppercase tracking-wider mb-1.5">Jaula (Ubicación)</label>
+                <input type="text" name="jaula" id="jaula" placeholder="Ej. J-05, Voladora A" class="block w-full px-3.5 py-2.5 bg-[#070D1E] border border-cyan-900/60 rounded-xl text-slate-200 text-sm placeholder-slate-500 focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400 transition">
             </div>
 
-            <div>
-                <label for="nido" class="block text-sm font-semibold text-gray-700">Nido (Tipo/ID)</label>
-                <input type="text" name="nido" id="nido" placeholder="e.g. Nido Madera A" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md text-sm">
+            <div class="sm:col-span-2">
+                <label for="nido" class="block text-xs font-semibold text-cyan-300 uppercase tracking-wider mb-1.5">Nido (Tipo/ID)</label>
+                <input type="text" name="nido" id="nido" placeholder="Ej. Nido Madera Horizontal #3" class="block w-full px-3.5 py-2.5 bg-[#070D1E] border border-cyan-900/60 rounded-xl text-slate-200 text-sm placeholder-slate-500 focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400 transition">
             </div>
         </div>
 
         <div>
-            <label for="comentario" class="block text-sm font-semibold text-gray-700">Comentarios / Notas</label>
-            <textarea name="comentario" id="comentario" rows="3" placeholder="Observaciones de temperamento, preparación, etc." class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md text-sm"></textarea>
+            <label for="comentario" class="block text-xs font-semibold text-cyan-300 uppercase tracking-wider mb-1.5">Comentarios / Notas</label>
+            <textarea name="comentario" id="comentario" rows="3" placeholder="Observaciones de temperamento, preparación dietética, objetivos genéticos..." class="block w-full px-3.5 py-2.5 bg-[#070D1E] border border-cyan-900/60 rounded-xl text-slate-200 text-sm placeholder-slate-500 focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400 transition"></textarea>
         </div>
 
-        <div class="pt-5 border-t border-gray-200 flex justify-end space-x-3">
-            <a href="/admin/parejas" class="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50">Cancelar</a>
-            <button type="submit" class="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700">Crear Unión</button>
+        <div class="pt-5 border-t border-cyan-900/40 flex justify-end space-x-3">
+            <a href="/admin/parejas" class="px-5 py-2.5 border border-slate-700 rounded-xl text-sm font-semibold text-slate-300 bg-[#070D1E] hover:bg-[#0F1D3D] transition">Cancelar</a>
+            <button type="submit" class="px-6 py-2.5 rounded-xl text-sm font-bold text-navy-950 bg-gradient-to-r from-cyan-400 to-teal-400 hover:from-cyan-300 hover:to-teal-300 transition-all shadow-[0_0_20px_rgba(6,182,212,0.3)]">Crear Unión</button>
         </div>
     </form>
 </div>

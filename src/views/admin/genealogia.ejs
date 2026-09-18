@@ -1,76 +1,90 @@
 <%- include('../partials/header') %>
 <div class="max-w-7xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
-    <div class="mb-8 flex justify-between items-center">
+    <div class="mb-8 flex flex-col sm:flex-row sm:items-center sm:justify-between">
         <div>
-            <h2 class="text-2xl font-bold leading-7 text-gray-900 sm:text-3xl">Árbol Genealógico</h2>
-            <p class="text-sm text-gray-500 mt-1">Línea de linaje para: <strong class="text-gray-700"><%= ave.anilla ? 'Anilla ' + ave.anilla : 'Ave #' + ave.id %></strong> (<%= ave.especie_nombre %>)</p>
+            <span class="inline-flex items-center space-x-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 mb-2">
+                <span class="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></span>
+                <span>MAPEO GENÓMICO & PEDIGRÍ</span>
+            </span>
+            <h2 class="text-3xl font-extrabold text-white tracking-tight">Árbol Genealógico</h2>
+            <p class="text-sm text-slate-400 mt-1">Línea de linaje para: <strong class="text-cyan-300"><%= ave.anilla ? 'Anilla ' + ave.anilla : 'Ave #' + ave.id %></strong> (<%= ave.especie_nombre %>)</p>
         </div>
-        <a href="/admin/aves" class="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50">Volver a Aves</a>
+        <div class="mt-4 sm:mt-0">
+            <a href="/admin/aves" class="inline-flex items-center px-4 py-2 border border-slate-700 rounded-xl text-sm font-semibold text-slate-300 bg-[#070D1E] hover:bg-[#0F1D3D] transition">
+                <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+                Volver a Aves
+            </a>
+        </div>
     </div>
 
     <!-- Tree diagram -->
-    <div class="bg-white p-8 rounded-lg shadow-md border border-gray-200 overflow-x-auto">
-        <div class="min-w-max flex justify-center py-8">
+    <div class="bg-[#0C152E]/90 backdrop-blur-md p-8 sm:p-12 rounded-3xl shadow-2xl border border-cyan-500/20 overflow-x-auto relative">
+        <div class="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(6,182,212,0.08),_transparent_70%)] pointer-events-none rounded-3xl"></div>
+        <div class="min-w-max flex justify-center py-8 relative z-10">
             
             <div class="flex flex-row-reverse justify-end items-center">
                 
-                <!-- Columna 3: Abuelos (Bisabuelos no renderizados por espacio en UI simple, pero soportados) -->
+                <!-- Columna 3: Abuelos -->
                 <div class="flex flex-col space-y-8 justify-around h-full ml-12">
                     <!-- Paternos -->
-                    <div class="border p-4 rounded-lg bg-blue-50 border-blue-200 w-48 shadow-sm">
-                        <span class="text-xs text-blue-500 font-bold block">Abuelo Paterno</span>
-                        <span class="font-bold text-gray-900"><%= (arbol && arbol.padre && arbol.padre.padre) ? (arbol.padre.padre.anilla ? 'Anilla: ' + arbol.padre.padre.anilla : 'Ave #' + arbol.padre.padre.id) : 'Desconocido' %></span>
+                    <div class="border border-cyan-500/30 p-4 rounded-2xl bg-[#070D1E]/90 w-52 shadow-lg">
+                        <span class="text-2xs text-cyan-400 font-bold uppercase tracking-wider block mb-1">Abuelo Paterno ♂</span>
+                        <span class="font-bold text-white text-sm"><%= (arbol && arbol.padre && arbol.padre.padre) ? (arbol.padre.padre.anilla ? 'Anilla: ' + arbol.padre.padre.anilla : 'Ave #' + arbol.padre.padre.id) : 'Desconocido' %></span>
                     </div>
-                    <div class="border p-4 rounded-lg bg-pink-50 border-pink-200 w-48 shadow-sm">
-                        <span class="text-xs text-pink-500 font-bold block">Abuela Paterna</span>
-                        <span class="font-bold text-gray-900"><%= (arbol && arbol.padre && arbol.padre.madre) ? (arbol.padre.madre.anilla ? 'Anilla: ' + arbol.padre.madre.anilla : 'Ave #' + arbol.padre.madre.id) : 'Desconocido' %></span>
+                    <div class="border border-fuchsia-500/30 p-4 rounded-2xl bg-[#070D1E]/90 w-52 shadow-lg">
+                        <span class="text-2xs text-fuchsia-400 font-bold uppercase tracking-wider block mb-1">Abuela Paterna ♀</span>
+                        <span class="font-bold text-white text-sm"><%= (arbol && arbol.padre && arbol.padre.madre) ? (arbol.padre.madre.anilla ? 'Anilla: ' + arbol.padre.madre.anilla : 'Ave #' + arbol.padre.madre.id) : 'Desconocido' %></span>
                     </div>
                     <!-- Maternos -->
-                    <div class="border p-4 rounded-lg bg-blue-50 border-blue-200 w-48 shadow-sm">
-                        <span class="text-xs text-blue-500 font-bold block">Abuelo Materno</span>
-                        <span class="font-bold text-gray-900"><%= (arbol && arbol.madre && arbol.madre.padre) ? (arbol.madre.padre.anilla ? 'Anilla: ' + arbol.madre.padre.anilla : 'Ave #' + arbol.madre.padre.id) : 'Desconocido' %></span>
+                    <div class="border border-cyan-500/30 p-4 rounded-2xl bg-[#070D1E]/90 w-52 shadow-lg">
+                        <span class="text-2xs text-cyan-400 font-bold uppercase tracking-wider block mb-1">Abuelo Materno ♂</span>
+                        <span class="font-bold text-white text-sm"><%= (arbol && arbol.madre && arbol.madre.padre) ? (arbol.padre.padre.anilla ? 'Anilla: ' + arbol.madre.padre.anilla : 'Ave #' + arbol.madre.padre.id) : 'Desconocido' %></span>
                     </div>
-                    <div class="border p-4 rounded-lg bg-pink-50 border-pink-200 w-48 shadow-sm">
-                        <span class="text-xs text-pink-500 font-bold block">Abuela Materna</span>
-                        <span class="font-bold text-gray-900"><%= (arbol && arbol.madre && arbol.madre.madre) ? (arbol.madre.madre.anilla ? 'Anilla: ' + arbol.madre.madre.anilla : 'Ave #' + arbol.madre.madre.id) : 'Desconocido' %></span>
+                    <div class="border border-fuchsia-500/30 p-4 rounded-2xl bg-[#070D1E]/90 w-52 shadow-lg">
+                        <span class="text-2xs text-fuchsia-400 font-bold uppercase tracking-wider block mb-1">Abuela Materna ♀</span>
+                        <span class="font-bold text-white text-sm"><%= (arbol && arbol.madre && arbol.madre.madre) ? (arbol.madre.madre.anilla ? 'Anilla: ' + arbol.madre.madre.anilla : 'Ave #' + arbol.madre.madre.id) : 'Desconocido' %></span>
                     </div>
                 </div>
 
                 <!-- Conectores visuales -->
-                <div class="flex flex-col justify-around h-full ml-6 text-gray-400">
-                    <span class="text-2xl">&#9472;&#9523;&#9472;</span>
-                    <span class="text-2xl">&#9472;&#9523;&#9472;</span>
+                <div class="flex flex-col justify-around h-full ml-6 text-cyan-400/70 font-mono text-2xl select-none">
+                    <span>&#9472;&#9523;&#9472;</span>
+                    <span>&#9472;&#9523;&#9472;</span>
                 </div>
 
                 <!-- Columna 2: Padres -->
                 <div class="flex flex-col space-y-32 justify-around h-full ml-12">
-                    <div class="border p-5 rounded-lg bg-blue-50 border-blue-300 w-56 shadow-md">
-                        <span class="text-xs text-blue-600 font-bold block">PADRE (♂)</span>
-                        <span class="font-bold text-lg text-gray-900"><%= arbol && arbol.padre ? (arbol.padre.anilla ? 'Anilla: ' + arbol.padre.anilla : 'Ave #' + arbol.padre.id) : 'Desconocido' %></span>
+                    <div class="border border-cyan-500/50 p-5 rounded-2xl bg-[#070D1E] w-60 shadow-xl shadow-cyan-950/40">
+                        <span class="text-xs text-cyan-400 font-extrabold uppercase tracking-wider block mb-1">PADRE (♂)</span>
+                        <span class="font-black text-lg text-white"><%= arbol && arbol.padre ? (arbol.padre.anilla ? 'Anilla: ' + arbol.padre.anilla : 'Ave #' + arbol.padre.id) : 'Desconocido' %></span>
                     </div>
-                    <div class="border p-5 rounded-lg bg-pink-50 border-pink-300 w-56 shadow-md">
-                        <span class="text-xs text-pink-600 font-bold block">MADRE (♀)</span>
-                        <span class="font-bold text-lg text-gray-900"><%= arbol && arbol.madre ? (arbol.madre.anilla ? 'Anilla: ' + arbol.madre.anilla : 'Ave #' + arbol.madre.id) : 'Desconocido' %></span>
+                    <div class="border border-fuchsia-500/50 p-5 rounded-2xl bg-[#070D1E] w-60 shadow-xl shadow-fuchsia-950/40">
+                        <span class="text-xs text-fuchsia-400 font-extrabold uppercase tracking-wider block mb-1">MADRE (♀)</span>
+                        <span class="font-black text-lg text-white"><%= arbol && arbol.madre ? (arbol.madre.anilla ? 'Anilla: ' + arbol.madre.anilla : 'Ave #' + arbol.madre.id) : 'Desconocido' %></span>
                     </div>
                 </div>
 
                 <!-- Conector -->
-                <div class="ml-6 text-gray-400 text-3xl">&#9472;&#9523;&#9472;</div>
+                <div class="ml-6 text-cyan-400 text-3xl font-mono select-none">&#9472;&#9523;&#9472;</div>
 
                 <!-- Columna 1: El espécimen -->
-                <div class="border-2 border-blue-500 p-6 rounded-xl bg-white w-64 shadow-xl">
-                    <span class="px-2 py-0.5 rounded-full text-xs font-semibold <%= ave.sexo === 'M' ? 'bg-blue-100 text-blue-800' : ave.sexo === 'F' ? 'bg-pink-100 text-pink-800' : 'bg-gray-100 text-gray-800' %>">
-                        <%= ave.sexo === 'M' ? 'Macho' : ave.sexo === 'F' ? 'Hembra' : 'Desconocido' %>
-                    </span>
-                    <h3 class="font-black text-xl text-gray-900 mt-2"><%= ave.anilla ? 'Anilla: ' + ave.anilla : 'Ave #' + ave.id %></h3>
-                    <p class="text-sm text-gray-600">ID: #<%= ave.id %></p>
+                <div class="border-2 border-cyan-400 p-6 rounded-2xl bg-[#0F1D3D] w-72 shadow-[0_0_30px_rgba(6,182,212,0.35)] relative overflow-hidden">
+                    <div class="absolute -right-6 -bottom-6 w-24 h-24 rounded-full bg-cyan-500/10 blur-xl pointer-events-none"></div>
+                    <div class="flex items-center justify-between mb-3">
+                        <span class="px-3 py-1 rounded-full text-xs font-bold <%= ave.sexo === 'M' ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/30' : ave.sexo === 'F' ? 'bg-fuchsia-500/20 text-fuchsia-300 border border-fuchsia-500/30' : 'bg-slate-800 text-slate-400 border border-slate-700' %>">
+                            <%= ave.sexo === 'M' ? '♂ Macho' : ave.sexo === 'F' ? '♀ Hembra' : '? Desconocido' %>
+                        </span>
+                        <span class="text-3xs font-mono text-cyan-400 bg-cyan-950/60 px-2 py-0.5 rounded border border-cyan-500/30">SUJETO</span>
+                    </div>
+                    <h3 class="font-black text-2xl text-white tracking-tight"><%= ave.anilla ? 'Anilla: ' + ave.anilla : 'Ave #' + ave.id %></h3>
+                    <p class="text-xs text-slate-400 font-mono mt-1">ID del Sistema: #<%= ave.id %></p>
                     
                     <% if (ave.mutaciones && ave.mutaciones.length > 0) { %>
-                        <div class="mt-4 pt-4 border-t border-gray-100">
-                            <span class="text-xs font-bold text-gray-400 block uppercase mb-1">Mutaciones</span>
-                            <div class="flex flex-wrap gap-1">
+                        <div class="mt-4 pt-4 border-t border-cyan-500/20">
+                            <span class="text-2xs font-bold text-cyan-300 block uppercase tracking-wider mb-2">Mutaciones Registradas</span>
+                            <div class="flex flex-wrap gap-1.5">
                                 <% ave.mutaciones.forEach(m => { %>
-                                    <span class="text-2xs bg-gray-100 px-1.5 py-0.5 rounded text-gray-700 font-medium uppercase"><%= m.nombre %></span>
+                                    <span class="text-2xs bg-[#070D1E] border border-cyan-900/60 px-2 py-0.5 rounded-md text-cyan-300 font-semibold uppercase"><%= m.nombre %></span>
                                 <% }) %>
                             </div>
                         </div>

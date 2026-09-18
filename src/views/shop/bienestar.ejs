@@ -1,0 +1,136 @@
+<%- include('../partials/header') %>
+
+<div class="space-y-16 pb-20 overflow-hidden">
+
+    <!-- HERO HEADER & BREADCRUMB -->
+    <section class="relative pt-10 pb-6 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+        <div class="space-y-3">
+            <div class="flex items-center gap-2 text-xs font-mono text-cyan-400">
+                <a href="/" class="hover:underline">Inicio</a>
+                <span>/</span>
+                <span class="text-slate-400">Compromiso con el Bienestar</span>
+            </div>
+            
+            <div class="text-center max-w-3xl mx-auto space-y-3 pt-4">
+                <span class="text-xs font-bold text-cyan-400 tracking-widest uppercase block">Compromiso con el Bienestar Aviar</span>
+                <h1 class="text-3xl sm:text-5xl font-extrabold text-white font-display">Principios de Crianza Ética & Responsable</h1>
+                <p class="text-sm sm:text-base text-slate-300 leading-relaxed">
+                    La excelencia genética solo es posible mediante el respeto irrestricto de la salud física y psicológica de cada ejemplar. Conoce nuestros pilares fundamentales y accede a las guías técnicas especializadas.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- 3 TARJETAS ILUSTRADAS (TAL CUAL LA ESTRUCTURA APROBADA) -->
+    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <!-- Tarjeta 1: Salud Preventiva & ADN -->
+            <div class="bg-[#0C152E]/90 rounded-3xl p-8 border border-slate-800 hover:border-cyan-400/50 shadow-xl transition-all duration-300 group flex flex-col justify-between">
+                <div>
+                    <div class="w-14 h-14 rounded-2xl bg-cyan-950 border border-cyan-500/40 flex items-center justify-center text-2xl text-cyan-400 mb-6 group-hover:scale-110 transition-transform">
+                        🧬
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-3 font-display">1. Salud Preventiva & ADN</h3>
+                    <p class="text-sm text-slate-300 leading-relaxed mb-6">
+                        Monitoreo veterinario permanente, sexado molecular por PCR (99.9% de certeza), cuarentena profiláctica de 30 a 40 días y desparasitación metódica integral.
+                    </p>
+                </div>
+                <div>
+                    <a href="/salud-preventiva" class="inline-flex items-center justify-center w-full py-3 px-4 rounded-2xl bg-gradient-to-r from-cyan-500/20 via-teal-500/20 to-cyan-500/10 hover:from-cyan-500/30 hover:to-teal-500/30 text-cyan-300 hover:text-white border border-cyan-500/40 hover:border-cyan-400 font-bold text-xs uppercase tracking-wider transition-all duration-300 group/btn shadow-lg shadow-cyan-950/50 mb-4 gap-2">
+                        <span>Guía de Salud Preventiva & ADN</span>
+                        <svg class="w-4 h-4 transition-transform group-hover/btn:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+                    </a>
+                    <div class="pt-3 border-t border-slate-800/80 text-xs font-bold text-cyan-400 flex items-center gap-1">
+                        <span>Certificación Sanitaria</span> &check;
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tarjeta 2: Cuidado Parental & Respeto -->
+            <div class="bg-[#0C152E]/90 rounded-3xl p-8 border border-slate-800 hover:border-cyan-400/50 shadow-xl transition-all duration-300 group flex flex-col justify-between">
+                <div>
+                    <div class="w-14 h-14 rounded-2xl bg-cyan-950 border border-cyan-500/40 flex items-center justify-center text-2xl text-cyan-400 mb-6 group-hover:scale-110 transition-transform">
+                        🤲
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-3 font-display">2. Cuidado Parental & Respeto</h3>
+                    <p class="text-sm text-slate-300 leading-relaxed mb-6">
+                        Las crías permanecen con sus progenitores hasta el destete natural completo. El desarrollo en voladeras amplias con enriquecimiento ambiental favorece la docilidad y estabilidad del ave.
+                    </p>
+                </div>
+                <div>
+                    <a href="/cuidado-parental" class="inline-flex items-center justify-center w-full py-3 px-4 rounded-2xl bg-gradient-to-r from-cyan-500/20 via-teal-500/20 to-cyan-500/10 hover:from-cyan-500/30 hover:to-teal-500/30 text-cyan-300 hover:text-white border border-cyan-500/40 hover:border-cyan-400 font-bold text-xs uppercase tracking-wider transition-all duration-300 group/btn shadow-lg shadow-cyan-950/50 mb-4 gap-2">
+                        <span>Guía de Cuidado Parental</span>
+                        <svg class="w-4 h-4 transition-transform group-hover/btn:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+                    </a>
+                    <div class="pt-3 border-t border-slate-800/80 text-xs font-bold text-cyan-400 flex items-center gap-1">
+                        <span>Destete y Vuelo Libre</span> &check;
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tarjeta 3: Anillado & Linaje Trazable -->
+            <div class="bg-[#0C152E]/90 rounded-3xl p-8 border border-slate-800 hover:border-cyan-400/50 shadow-xl transition-all duration-300 group flex flex-col justify-between">
+                <div>
+                    <div class="w-14 h-14 rounded-2xl bg-cyan-950 border border-cyan-500/40 flex items-center justify-center text-2xl text-cyan-400 mb-6 group-hover:scale-110 transition-transform">
+                        🏷️
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-3 font-display">3. Anillado & Linaje Trazable</h3>
+                    <p class="text-sm text-slate-300 leading-relaxed mb-6">
+                        Cada ejemplar porta su anilla cerrada federada e inalterable, registrada en el sistema de trazabilidad con su genealogía completa para garantizar legitimidad, edad verídica y prevenir la consanguinidad.
+                    </p>
+                </div>
+                <div>
+                    <a href="/anillado" class="inline-flex items-center justify-center w-full py-3 px-4 rounded-2xl bg-gradient-to-r from-cyan-500/20 via-teal-500/20 to-cyan-500/10 hover:from-cyan-500/30 hover:to-teal-500/30 text-cyan-300 hover:text-white border border-cyan-500/40 hover:border-cyan-400 font-bold text-xs uppercase tracking-wider transition-all duration-300 group/btn shadow-lg shadow-cyan-950/50 mb-4 gap-2">
+                        <span>Guía Completa de Anillado</span>
+                        <svg class="w-4 h-4 transition-transform group-hover/btn:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+                    </a>
+                    <div class="pt-3 border-t border-slate-800/80 text-xs font-bold text-cyan-400 flex items-center gap-1">
+                        <span>Anilla Federada Oficial</span> &check;
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- GUÍA DE ADOPCIÓN / ADQUISICIÓN EN 3 PASOS -->
+    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="bg-gradient-to-r from-[#0C152E] via-[#0E1A3D] to-[#0C152E] rounded-3xl p-8 sm:p-12 border border-cyan-500/30 shadow-2xl relative overflow-hidden">
+            <div class="text-center max-w-2xl mx-auto mb-12">
+                <span class="text-xs font-bold text-cyan-400 tracking-widest uppercase block mb-1">Paso a Paso Transparente</span>
+                <h2 class="text-2xl sm:text-3xl font-extrabold text-white font-display">¿Cómo Adquirir o Adoptar tu Ejemplar?</h2>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 relative">
+                <!-- Paso 1 -->
+                <div class="relative z-10 bg-[#070D1E]/80 rounded-2xl p-6 border border-slate-800 space-y-3">
+                    <span class="text-3xl font-black text-cyan-400 font-display block">01</span>
+                    <h4 class="text-lg font-bold text-white font-display">Elección & Compatibilidad</h4>
+                    <p class="text-xs text-slate-300 leading-relaxed">
+                        Explora el catálogo o utiliza el buscador especializado para filtrar por especie, mutación de color y propósito (mascota dócil o pie de cría).
+                    </p>
+                </div>
+
+                <!-- Paso 2 -->
+                <div class="relative z-10 bg-[#070D1E]/80 rounded-2xl p-6 border border-cyan-500/40 space-y-3 glow-cyan-sm">
+                    <span class="text-3xl font-black text-cyan-400 font-display block">02</span>
+                    <h4 class="text-lg font-bold text-white font-display">Reserva Blindada 10 min</h4>
+                    <p class="text-xs text-slate-300 leading-relaxed">
+                        Añade el ejemplar al carrito y el sistema lo aparta exclusivamente durante 10 minutos para concretar la orden con total tranquilidad.
+                    </p>
+                </div>
+
+                <!-- Paso 3 -->
+                <div class="relative z-10 bg-[#070D1E]/80 rounded-2xl p-6 border border-slate-800 space-y-3">
+                    <span class="text-3xl font-black text-cyan-400 font-display block">03</span>
+                    <h4 class="text-lg font-bold text-white font-display">Entrega & Acompañamiento</h4>
+                    <p class="text-xs text-slate-300 leading-relaxed">
+                        Coordinación en transportín térmico bioseguro, con certificado de nacimiento, anillado oficial, historial sanitario y asesoría permanente.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+</div>
+
+<%- include('../partials/footer') %>
