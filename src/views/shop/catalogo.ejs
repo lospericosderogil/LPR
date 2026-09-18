@@ -1,494 +1,785 @@
 <%- include('../partials/header') %>
-<div class="max-w-7xl mx-auto px-4 py-10 sm:px-6 lg:px-8 space-y-8">
-    <div class="border-b border-slate-800 pb-6 flex flex-col sm:flex-row sm:items-end justify-between gap-4">
-        <div>
-            <span class="text-xs font-bold text-cyan-400 tracking-widest uppercase block mb-1">Marketplace Aviar & Pie de Cría</span>
-            <h2 class="text-3xl sm:text-4xl font-extrabold tracking-tight text-white font-display">Catálogo Comercial Unificado</h2>
-            <p class="text-sm text-slate-400 mt-1">Explora ejemplares con genética certificada, kits de iniciación, nutrición y accesorios para criadores</p>
-        </div>
-        <div class="text-xs text-slate-400 font-medium">
-            <span id="items-counter" class="text-cyan-300 font-bold"><%= aves.length + 12 %></span> artículos encontrados
-        </div>
-    </div>
 
-    <!-- PESTAÑAS DE CATEGORÍA MULTI-RUBRO -->
-    <div class="overflow-x-auto pb-2">
-        <div class="flex items-center gap-2 p-1.5 bg-[#0C152E]/90 border border-slate-800 rounded-2xl w-max">
-            <button type="button" onclick="filtrarCategoria('todos')" data-tab="todos" class="cat-tab px-4 py-2 rounded-xl text-xs font-bold transition flex items-center gap-2 bg-cyan-500/20 text-cyan-300 border border-cyan-400/40">
-                <span>🌐 Todos</span>
-                <span class="px-1.5 py-0.2 rounded-full text-[10px] bg-[#070D1E] text-slate-300"><%= aves.length + 12 %></span>
-            </button>
-            <button type="button" onclick="filtrarCategoria('aves')" data-tab="aves" class="cat-tab px-4 py-2 rounded-xl text-xs font-bold text-slate-400 hover:text-white transition flex items-center gap-2 border border-transparent">
-                <span>🦜 Aves con Pedigrí</span>
-                <span class="px-1.5 py-0.2 rounded-full text-[10px] bg-[#070D1E] text-slate-400"><%= aves.length %></span>
-            </button>
-            <button type="button" onclick="filtrarCategoria('kits')" data-tab="kits" class="cat-tab px-4 py-2 rounded-xl text-xs font-bold text-slate-400 hover:text-white transition flex items-center gap-2 border border-transparent">
-                <span>🎁 Kits de Bienvenida</span>
-                <span class="px-1.5 py-0.2 rounded-full text-[10px] bg-[#070D1E] text-slate-400">3</span>
-            </button>
-            <button type="button" onclick="filtrarCategoria('alimentos')" data-tab="alimentos" class="cat-tab px-4 py-2 rounded-xl text-xs font-bold text-slate-400 hover:text-white transition flex items-center gap-2 border border-transparent">
-                <span>🌾 Semillas & Alimentos</span>
-                <span class="px-1.5 py-0.2 rounded-full text-[10px] bg-[#070D1E] text-slate-400">3</span>
-            </button>
-            <button type="button" onclick="filtrarCategoria('suplementos')" data-tab="suplementos" class="cat-tab px-4 py-2 rounded-xl text-xs font-bold text-slate-400 hover:text-white transition flex items-center gap-2 border border-transparent">
-                <span>🧪 Vitaminas & Salud</span>
-                <span class="px-1.5 py-0.2 rounded-full text-[10px] bg-[#070D1E] text-slate-400">3</span>
-            </button>
-            <button type="button" onclick="filtrarCategoria('accesorios')" data-tab="accesorios" class="cat-tab px-4 py-2 rounded-xl text-xs font-bold text-slate-400 hover:text-white transition flex items-center gap-2 border border-transparent">
-                <span>🪵 Accesorios & Forrajeo</span>
-                <span class="px-1.5 py-0.2 rounded-full text-[10px] bg-[#070D1E] text-slate-400">3</span>
-            </button>
-        </div>
-    </div>
+<div class="max-w-7xl mx-auto px-4 py-8 sm:px-6 lg:px-8 space-y-8">
 
-    <!-- Filtros Tecnológicos para Aves -->
-    <div id="filtros-aves-box" class="bg-[#0C152E]/90 shadow-2xl rounded-3xl border border-cyan-500/25 p-6 backdrop-blur-xl">
-        <form method="GET" action="/catalogo" class="grid grid-cols-1 gap-4 sm:grid-cols-4 items-end">
-            <div>
-                <label for="search" class="block text-[11px] font-bold text-cyan-400 uppercase tracking-wider mb-1.5">Buscar por Anilla / Código</label>
-                <input type="text" name="search" id="search" value="<%= query.search || '' %>" placeholder="Ej: AVPER-26" class="block w-full px-3.5 py-2.5 bg-[#070D1E] border border-slate-800 rounded-2xl text-sm text-white placeholder-slate-500 focus:outline-none focus:border-cyan-400 transition">
-            </div>
-            <div>
-                <label for="sexo" class="block text-[11px] font-bold text-cyan-400 uppercase tracking-wider mb-1.5">Sexo</label>
-                <select name="sexo" id="sexo" class="block w-full px-3.5 py-2.5 bg-[#070D1E] border border-slate-800 rounded-2xl text-sm text-white focus:outline-none focus:border-cyan-400 cursor-pointer">
-                    <option value="" class="bg-[#080E1E] text-white">Todos los sexos</option>
-                    <option value="M" <%= query.sexo === 'M' ? 'selected' : '' %> class="bg-[#080E1E] text-white">♂ Macho</option>
-                    <option value="F" <%= query.sexo === 'F' ? 'selected' : '' %> class="bg-[#080E1E] text-white">♀ Hembra</option>
-                </select>
-            </div>
-            <div>
-                <label for="especie_id" class="block text-[11px] font-bold text-cyan-400 uppercase tracking-wider mb-1.5">Especie</label>
-                <select name="especie_id" id="especie_id" class="block w-full px-3.5 py-2.5 bg-[#070D1E] border border-slate-800 rounded-2xl text-sm text-white focus:outline-none focus:border-cyan-400 cursor-pointer">
-                    <option value="" class="bg-[#080E1E] text-white">Todas las especies</option>
-                    <% especies.forEach(e => { %>
-                        <option value="<%= e.id %>" <%= parseInt(query.especie_id) === e.id ? 'selected' : '' %> class="bg-[#080E1E] text-white"><%= e.nombre %></option>
-                    <% }) %>
-                </select>
-            </div>
-            <div class="flex items-center space-x-2">
-                <button type="submit" class="w-full bg-gradient-to-r from-cyan-400 to-teal-400 hover:from-cyan-300 hover:to-teal-300 text-slate-950 py-2.5 rounded-2xl font-bold text-sm shadow-md shadow-cyan-500/20 transition duration-200">
-                    Filtrar Aves
+    <!-- 1. CARRUSEL SUPERIOR DE CATEGORÍAS CIRCULARES (ESTILO RETAIL MODERNO) -->
+    <div class="relative bg-[#0C152E]/70 p-4 sm:p-6 rounded-3xl border border-cyan-500/20 shadow-2xl backdrop-blur-xl">
+        <div class="flex items-center justify-between gap-2 sm:gap-4">
+            <!-- Botón Izquierdo Carrusel -->
+            <button type="button" onclick="desplazarCarrusel(-200)" class="w-9 h-9 rounded-full bg-[#080E1E] border border-cyan-500/30 text-cyan-300 hover:text-white hover:border-cyan-400 flex items-center justify-center shrink-0 transition shadow-md">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"/></svg>
+            </button>
+
+            <!-- Contenedor Scrollable de Círculos de Categorías -->
+            <div id="carrusel-categorias" class="flex items-center gap-6 sm:gap-10 overflow-x-auto scroll-smooth no-scrollbar py-2 px-2 flex-1 justify-start sm:justify-center">
+                
+                <!-- Burbuja 1: Todas las Categorías -->
+                <button type="button" onclick="filtrarCategoria('todos')" data-circle="todos" class="circle-cat-btn group flex flex-col items-center gap-2.5 shrink-0 focus:outline-none">
+                    <div class="w-18 h-18 sm:w-20 sm:h-20 rounded-full bg-gradient-to-tr from-cyan-600 via-teal-500 to-cyan-300 p-0.5 shadow-lg shadow-cyan-500/20 group-hover:scale-105 transition-transform duration-200">
+                        <div class="w-full h-full rounded-full bg-[#080E1E] flex items-center justify-center text-3xl">
+                            🌐
+                        </div>
+                    </div>
+                    <span class="text-xs font-bold text-slate-200 group-hover:text-cyan-300 transition">Todos</span>
                 </button>
-                <a href="/catalogo" class="w-full bg-[#080E1E] text-center text-slate-400 hover:text-white border border-slate-800 py-2.5 rounded-2xl font-semibold text-sm transition">
-                    Limpiar
-                </a>
+
+                <!-- Burbuja 2: Aves de Postura -->
+                <button type="button" onclick="filtrarCategoria('aves')" data-circle="aves" class="circle-cat-btn group flex flex-col items-center gap-2.5 shrink-0 focus:outline-none">
+                    <div class="w-18 h-18 sm:w-20 sm:h-20 rounded-full bg-[#070D1E] border-2 border-cyan-500/40 p-0.5 shadow-md group-hover:border-cyan-400 group-hover:scale-105 transition-transform duration-200 overflow-hidden">
+                        <img src="/img/cuidado_parental/voladera_vuelo.jpg" alt="Aves de Postura" class="w-full h-full object-cover rounded-full">
+                    </div>
+                    <span class="text-xs font-bold text-slate-300 group-hover:text-cyan-300 transition">Aves de Postura</span>
+                </button>
+
+                <!-- Burbuja 3: Kits de Bienvenida -->
+                <button type="button" onclick="filtrarCategoria('kits')" data-circle="kits" class="circle-cat-btn group flex flex-col items-center gap-2.5 shrink-0 focus:outline-none">
+                    <div class="w-18 h-18 sm:w-20 sm:h-20 rounded-full bg-[#070D1E] border-2 border-teal-500/40 p-0.5 shadow-md group-hover:border-teal-400 group-hover:scale-105 transition-transform duration-200 overflow-hidden">
+                        <img src="/img/cuidado_parental/nido_parental.jpg" alt="Kits de Bienvenida" class="w-full h-full object-cover rounded-full">
+                    </div>
+                    <span class="text-xs font-bold text-slate-300 group-hover:text-cyan-300 transition">Kits de Bienvenida</span>
+                </button>
+
+                <!-- Burbuja 4: Semillas & Alimentos -->
+                <button type="button" onclick="filtrarCategoria('alimentos')" data-circle="alimentos" class="circle-cat-btn group flex flex-col items-center gap-2.5 shrink-0 focus:outline-none">
+                    <div class="w-18 h-18 sm:w-20 sm:h-20 rounded-full bg-[#070D1E] border-2 border-amber-500/40 p-0.5 shadow-md group-hover:border-amber-400 group-hover:scale-105 transition-transform duration-200 overflow-hidden">
+                        <img src="/img/cuidado_parental/nutricion_reproductiva.jpg" alt="Semillas & Alimentos" class="w-full h-full object-cover rounded-full">
+                    </div>
+                    <span class="text-xs font-bold text-slate-300 group-hover:text-cyan-300 transition">Semillas & Alimento</span>
+                </button>
+
+                <!-- Burbuja 5: Vitaminas & Salud -->
+                <button type="button" onclick="filtrarCategoria('suplementos')" data-circle="suplementos" class="circle-cat-btn group flex flex-col items-center gap-2.5 shrink-0 focus:outline-none">
+                    <div class="w-18 h-18 sm:w-20 sm:h-20 rounded-full bg-[#070D1E] border-2 border-rose-500/40 p-0.5 shadow-md group-hover:border-rose-400 group-hover:scale-105 transition-transform duration-200 overflow-hidden">
+                        <img src="/img/salud_preventiva/suplementos_preventivos.jpg" alt="Vitaminas & Suplementos" class="w-full h-full object-cover rounded-full">
+                    </div>
+                    <span class="text-xs font-bold text-slate-300 group-hover:text-cyan-300 transition">Vitaminas & Salud</span>
+                </button>
+
+                <!-- Burbuja 6: Nidos & Accesorios -->
+                <button type="button" onclick="filtrarCategoria('accesorios')" data-circle="accesorios" class="circle-cat-btn group flex flex-col items-center gap-2.5 shrink-0 focus:outline-none">
+                    <div class="w-18 h-18 sm:w-20 sm:h-20 rounded-full bg-[#070D1E] border-2 border-blue-500/40 p-0.5 shadow-md group-hover:border-blue-400 group-hover:scale-105 transition-transform duration-200 overflow-hidden">
+                        <img src="/img/anillado/anatomia_anilla.jpg" alt="Accesorios & Forrajeo" class="w-full h-full object-cover rounded-full">
+                    </div>
+                    <span class="text-xs font-bold text-slate-300 group-hover:text-cyan-300 transition">Nidos & Accesorios</span>
+                </button>
+
             </div>
-        </form>
+
+            <!-- Botón Derecho Carrusel -->
+            <button type="button" onclick="desplazarCarrusel(200)" class="w-9 h-9 rounded-full bg-[#080E1E] border border-cyan-500/30 text-cyan-300 hover:text-white hover:border-cyan-400 flex items-center justify-center shrink-0 transition shadow-md">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"/></svg>
+            </button>
+        </div>
     </div>
 
-    <!-- GRID DE PRODUCTOS DEL CATÁLOGO -->
-    <div id="catalog-grid" class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+    <!-- 2. SUB-CABECERA: RESULTADOS + TOGGLES DE ENTREGA RÁPIDA + ORDENAMIENTO -->
+    <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-4 border-b border-slate-800">
+        <!-- Contador de Resultados -->
+        <div class="flex items-center gap-2 text-sm text-slate-300 font-medium">
+            <span id="catalogo-total-count" class="font-extrabold text-white text-base"><%= aves.length + 12 %></span>
+            <span>Resultados en Catálogo Aviar</span>
+        </div>
 
-        <!-- 1. AVES REGISTRADAS EN BASE DE DATOS -->
-        <% if (aves && aves.length > 0) { %>
-            <% aves.forEach(a => { %>
-                <div class="catalog-item group relative bg-[#0C152E]/90 border border-slate-800 hover:border-cyan-500/50 rounded-3xl overflow-hidden flex flex-col justify-between shadow-xl transition-all duration-300 transform hover:-translate-y-1" data-categoria="aves">
-                    <div class="relative w-full h-56 bg-[#070D1E] overflow-hidden flex items-center justify-center border-b border-slate-800">
-                        <% if (a.imagenes && a.imagenes.length > 0) { %>
-                            <img src="<%= a.imagenes[0].url %>" alt="Ave <%= a.anilla || a.id %>" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+        <!-- Badges / Toggles de Entrega Rápida (Idéntico a la referencia) -->
+        <div class="flex flex-wrap items-center gap-2.5">
+            <!-- Toggle 1: Reserva 10 min -->
+            <button type="button" onclick="toggleFiltroRapido('reserva')" id="badge-reserva" class="quick-badge px-3 py-1.5 rounded-full bg-[#0C152E] border border-pink-500/40 text-pink-300 text-xs font-bold flex items-center gap-1.5 hover:border-pink-400 transition">
+                <span>⚡</span>
+                <span>Reserva 10 min</span>
+            </button>
+
+            <!-- Toggle 2: Despacho a Domicilio -->
+            <button type="button" onclick="toggleFiltroRapido('despacho')" id="badge-despacho" class="quick-badge px-3 py-1.5 rounded-full bg-[#0C152E] border border-cyan-500/40 text-cyan-300 text-xs font-bold flex items-center gap-1.5 hover:border-cyan-400 transition">
+                <span>🚚</span>
+                <span>Despacho a Domicilio</span>
+            </button>
+
+            <!-- Toggle 3: Punto de Retiro -->
+            <button type="button" onclick="toggleFiltroRapido('retiro')" id="badge-retiro" class="quick-badge px-3 py-1.5 rounded-full bg-[#0C152E] border border-slate-700 text-slate-300 text-xs font-bold flex items-center gap-1.5 hover:border-cyan-400 transition">
+                <span>🏢</span>
+                <span>Punto de Retiro</span>
+            </button>
+
+            <!-- Selector de Ordenamiento -->
+            <div class="relative ml-2">
+                <select id="ordenar-select" onchange="ordenarProductos(this.value)" class="bg-[#0C152E] border border-slate-700 text-xs font-bold text-slate-200 px-3 py-1.5 rounded-xl focus:outline-none focus:border-cyan-400 cursor-pointer">
+                    <option value="recomendados">Recomendados</option>
+                    <option value="precio-asc">Menor precio</option>
+                    <option value="precio-desc">Mayor precio</option>
+                    <option value="recientes">Más recientes</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <!-- 3. ESTRUCTURA PRINCIPAL DE 2 COLUMNAS (SIDEBAR FILTROS + GRID DE PRODUCTOS) -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+
+        <!-- ================= COLUMNA IZQUIERDA: BARRA DE FILTROS ================= -->
+        <aside class="lg:col-span-3 space-y-6">
+            <div class="bg-[#0C152E]/90 rounded-3xl p-6 border border-cyan-500/20 shadow-2xl space-y-6 sticky top-24">
+                
+                <!-- Encabezado de Filtros -->
+                <div class="flex items-center justify-between pb-3 border-b border-slate-800">
+                    <div>
+                        <span class="text-[10px] font-black text-cyan-400 uppercase tracking-widest block">Catálogo Oficial</span>
+                        <h3 class="text-base font-extrabold text-white flex items-center gap-2">
+                            <span>⚙️</span>
+                            <span>FILTROS</span>
+                        </h3>
+                    </div>
+                    <button type="button" onclick="limpiarTodosFiltros()" class="text-[11px] font-bold text-cyan-400 hover:text-cyan-300 underline">
+                        Limpiar
+                    </button>
+                </div>
+
+                <!-- SECCIÓN 1: MODALIDAD DE ENTREGA (CON TOGGLES/SWITCHES) -->
+                <div class="space-y-3">
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs font-extrabold text-white">Modalidad de Entrega</span>
+                        <span class="px-1.5 py-0.5 text-[9px] font-black uppercase bg-pink-500/20 text-pink-300 border border-pink-500/40 rounded">Nuevo</span>
+                    </div>
+
+                    <!-- Toggle 1 -->
+                    <label class="flex items-center justify-between p-2.5 rounded-xl bg-[#070D1E] border border-slate-800 hover:border-cyan-500/30 cursor-pointer transition">
+                        <span class="text-xs font-semibold text-slate-300 flex items-center gap-1.5">
+                            <span class="text-pink-400">⚡</span> Reserva 10 min
+                        </span>
+                        <input type="checkbox" id="switch-reserva" onchange="aplicarFiltros()" class="w-4 h-4 rounded text-cyan-500 focus:ring-0 bg-[#0C152E] border-slate-700">
+                    </label>
+
+                    <!-- Toggle 2 -->
+                    <label class="flex items-center justify-between p-2.5 rounded-xl bg-[#070D1E] border border-slate-800 hover:border-cyan-500/30 cursor-pointer transition">
+                        <span class="text-xs font-semibold text-slate-300 flex items-center gap-1.5">
+                            <span class="text-cyan-400">🚚</span> Despacho a domicilio
+                        </span>
+                        <input type="checkbox" id="switch-despacho" onchange="aplicarFiltros()" class="w-4 h-4 rounded text-cyan-500 focus:ring-0 bg-[#0C152E] border-slate-700">
+                    </label>
+
+                    <!-- Toggle 3 -->
+                    <label class="flex items-center justify-between p-2.5 rounded-xl bg-[#070D1E] border border-slate-800 hover:border-cyan-500/30 cursor-pointer transition">
+                        <span class="text-xs font-semibold text-slate-300 flex items-center gap-1.5">
+                            <span class="text-teal-400">🏢</span> Punto de retiro
+                        </span>
+                        <input type="checkbox" id="switch-retiro" onchange="aplicarFiltros()" class="w-4 h-4 rounded text-cyan-500 focus:ring-0 bg-[#0C152E] border-slate-700">
+                    </label>
+                </div>
+
+                <!-- SECCIÓN 2: ESPECIES & CATEGORÍAS -->
+                <div class="space-y-3 pt-3 border-t border-slate-800">
+                    <span class="text-xs font-extrabold text-white block">Especies & Insumos</span>
+                    <div class="space-y-2 text-xs text-slate-300">
+                        <label class="flex items-center justify-between cursor-pointer hover:text-white transition">
+                            <span class="flex items-center gap-2">
+                                <input type="checkbox" value="australiano" onchange="aplicarFiltros()" class="filter-especie w-3.5 h-3.5 rounded text-cyan-500 bg-[#070D1E] border-slate-700">
+                                <span>Perico Australiano</span>
+                            </span>
+                            <span class="text-[10px] text-slate-500 font-mono">12</span>
+                        </label>
+                        <label class="flex items-center justify-between cursor-pointer hover:text-white transition">
+                            <span class="flex items-center gap-2">
+                                <input type="checkbox" value="ingles" onchange="aplicarFiltros()" class="filter-especie w-3.5 h-3.5 rounded text-cyan-500 bg-[#070D1E] border-slate-700">
+                                <span>Perico Inglés</span>
+                            </span>
+                            <span class="text-[10px] text-slate-500 font-mono">6</span>
+                        </label>
+                        <label class="flex items-center justify-between cursor-pointer hover:text-white transition">
+                            <span class="flex items-center gap-2">
+                                <input type="checkbox" value="kits" onchange="aplicarFiltros()" class="filter-especie w-3.5 h-3.5 rounded text-teal-500 bg-[#070D1E] border-slate-700">
+                                <span>Kits de Bienvenida</span>
+                            </span>
+                            <span class="text-[10px] text-slate-500 font-mono">3</span>
+                        </label>
+                        <label class="flex items-center justify-between cursor-pointer hover:text-white transition">
+                            <span class="flex items-center gap-2">
+                                <input type="checkbox" value="insumos" onchange="aplicarFiltros()" class="filter-especie w-3.5 h-3.5 rounded text-cyan-500 bg-[#070D1E] border-slate-700">
+                                <span>Alimentos & Accesorios</span>
+                            </span>
+                            <span class="text-[10px] text-slate-500 font-mono">9</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- SECCIÓN 3: SEXO (PCR MOLECULAR) -->
+                <div class="space-y-3 pt-3 border-t border-slate-800">
+                    <span class="text-xs font-extrabold text-white block">Sexo Certificado (ADN)</span>
+                    <div class="grid grid-cols-2 gap-2 text-xs text-slate-300">
+                        <label class="flex items-center gap-2 p-2 rounded-xl bg-[#070D1E] border border-slate-800 cursor-pointer hover:border-cyan-500/30">
+                            <input type="checkbox" value="M" onchange="aplicarFiltros()" class="filter-sexo w-3.5 h-3.5 rounded text-cyan-500 bg-[#0C152E] border-slate-700">
+                            <span>♂ Macho</span>
+                        </label>
+                        <label class="flex items-center gap-2 p-2 rounded-xl bg-[#070D1E] border border-slate-800 cursor-pointer hover:border-fuchsia-500/30">
+                            <input type="checkbox" value="F" onchange="aplicarFiltros()" class="filter-sexo w-3.5 h-3.5 rounded text-fuchsia-500 bg-[#0C152E] border-slate-700">
+                            <span>♀ Hembra</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- SECCIÓN 4: MUTACIONES (CON BUSCADOR COMO EN LA REFERENCIA) -->
+                <div class="space-y-3 pt-3 border-t border-slate-800">
+                    <span class="text-xs font-extrabold text-white block">Mutación / Variedad</span>
+                    <!-- Buscador interno de mutaciones -->
+                    <div class="relative">
+                        <input type="text" id="buscar-mutacion" onkeyup="filtrarListaMutaciones()" placeholder="Buscar mutación..." class="w-full px-3 py-1.5 bg-[#070D1E] border border-slate-800 rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none focus:border-cyan-400">
+                    </div>
+                    <!-- Lista de Checkboxes con contadores -->
+                    <div id="lista-mutaciones" class="space-y-2 max-h-36 overflow-y-auto pr-1 text-xs text-slate-300">
+                        <% if (locals.mutaciones && mutaciones.length > 0) { %>
+                            <% mutaciones.forEach(m => { %>
+                                <label class="mutation-item flex items-center justify-between cursor-pointer hover:text-white transition">
+                                    <span class="flex items-center gap-2">
+                                        <input type="checkbox" value="<%= m.nombre %>" onchange="aplicarFiltros()" class="filter-mutation w-3.5 h-3.5 rounded text-cyan-500 bg-[#070D1E] border-slate-700">
+                                        <span><%= m.nombre %></span>
+                                    </span>
+                                    <span class="text-[10px] text-slate-500 font-mono">1</span>
+                                </label>
+                            <% }) %>
                         <% } else { %>
-                            <div class="w-full h-full flex flex-col items-center justify-center text-slate-600 bg-[#070D1E] space-y-2">
-                                <span class="text-5xl">🦜</span>
-                                <span class="text-[10px] text-slate-500 font-bold uppercase tracking-widest">Sin fotografía</span>
-                            </div>
+                            <label class="mutation-item flex items-center justify-between cursor-pointer hover:text-white transition">
+                                <span class="flex items-center gap-2"><input type="checkbox" value="Azul Cobalto" onchange="aplicarFiltros()" class="filter-mutation w-3.5 h-3.5 rounded text-cyan-500"> <span>Azul Cobalto</span></span>
+                                <span class="text-[10px] text-slate-500">4</span>
+                            </label>
+                            <label class="mutation-item flex items-center justify-between cursor-pointer hover:text-white transition">
+                                <span class="flex items-center gap-2"><input type="checkbox" value="Flavo" onchange="aplicarFiltros()" class="filter-mutation w-3.5 h-3.5 rounded text-cyan-500"> <span>Flavo</span></span>
+                                <span class="text-[10px] text-slate-500">2</span>
+                            </label>
+                            <label class="mutation-item flex items-center justify-between cursor-pointer hover:text-white transition">
+                                <span class="flex items-center gap-2"><input type="checkbox" value="Arcoíris" onchange="aplicarFiltros()" class="filter-mutation w-3.5 h-3.5 rounded text-cyan-500"> <span>Arcoíris</span></span>
+                                <span class="text-[10px] text-slate-500">3</span>
+                            </label>
                         <% } %>
-
-                        <!-- Badge Especie -->
-                        <div class="absolute top-3 left-3 z-10">
-                            <span class="px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-[#080E1E]/90 text-cyan-300 border border-cyan-500/30 backdrop-blur-md">
-                                <%= a.especie_nombre %>
-                            </span>
-                        </div>
-
-                        <!-- Badge Sexo -->
-                        <div class="absolute top-3 right-3 z-10">
-                            <span class="w-8 h-8 rounded-full bg-[#080E1E]/90 border border-slate-700 flex items-center justify-center text-sm shadow-md">
-                                <%= a.sexo === 'M' ? '♂' : (a.sexo === 'F' ? '♀' : '⚪') %>
-                            </span>
-                        </div>
                     </div>
+                </div>
 
-                    <div class="p-5 flex-1 flex flex-col justify-between space-y-4">
-                        <div>
-                            <div class="flex items-center justify-between mb-1">
-                                <h3 class="text-base font-bold text-white tracking-tight font-display">
-                                    <a href="/catalogo/<%= a.id %>" class="hover:text-cyan-400 transition">
-                                        <span aria-hidden="true" class="absolute inset-0"></span>
-                                        <%= a.anilla || ('Ejemplar #' + a.id) %>
-                                    </a>
-                                </h3>
-                                <span class="text-[10px] text-slate-400 font-mono">#<%= a.id %></span>
+                <!-- SECCIÓN 5: RANGO DE PRECIO -->
+                <div class="space-y-3 pt-3 border-t border-slate-800">
+                    <span class="text-xs font-extrabold text-white block">Rango de Inversión (S/.)</span>
+                    <div class="flex items-center gap-2">
+                        <input type="number" id="precio-min" onchange="aplicarFiltros()" placeholder="Min" class="w-full px-2.5 py-1.5 bg-[#070D1E] border border-slate-800 rounded-xl text-xs text-white text-center focus:outline-none focus:border-cyan-400">
+                        <span class="text-slate-500">-</span>
+                        <input type="number" id="precio-max" onchange="aplicarFiltros()" placeholder="Max" class="w-full px-2.5 py-1.5 bg-[#070D1E] border border-slate-800 rounded-xl text-xs text-white text-center focus:outline-none focus:border-cyan-400">
+                    </div>
+                </div>
+
+            </div>
+        </aside>
+
+        <!-- ================= COLUMNA DERECHA: CUADRÍCULA DE PRODUCTOS ================= -->
+        <main class="lg:col-span-9 space-y-6">
+
+            <div id="product-grid" class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
+
+                <!-- 1. PRODUCTOS TIPO AVES (PROVENIENTES DE BD) -->
+                <% if (aves && aves.length > 0) { %>
+                    <% aves.forEach((a, index) => { %>
+                        <div class="card-item bg-[#0C152E]/90 border border-slate-800 hover:border-cyan-500/50 rounded-3xl overflow-hidden flex flex-col justify-between shadow-xl transition-all duration-300 transform hover:-translate-y-1 relative group"
+                             data-categoria="aves"
+                             data-especie="<%= (a.especie_nombre || '').toLowerCase() %>"
+                             data-sexo="<%= a.sexo %>"
+                             data-mutaciones="<%= (a.mutaciones || []).map(m => m.nombre).join(' ') %>"
+                             data-precio="<%= parseFloat(a.precio_venta || 0) %>">
+                            
+                            <!-- BADGE SUPERIOR ESTILO HOT PRICE (IDÉNTICO A LA REFERENCIA) -->
+                            <div class="absolute top-3 left-3 z-20">
+                                <span class="px-2.5 py-1 rounded text-[10px] font-black uppercase tracking-wider bg-rose-600 text-white shadow-md">
+                                    <%= index % 2 === 0 ? 'GENÉTICA A+' : 'HOT PRICE' %>
+                                </span>
                             </div>
 
-                            <!-- Mutaciones -->
-                            <% if (a.mutaciones && a.mutaciones.length > 0) { %>
-                                <div class="mt-2.5 flex flex-wrap gap-1.5">
-                                    <% a.mutaciones.forEach(m => { %>
-                                        <span class="px-2 py-0.5 rounded-md bg-cyan-950/60 text-[10px] font-bold text-cyan-300 border border-cyan-800/40">
-                                            <%= m.nombre %>
-                                        </span>
-                                    <% }) %>
-                                </div>
-                            <% } else { %>
-                                <div class="mt-2 text-[11px] text-slate-500 italic">Clásico / Ancestral</div>
-                            <% } %>
-                        </div>
+                            <!-- FOTOGRAFÍA / VISUAL DEL PRODUCTO -->
+                            <div class="relative w-full h-64 bg-[#070D1E] overflow-hidden flex items-center justify-center border-b border-slate-800">
+                                <% if (a.imagenes && a.imagenes.length > 0) { %>
+                                    <img src="<%= a.imagenes[0].url %>" alt="Ave <%= a.anilla || a.id %>" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+                                <% } else { %>
+                                    <div class="w-full h-full flex flex-col items-center justify-center text-slate-600 bg-[#070D1E] space-y-2">
+                                        <span class="text-6xl group-hover:scale-110 transition duration-300">🦜</span>
+                                        <span class="text-[10px] text-slate-500 font-bold uppercase tracking-widest font-mono">AVIPERÚ • ID #<%= a.id %></span>
+                                    </div>
+                                <% } %>
 
-                        <div class="pt-4 border-t border-slate-800/80 flex justify-between items-center">
-                            <% if (a.estado_biologico === 'EN_VENTA' && a.estado_comercial !== 'RESERVADA') { %>
-                                <div>
-                                    <span class="text-[10px] text-slate-400 block uppercase font-semibold">Precio</span>
-                                    <span class="text-lg font-black text-white font-display">S/. <%= parseFloat(a.precio_venta || 0).toFixed(2) %></span>
+                                <!-- BADGE FLOTANTE DE ENTREGA EN LA IMAGEN (IGUAL QUE "Recíbelo en 90 min" EN LA REFERENCIA) -->
+                                <div class="absolute bottom-3 left-3 bg-[#080E1E]/95 backdrop-blur-md px-3 py-1 rounded-lg border border-cyan-500/30 text-[11px] font-bold text-cyan-300 shadow-md">
+                                    <%= a.estado_biologico === 'EN_VENTA' ? 'Reserva 10 min.' : 'Llega en 24-48h' %>
                                 </div>
-                                <span class="text-xs font-bold text-cyan-300 bg-cyan-950/60 border border-cyan-500/40 px-2.5 py-1 rounded-full">
-                                    ● En Venta
-                                </span>
-                            <% } else if (a.estado_comercial === 'RESERVADA') { %>
+                            </div>
+
+                            <!-- CUERPO DE LA TARJETA (DATOS, PRECIO, BOTÓN CIRCULAR CARRITO) -->
+                            <div class="p-5 flex-1 flex flex-col justify-between space-y-3">
                                 <div>
-                                    <span class="text-[10px] text-slate-400 block uppercase font-semibold">Precio</span>
-                                    <span class="text-base font-bold text-slate-400">S/. <%= parseFloat(a.precio_venta || 0).toFixed(2) %></span>
+                                    <!-- Criador / Marca -->
+                                    <div class="flex items-center justify-between mb-1">
+                                        <span class="text-[11px] font-extrabold text-cyan-400 tracking-wider uppercase font-mono">
+                                            <%= a.anilla ? 'ANILLA: ' + a.anilla : 'AVIPERÚ • LPR' %>
+                                        </span>
+                                        <span class="text-xs font-bold <%= a.sexo === 'M' ? 'text-cyan-300' : 'text-pink-300' %>">
+                                            <%= a.sexo === 'M' ? '♂ Macho' : '♀ Hembra' %>
+                                        </span>
+                                    </div>
+
+                                    <!-- Título del Ejemplar -->
+                                    <h4 class="text-sm font-extrabold text-white font-display line-clamp-2">
+                                        <a href="/catalogo/<%= a.id %>" class="hover:text-cyan-300 transition">
+                                            <%= a.especie_nombre || 'Perico Australiano' %> 
+                                            <% if (a.mutaciones && a.mutaciones.length > 0) { %>
+                                                - <%= a.mutaciones.map(m => m.nombre).join(' / ') %>
+                                            <% } else { %>
+                                                - Línea Clásica Ancestral
+                                            <% } %>
+                                        </a>
+                                    </h4>
+
+                                    <!-- Calificación / Estrellas -->
+                                    <div class="flex items-center gap-1.5 mt-1.5 text-amber-400 text-xs">
+                                        <span>★★★★★</span>
+                                        <span class="text-[10px] text-slate-400 font-mono">(5.0)</span>
+                                    </div>
                                 </div>
-                                <span class="text-xs font-bold text-yellow-300 bg-yellow-950/60 border border-yellow-500/30 px-2.5 py-1 rounded-full">
-                                    ⏰ Reservado
-                                </span>
-                            <% } else if (a.estado_biologico === 'VENDIDO') { %>
-                                <div>
-                                    <span class="text-[10px] text-slate-400 block uppercase font-semibold">Precio</span>
-                                    <span class="text-sm font-bold text-slate-400 line-through"><%= a.precio_venta ? 'S/. ' + parseFloat(a.precio_venta).toFixed(2) : 'Vendido' %></span>
+
+                                <!-- Bloque de Precios con Descuento (Idéntico a la imagen) -->
+                                <div class="pt-2 border-t border-slate-800/80">
+                                    <div class="flex items-baseline gap-2">
+                                        <span class="text-xs text-slate-500 line-through font-mono">
+                                            S/ <%= (parseFloat(a.precio_venta || 150) * 1.25).toFixed(2) %>
+                                        </span>
+                                        <span class="px-1.5 py-0.2 rounded text-[9px] font-black uppercase bg-pink-600 text-white">
+                                            -20%
+                                        </span>
+                                    </div>
+                                    <div class="text-xl font-black text-white font-display">
+                                        S/ <%= parseFloat(a.precio_venta || 150).toFixed(2) %>
+                                    </div>
                                 </div>
-                                <span class="text-xs font-bold text-purple-300 bg-purple-950/60 border border-purple-500/30 px-2.5 py-1 rounded-full">
-                                    ✓ Vendido
-                                </span>
-                            <% } else { %>
-                                <span class="text-xs text-slate-500 italic">Aviario LPR</span>
-                                <span class="text-xs font-semibold text-blue-300 bg-blue-950/60 border border-blue-500/30 px-2.5 py-1 rounded-full">
-                                    Solo Exhibición
-                                </span>
-                            <% } %>
+
+                                <!-- Fila Inferior: Puntos de Colores/Mutación + Botón Circular Carrito (Idéntico a la referencia) -->
+                                <div class="pt-3 border-t border-slate-800/80 flex items-center justify-between">
+                                    <!-- Círculos de color/mutación -->
+                                    <div class="flex items-center gap-1.5">
+                                        <span class="w-3.5 h-3.5 rounded-full bg-cyan-400 border border-slate-900 shadow-sm" title="Azul/Cian"></span>
+                                        <span class="w-3.5 h-3.5 rounded-full bg-teal-400 border border-slate-900 shadow-sm" title="Verde/Turquesa"></span>
+                                        <span class="w-3.5 h-3.5 rounded-full bg-yellow-400 border border-slate-900 shadow-sm" title="Amarillo/Lutino"></span>
+                                        <span class="w-3.5 h-3.5 rounded-full bg-rose-400 border border-slate-900 shadow-sm" title="Flavo/Opalino"></span>
+                                    </div>
+
+                                    <!-- Botón Circular Carrito (Exactamente como en la referencia) -->
+                                    <a href="/catalogo/<%= a.id %>" class="w-10 h-10 rounded-full bg-[#080E1E] border border-cyan-500/40 hover:border-cyan-300 hover:bg-cyan-500 hover:text-slate-950 text-cyan-300 flex items-center justify-center transition shadow-lg group/btn" title="Ver Ficha & Reservar">
+                                        <span class="text-base group-hover/btn:scale-110 transition-transform">🛒</span>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    <% }) %>
+                <% } %>
+
+                <!-- 2. PRODUCTOS TIPO KITS DE BIENVENIDA -->
+                <!-- Kit 1 -->
+                <div class="card-item bg-[#0C152E]/90 border border-slate-800 hover:border-cyan-500/50 rounded-3xl overflow-hidden flex flex-col justify-between shadow-xl transition-all duration-300 transform hover:-translate-y-1 relative group"
+                     data-categoria="kits"
+                     data-especie="kits"
+                     data-precio="35.00">
+                    <div class="absolute top-3 left-3 z-20">
+                        <span class="px-2.5 py-1 rounded text-[10px] font-black uppercase tracking-wider bg-rose-600 text-white shadow-md">HOT PRICE</span>
+                    </div>
+                    <div class="relative w-full h-64 bg-[#070D1E] overflow-hidden flex items-center justify-center border-b border-slate-800">
+                        <span class="text-7xl group-hover:scale-110 transition duration-300">🌾</span>
+                        <div class="absolute bottom-3 left-3 bg-[#080E1E]/95 backdrop-blur-md px-3 py-1 rounded-lg border border-teal-500/30 text-[11px] font-bold text-teal-300 shadow-md">
+                            Llega mañana
+                        </div>
+                    </div>
+                    <div class="p-5 flex-1 flex flex-col justify-between space-y-3">
+                        <div>
+                            <span class="text-[11px] font-extrabold text-teal-400 tracking-wider uppercase font-mono">NUTRIAVIAR PERÚ</span>
+                            <h4 class="text-sm font-extrabold text-white font-display line-clamp-2">Mezcla Inicial de Semillas Premium (1 kg)</h4>
+                            <div class="flex items-center gap-1.5 mt-1.5 text-amber-400 text-xs"><span>★★★★★</span> <span class="text-[10px] text-slate-400 font-mono">(4.9)</span></div>
+                        </div>
+                        <div class="pt-2 border-t border-slate-800/80">
+                            <div class="flex items-baseline gap-2">
+                                <span class="text-xs text-slate-500 line-through font-mono">S/ 45.00</span>
+                                <span class="px-1.5 py-0.2 rounded text-[9px] font-black uppercase bg-pink-600 text-white">-22%</span>
+                            </div>
+                            <div class="text-xl font-black text-white font-display">S/ 35.00</div>
+                        </div>
+                        <div class="pt-3 border-t border-slate-800/80 flex items-center justify-between">
+                            <span class="text-[11px] text-slate-400 font-medium">100% Ventilada 0% Polvo</span>
+                            <button type="button" onclick="agregarItemCarrito('Mezcla Semillas Premium')" class="w-10 h-10 rounded-full bg-[#080E1E] border border-cyan-500/40 hover:border-cyan-300 hover:bg-cyan-500 hover:text-slate-950 text-cyan-300 flex items-center justify-center transition shadow-lg group/btn">
+                                <span class="text-base group-hover/btn:scale-110 transition-transform">🛒</span>
+                            </button>
                         </div>
                     </div>
                 </div>
-            <% }) %>
-        <% } %>
 
-        <!-- 2. KITS DE BIENVENIDA (INTEGRADOS DESDE LA HOME) -->
-        <!-- Kit 1 -->
-        <div class="catalog-item bg-[#0C152E]/90 border border-slate-800 hover:border-cyan-500/40 rounded-3xl p-6 shadow-xl flex flex-col justify-between transition" data-categoria="kits">
-            <div>
-                <div class="w-full h-44 bg-[#070D1E] rounded-2xl flex items-center justify-center text-6xl mb-4 border border-slate-800">
-                    🌾
+                <!-- Kit 2 -->
+                <div class="card-item bg-[#0C152E]/90 border border-slate-800 hover:border-cyan-500/50 rounded-3xl overflow-hidden flex flex-col justify-between shadow-xl transition-all duration-300 transform hover:-translate-y-1 relative group"
+                     data-categoria="kits"
+                     data-especie="kits"
+                     data-precio="45.00">
+                    <div class="absolute top-3 left-3 z-20">
+                        <span class="px-2.5 py-1 rounded text-[10px] font-black uppercase tracking-wider bg-rose-600 text-white shadow-md">HOT PRICE</span>
+                    </div>
+                    <div class="relative w-full h-64 bg-[#070D1E] overflow-hidden flex items-center justify-center border-b border-slate-800">
+                        <span class="text-7xl group-hover:scale-110 transition duration-300">🧪</span>
+                        <div class="absolute bottom-3 left-3 bg-[#080E1E]/95 backdrop-blur-md px-3 py-1 rounded-lg border border-cyan-500/30 text-[11px] font-bold text-cyan-300 shadow-md">
+                            Recíbelo en 24h
+                        </div>
+                    </div>
+                    <div class="p-5 flex-1 flex flex-col justify-between space-y-3">
+                        <div>
+                            <span class="text-[11px] font-extrabold text-cyan-400 tracking-wider uppercase font-mono">BIOVET AVIAR</span>
+                            <h4 class="text-sm font-extrabold text-white font-display line-clamp-2">Paquete de Vitaminas & Calcio Orgánico</h4>
+                            <div class="flex items-center gap-1.5 mt-1.5 text-amber-400 text-xs"><span>★★★★★</span> <span class="text-[10px] text-slate-400 font-mono">(5.0)</span></div>
+                        </div>
+                        <div class="pt-2 border-t border-slate-800/80">
+                            <div class="flex items-baseline gap-2">
+                                <span class="text-xs text-slate-500 line-through font-mono">S/ 60.00</span>
+                                <span class="px-1.5 py-0.2 rounded text-[9px] font-black uppercase bg-pink-600 text-white">-25%</span>
+                            </div>
+                            <div class="text-xl font-black text-cyan-300 font-display">S/ 45.00</div>
+                        </div>
+                        <div class="pt-3 border-t border-slate-800/80 flex items-center justify-between">
+                            <span class="text-[11px] text-slate-400 font-medium">Conchuela + Multivitamínico</span>
+                            <button type="button" onclick="agregarItemCarrito('Pack Vitaminas & Calcio')" class="w-10 h-10 rounded-full bg-[#080E1E] border border-cyan-500/40 hover:border-cyan-300 hover:bg-cyan-500 hover:text-slate-950 text-cyan-300 flex items-center justify-center transition shadow-lg group/btn">
+                                <span class="text-base group-hover/btn:scale-110 transition-transform">🛒</span>
+                            </button>
+                        </div>
+                    </div>
                 </div>
-                <span class="text-[10px] font-bold text-teal-300 uppercase tracking-widest block mb-1">Kit Nutrición</span>
-                <h4 class="text-base font-bold text-white font-display mb-1.5">Mezcla Semillas Premium (1 kg)</h4>
-                <p class="text-xs text-slate-400 leading-relaxed mb-4">
-                    Mezcla ventilada 0% polvo con alpiste canadiense, mijo blanco, perilla y chía para mantenimiento y brillo del plumaje.
-                </p>
+
+                <!-- Kit 3 -->
+                <div class="card-item bg-[#0C152E]/90 border border-slate-800 hover:border-cyan-500/50 rounded-3xl overflow-hidden flex flex-col justify-between shadow-xl transition-all duration-300 transform hover:-translate-y-1 relative group"
+                     data-categoria="kits"
+                     data-especie="kits"
+                     data-precio="40.00">
+                    <div class="absolute top-3 left-3 z-20">
+                        <span class="px-2.5 py-1 rounded text-[10px] font-black uppercase tracking-wider bg-rose-600 text-white shadow-md">HOT PRICE</span>
+                    </div>
+                    <div class="relative w-full h-64 bg-[#070D1E] overflow-hidden flex items-center justify-center border-b border-slate-800">
+                        <span class="text-7xl group-hover:scale-110 transition duration-300">🪵</span>
+                        <div class="absolute bottom-3 left-3 bg-[#080E1E]/95 backdrop-blur-md px-3 py-1 rounded-lg border border-amber-500/30 text-[11px] font-bold text-amber-300 shadow-md">
+                            Llega mañana
+                        </div>
+                    </div>
+                    <div class="p-5 flex-1 flex flex-col justify-between space-y-3">
+                        <div>
+                            <span class="text-[11px] font-extrabold text-amber-400 tracking-wider uppercase font-mono">AVIARY CRAFTS</span>
+                            <h4 class="text-sm font-extrabold text-white font-display line-clamp-2">Paquete de Forrajeo & Estimulación</h4>
+                            <div class="flex items-center gap-1.5 mt-1.5 text-amber-400 text-xs"><span>★★★★★</span> <span class="text-[10px] text-slate-400 font-mono">(4.8)</span></div>
+                        </div>
+                        <div class="pt-2 border-t border-slate-800/80">
+                            <div class="flex items-baseline gap-2">
+                                <span class="text-xs text-slate-500 line-through font-mono">S/ 52.00</span>
+                                <span class="px-1.5 py-0.2 rounded text-[9px] font-black uppercase bg-pink-600 text-white">-23%</span>
+                            </div>
+                            <div class="text-xl font-black text-white font-display">S/ 40.00</div>
+                        </div>
+                        <div class="pt-3 border-t border-slate-800/80 flex items-center justify-between">
+                            <span class="text-[11px] text-slate-400 font-medium">Madera natural sin químicos</span>
+                            <button type="button" onclick="agregarItemCarrito('Pack Forrajeo')" class="w-10 h-10 rounded-full bg-[#080E1E] border border-cyan-500/40 hover:border-cyan-300 hover:bg-cyan-500 hover:text-slate-950 text-cyan-300 flex items-center justify-center transition shadow-lg group/btn">
+                                <span class="text-base group-hover/btn:scale-110 transition-transform">🛒</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3. PRODUCTOS TIPO INSUMOS (ALIMENTOS, SUPLEMENTOS Y ACCESORIOS) -->
+                <!-- Insumo 1: Vinagre de Manzana -->
+                <div class="card-item bg-[#0C152E]/90 border border-slate-800 hover:border-cyan-500/50 rounded-3xl overflow-hidden flex flex-col justify-between shadow-xl transition-all duration-300 transform hover:-translate-y-1 relative group"
+                     data-categoria="suplementos"
+                     data-especie="insumos"
+                     data-precio="25.00">
+                    <div class="absolute top-3 left-3 z-20">
+                        <span class="px-2.5 py-1 rounded text-[10px] font-black uppercase tracking-wider bg-cyan-600 text-white shadow-md">BIOSEGURIDAD</span>
+                    </div>
+                    <div class="relative w-full h-64 bg-[#070D1E] overflow-hidden flex items-center justify-center border-b border-slate-800">
+                        <span class="text-7xl group-hover:scale-110 transition duration-300">🍏</span>
+                        <div class="absolute bottom-3 left-3 bg-[#080E1E]/95 backdrop-blur-md px-3 py-1 rounded-lg border border-cyan-500/30 text-[11px] font-bold text-cyan-300 shadow-md">
+                            Llega mañana
+                        </div>
+                    </div>
+                    <div class="p-5 flex-1 flex flex-col justify-between space-y-3">
+                        <div>
+                            <span class="text-[11px] font-extrabold text-cyan-400 tracking-wider uppercase font-mono">AVICARE LABS</span>
+                            <h4 class="text-sm font-extrabold text-white font-display line-clamp-2">Vinagre de Sidra de Manzana Crudo (250 ml)</h4>
+                            <div class="flex items-center gap-1.5 mt-1.5 text-amber-400 text-xs"><span>★★★★★</span> <span class="text-[10px] text-slate-400 font-mono">(5.0)</span></div>
+                        </div>
+                        <div class="pt-2 border-t border-slate-800/80">
+                            <div class="text-xl font-black text-white font-display">S/ 25.00</div>
+                        </div>
+                        <div class="pt-3 border-t border-slate-800/80 flex items-center justify-between">
+                            <span class="text-[11px] text-slate-400 font-medium">pH 4.5 Control Megabacterias</span>
+                            <button type="button" onclick="agregarItemCarrito('Vinagre de Manzana Crudo')" class="w-10 h-10 rounded-full bg-[#080E1E] border border-cyan-500/40 hover:border-cyan-300 hover:bg-cyan-500 hover:text-slate-950 text-cyan-300 flex items-center justify-center transition shadow-lg group/btn">
+                                <span class="text-base group-hover/btn:scale-110 transition-transform">🛒</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Insumo 2: Nido de Madera Ergonómico -->
+                <div class="card-item bg-[#0C152E]/90 border border-slate-800 hover:border-cyan-500/50 rounded-3xl overflow-hidden flex flex-col justify-between shadow-xl transition-all duration-300 transform hover:-translate-y-1 relative group"
+                     data-categoria="accesorios"
+                     data-especie="insumos"
+                     data-precio="48.00">
+                    <div class="absolute top-3 left-3 z-20">
+                        <span class="px-2.5 py-1 rounded text-[10px] font-black uppercase tracking-wider bg-amber-600 text-white shadow-md">POSTURA ÉLITE</span>
+                    </div>
+                    <div class="relative w-full h-64 bg-[#070D1E] overflow-hidden flex items-center justify-center border-b border-slate-800">
+                        <span class="text-7xl group-hover:scale-110 transition duration-300">🏠</span>
+                        <div class="absolute bottom-3 left-3 bg-[#080E1E]/95 backdrop-blur-md px-3 py-1 rounded-lg border border-amber-500/30 text-[11px] font-bold text-amber-300 shadow-md">
+                            Llega mañana
+                        </div>
+                    </div>
+                    <div class="p-5 flex-1 flex flex-col justify-between space-y-3">
+                        <div>
+                            <span class="text-[11px] font-extrabold text-amber-400 tracking-wider uppercase font-mono">WOODAVIAN POSTURA</span>
+                            <h4 class="text-sm font-extrabold text-white font-display line-clamp-2">Nido de Madera Especial con Cubeta Cóncava</h4>
+                            <div class="flex items-center gap-1.5 mt-1.5 text-amber-400 text-xs"><span>★★★★★</span> <span class="text-[10px] text-slate-400 font-mono">(4.9)</span></div>
+                        </div>
+                        <div class="pt-2 border-t border-slate-800/80">
+                            <div class="text-xl font-black text-white font-display">S/ 48.00</div>
+                        </div>
+                        <div class="pt-3 border-t border-slate-800/80 flex items-center justify-between">
+                            <span class="text-[11px] text-slate-400 font-medium">Fondo cóncavo anti patas rana</span>
+                            <button type="button" onclick="agregarItemCarrito('Nido con Cubeta Cóncava')" class="w-10 h-10 rounded-full bg-[#080E1E] border border-cyan-500/40 hover:border-cyan-300 hover:bg-cyan-500 hover:text-slate-950 text-cyan-300 flex items-center justify-center transition shadow-lg group/btn">
+                                <span class="text-base group-hover/btn:scale-110 transition-transform">🛒</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Insumo 3: Probiótico Multicepa -->
+                <div class="card-item bg-[#0C152E]/90 border border-slate-800 hover:border-cyan-500/50 rounded-3xl overflow-hidden flex flex-col justify-between shadow-xl transition-all duration-300 transform hover:-translate-y-1 relative group"
+                     data-categoria="suplementos"
+                     data-especie="insumos"
+                     data-precio="38.00">
+                    <div class="absolute top-3 left-3 z-20">
+                        <span class="px-2.5 py-1 rounded text-[10px] font-black uppercase tracking-wider bg-teal-600 text-white shadow-md">FLORA INTESTINAL</span>
+                    </div>
+                    <div class="relative w-full h-64 bg-[#070D1E] overflow-hidden flex items-center justify-center border-b border-slate-800">
+                        <span class="text-7xl group-hover:scale-110 transition duration-300">🦠</span>
+                        <div class="absolute bottom-3 left-3 bg-[#080E1E]/95 backdrop-blur-md px-3 py-1 rounded-lg border border-teal-500/30 text-[11px] font-bold text-teal-300 shadow-md">
+                            Recíbelo en 24h
+                        </div>
+                    </div>
+                    <div class="p-5 flex-1 flex flex-col justify-between space-y-3">
+                        <div>
+                            <span class="text-[11px] font-extrabold text-teal-400 tracking-wider uppercase font-mono">AVICARE LABS</span>
+                            <h4 class="text-sm font-extrabold text-white font-display line-clamp-2">Probiótico Multicepa en Polvo (100 g)</h4>
+                            <div class="flex items-center gap-1.5 mt-1.5 text-amber-400 text-xs"><span>★★★★★</span> <span class="text-[10px] text-slate-400 font-mono">(5.0)</span></div>
+                        </div>
+                        <div class="pt-2 border-t border-slate-800/80">
+                            <div class="text-xl font-black text-white font-display">S/ 38.00</div>
+                        </div>
+                        <div class="pt-3 border-t border-slate-800/80 flex items-center justify-between">
+                            <span class="text-[11px] text-slate-400 font-medium">Recuperador post-desparasitación</span>
+                            <button type="button" onclick="agregarItemCarrito('Probiótico Multicepa')" class="w-10 h-10 rounded-full bg-[#080E1E] border border-cyan-500/40 hover:border-cyan-300 hover:bg-cyan-500 hover:text-slate-950 text-cyan-300 flex items-center justify-center transition shadow-lg group/btn">
+                                <span class="text-base group-hover/btn:scale-110 transition-transform">🛒</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
             </div>
-            <div class="pt-4 border-t border-slate-800/80 flex items-center justify-between">
-                <div>
-                    <span class="text-[10px] text-slate-400 uppercase block font-semibold">Precio</span>
-                    <span class="text-lg font-black text-white font-display">S/. 35.00</span>
-                </div>
-                <button type="button" class="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-cyan-950 text-cyan-300 border border-cyan-500/30 hover:bg-cyan-900 transition">
-                    + Al Carrito
+
+            <!-- Estado Vacío Cuando Ningún Filtro Coincide -->
+            <div id="no-results-msg" class="hidden bg-[#0C152E]/60 rounded-3xl p-12 text-center text-slate-400 border border-dashed border-slate-800 space-y-3">
+                <span class="text-4xl">🔍</span>
+                <h3 class="text-lg font-bold text-white font-display">Sin productos coincidentes</h3>
+                <p class="text-sm text-slate-400">No se encontraron artículos con la combinación de filtros seleccionada.</p>
+                <button type="button" onclick="limpiarTodosFiltros()" class="px-4 py-2 rounded-xl bg-cyan-400 text-slate-950 font-bold text-xs uppercase hover:bg-cyan-300 transition">
+                    Restablecer Filtros
                 </button>
             </div>
-        </div>
 
-        <!-- Kit 2 -->
-        <div class="catalog-item bg-[#0C152E]/90 border border-cyan-500/40 rounded-3xl p-6 shadow-xl flex flex-col justify-between transition glow-cyan-sm" data-categoria="kits">
-            <div>
-                <div class="w-full h-44 bg-[#070D1E] rounded-2xl flex items-center justify-center text-6xl mb-4 border border-slate-800">
-                    🧪
-                </div>
-                <span class="text-[10px] font-bold text-cyan-400 uppercase tracking-widest block mb-1">Kit Suplementación</span>
-                <h4 class="text-base font-bold text-white font-display mb-1.5">Pack Vitaminas & Calcio Orgánico</h4>
-                <p class="text-xs text-slate-400 leading-relaxed mb-4">
-                    Complejo multivitamínico con aminoácidos esenciales y bloque mineral de ostra para época de muda y preparación reproductiva.
-                </p>
-            </div>
-            <div class="pt-4 border-t border-slate-800/80 flex items-center justify-between">
-                <div>
-                    <span class="text-[10px] text-slate-400 uppercase block font-semibold">Precio</span>
-                    <span class="text-lg font-black text-cyan-300 font-display">S/. 45.00</span>
-                </div>
-                <button type="button" class="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-cyan-400 hover:bg-cyan-300 text-slate-950 transition">
-                    + Al Carrito
-                </button>
-            </div>
-        </div>
+        </main>
+    </div>
 
-        <!-- Kit 3 -->
-        <div class="catalog-item bg-[#0C152E]/90 border border-slate-800 hover:border-cyan-500/40 rounded-3xl p-6 shadow-xl flex flex-col justify-between transition" data-categoria="kits">
-            <div>
-                <div class="w-full h-44 bg-[#070D1E] rounded-2xl flex items-center justify-center text-6xl mb-4 border border-slate-800">
-                    🪵
-                </div>
-                <span class="text-[10px] font-bold text-amber-300 uppercase tracking-widest block mb-1">Kit Enriquecimiento</span>
-                <h4 class="text-base font-bold text-white font-display mb-1.5">Pack Forrajeo & Estimulación</h4>
-                <p class="text-xs text-slate-400 leading-relaxed mb-4">
-                    Perchas ergonómicas de ramas naturales y juguetes de madera sin tintes químicos para ejercitar patas y pico saludablemente.
-                </p>
-            </div>
-            <div class="pt-4 border-t border-slate-800/80 flex items-center justify-between">
-                <div>
-                    <span class="text-[10px] text-slate-400 uppercase block font-semibold">Precio</span>
-                    <span class="text-lg font-black text-white font-display">S/. 40.00</span>
-                </div>
-                <button type="button" class="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-cyan-950 text-cyan-300 border border-cyan-500/30 hover:bg-cyan-900 transition">
-                    + Al Carrito
-                </button>
-            </div>
-        </div>
+</div>
 
-        <!-- 3. ALIMENTOS & SEMILLAS -->
-        <div class="catalog-item bg-[#0C152E]/90 border border-slate-800 hover:border-cyan-500/40 rounded-3xl p-6 shadow-xl flex flex-col justify-between transition" data-categoria="alimentos">
-            <div>
-                <div class="w-full h-44 bg-[#070D1E] rounded-2xl flex items-center justify-center text-6xl mb-4 border border-slate-800">
-                    🥣
-                </div>
-                <span class="text-[10px] font-bold text-teal-400 uppercase tracking-widest block mb-1">Semillas Puras</span>
-                <h4 class="text-base font-bold text-white font-display mb-1.5">Alpiste Canadiense Ventilado (1 kg)</h4>
-                <p class="text-xs text-slate-400 leading-relaxed mb-4">
-                    Granos seleccionados con triple aspiración de polvo, base indispensable para la dieta diaria de pericos australianos e ingleses.
-                </p>
-            </div>
-            <div class="pt-4 border-t border-slate-800/80 flex items-center justify-between">
-                <div>
-                    <span class="text-[10px] text-slate-400 uppercase block font-semibold">Precio</span>
-                    <span class="text-lg font-black text-white font-display">S/. 22.00</span>
-                </div>
-                <button type="button" class="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-cyan-950 text-cyan-300 border border-cyan-500/30 hover:bg-cyan-900 transition">
-                    + Al Carrito
-                </button>
-            </div>
-        </div>
-
-        <div class="catalog-item bg-[#0C152E]/90 border border-slate-800 hover:border-cyan-500/40 rounded-3xl p-6 shadow-xl flex flex-col justify-between transition" data-categoria="alimentos">
-            <div>
-                <div class="w-full h-44 bg-[#070D1E] rounded-2xl flex items-center justify-center text-6xl mb-4 border border-slate-800">
-                    🌽
-                </div>
-                <span class="text-[10px] font-bold text-teal-400 uppercase tracking-widest block mb-1">Semillas Puras</span>
-                <h4 class="text-base font-bold text-white font-display mb-1.5">Mijo Blanco Extra Seleccionado (1 kg)</h4>
-                <p class="text-xs text-slate-400 leading-relaxed mb-4">
-                    Mijo blanco de alta digestibilidad con alto contenido de carbohidratos saludables para pichones en fase de destete y voladera.
-                </p>
-            </div>
-            <div class="pt-4 border-t border-slate-800/80 flex items-center justify-between">
-                <div>
-                    <span class="text-[10px] text-slate-400 uppercase block font-semibold">Precio</span>
-                    <span class="text-lg font-black text-white font-display">S/. 18.00</span>
-                </div>
-                <button type="button" class="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-cyan-950 text-cyan-300 border border-cyan-500/30 hover:bg-cyan-900 transition">
-                    + Al Carrito
-                </button>
-            </div>
-        </div>
-
-        <div class="catalog-item bg-[#0C152E]/90 border border-slate-800 hover:border-cyan-500/40 rounded-3xl p-6 shadow-xl flex flex-col justify-between transition" data-categoria="alimentos">
-            <div>
-                <div class="w-full h-44 bg-[#070D1E] rounded-2xl flex items-center justify-center text-6xl mb-4 border border-slate-800">
-                    🍯
-                </div>
-                <span class="text-[10px] font-bold text-teal-400 uppercase tracking-widest block mb-1">Crianza & Muda</span>
-                <h4 class="text-base font-bold text-white font-display mb-1.5">Pasta de Cría con Huevo y Miel (500 g)</h4>
-                <p class="text-xs text-slate-400 leading-relaxed mb-4">
-                    Fórmula húmeda hiperproteica con aminoácidos ramificados para el embuche natural de los padres a los pichones en nido.
-                </p>
-            </div>
-            <div class="pt-4 border-t border-slate-800/80 flex items-center justify-between">
-                <div>
-                    <span class="text-[10px] text-slate-400 uppercase block font-semibold">Precio</span>
-                    <span class="text-lg font-black text-white font-display">S/. 28.00</span>
-                </div>
-                <button type="button" class="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-cyan-950 text-cyan-300 border border-cyan-500/30 hover:bg-cyan-900 transition">
-                    + Al Carrito
-                </button>
-            </div>
-        </div>
-
-        <!-- 4. VITAMINAS & SALUD PREVENTIVA -->
-        <div class="catalog-item bg-[#0C152E]/90 border border-slate-800 hover:border-cyan-500/40 rounded-3xl p-6 shadow-xl flex flex-col justify-between transition" data-categoria="suplementos">
-            <div>
-                <div class="w-full h-44 bg-[#070D1E] rounded-2xl flex items-center justify-center text-6xl mb-4 border border-slate-800">
-                    🍏
-                </div>
-                <span class="text-[10px] font-bold text-cyan-400 uppercase tracking-widest block mb-1">Bioseguridad Hídrica</span>
-                <h4 class="text-base font-bold text-white font-display mb-1.5">Vinagre de Sidra de Manzana Crudo (250 ml)</h4>
-                <p class="text-xs text-slate-400 leading-relaxed mb-4">
-                    Con 'la madre' intacta y gotero dosificador para acidificar el agua a pH 4.5-5.0 y prevenir megabacterias gastrointestinales.
-                </p>
-            </div>
-            <div class="pt-4 border-t border-slate-800/80 flex items-center justify-between">
-                <div>
-                    <span class="text-[10px] text-slate-400 uppercase block font-semibold">Precio</span>
-                    <span class="text-lg font-black text-white font-display">S/. 25.00</span>
-                </div>
-                <button type="button" class="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-cyan-950 text-cyan-300 border border-cyan-500/30 hover:bg-cyan-900 transition">
-                    + Al Carrito
-                </button>
-            </div>
-        </div>
-
-        <div class="catalog-item bg-[#0C152E]/90 border border-slate-800 hover:border-cyan-500/40 rounded-3xl p-6 shadow-xl flex flex-col justify-between transition" data-categoria="suplementos">
-            <div>
-                <div class="w-full h-44 bg-[#070D1E] rounded-2xl flex items-center justify-center text-6xl mb-4 border border-slate-800">
-                    🦠
-                </div>
-                <span class="text-[10px] font-bold text-cyan-400 uppercase tracking-widest block mb-1">Microbiota Aviar</span>
-                <h4 class="text-base font-bold text-white font-display mb-1.5">Probiótico Multicepa en Polvo (100 g)</h4>
-                <p class="text-xs text-slate-400 leading-relaxed mb-4">
-                    Bacterias beneficiosas específicas de psitácidas para restaurar la flora intestinal post-desparasitación o situaciones de estrés.
-                </p>
-            </div>
-            <div class="pt-4 border-t border-slate-800/80 flex items-center justify-between">
-                <div>
-                    <span class="text-[10px] text-slate-400 uppercase block font-semibold">Precio</span>
-                    <span class="text-lg font-black text-white font-display">S/. 38.00</span>
-                </div>
-                <button type="button" class="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-cyan-950 text-cyan-300 border border-cyan-500/30 hover:bg-cyan-900 transition">
-                    + Al Carrito
-                </button>
-            </div>
-        </div>
-
-        <div class="catalog-item bg-[#0C152E]/90 border border-slate-800 hover:border-cyan-500/40 rounded-3xl p-6 shadow-xl flex flex-col justify-between transition" data-categoria="suplementos">
-            <div>
-                <div class="w-full h-44 bg-[#070D1E] rounded-2xl flex items-center justify-center text-6xl mb-4 border border-slate-800">
-                    🌿
-                </div>
-                <span class="text-[10px] font-bold text-cyan-400 uppercase tracking-widest block mb-1">Protección Hepática</span>
-                <h4 class="text-base font-bold text-white font-display mb-1.5">Extracto de Silimarina / Cardo Mariano (60 ml)</h4>
-                <p class="text-xs text-slate-400 leading-relaxed mb-4">
-                    Protector y regenerador hepático natural, esencial para pericos ingleses propensos a esteatosis y acumulación de lípidos.
-                </p>
-            </div>
-            <div class="pt-4 border-t border-slate-800/80 flex items-center justify-between">
-                <div>
-                    <span class="text-[10px] text-slate-400 uppercase block font-semibold">Precio</span>
-                    <span class="text-lg font-black text-white font-display">S/. 32.00</span>
-                </div>
-                <button type="button" class="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-cyan-950 text-cyan-300 border border-cyan-500/30 hover:bg-cyan-900 transition">
-                    + Al Carrito
-                </button>
-            </div>
-        </div>
-
-        <!-- 5. ACCESORIOS & FORRAJEO -->
-        <div class="catalog-item bg-[#0C152E]/90 border border-slate-800 hover:border-cyan-500/40 rounded-3xl p-6 shadow-xl flex flex-col justify-between transition" data-categoria="accesorios">
-            <div>
-                <div class="w-full h-44 bg-[#070D1E] rounded-2xl flex items-center justify-center text-6xl mb-4 border border-slate-800">
-                    🌳
-                </div>
-                <span class="text-[10px] font-bold text-amber-400 uppercase tracking-widest block mb-1">Bienestar Podal</span>
-                <h4 class="text-base font-bold text-white font-display mb-1.5">Perchas Ergonómicas Naturales (Set x 3)</h4>
-                <p class="text-xs text-slate-400 leading-relaxed mb-4">
-                    Ramas con diámetros variables desinfectadas térmicamente, ideales para ejercitar articulaciones y prevenir pododermatitis.
-                </p>
-            </div>
-            <div class="pt-4 border-t border-slate-800/80 flex items-center justify-between">
-                <div>
-                    <span class="text-[10px] text-slate-400 uppercase block font-semibold">Precio</span>
-                    <span class="text-lg font-black text-white font-display">S/. 26.00</span>
-                </div>
-                <button type="button" class="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-cyan-950 text-cyan-300 border border-cyan-500/30 hover:bg-cyan-900 transition">
-                    + Al Carrito
-                </button>
-            </div>
-        </div>
-
-        <div class="catalog-item bg-[#0C152E]/90 border border-slate-800 hover:border-cyan-500/40 rounded-3xl p-6 shadow-xl flex flex-col justify-between transition" data-categoria="accesorios">
-            <div>
-                <div class="w-full h-44 bg-[#070D1E] rounded-2xl flex items-center justify-center text-6xl mb-4 border border-slate-800">
-                    🏠
-                </div>
-                <span class="text-[10px] font-bold text-amber-400 uppercase tracking-widest block mb-1">Equipamiento de Cría</span>
-                <h4 class="text-base font-bold text-white font-display mb-1.5">Nido de Madera Especial con Cubeta Cóncava</h4>
-                <p class="text-xs text-slate-400 leading-relaxed mb-4">
-                    Nido con fondo ahuecado anti-patas de rana, tapa de inspección superior ventilada y percha de entrada anatómica.
-                </p>
-            </div>
-            <div class="pt-4 border-t border-slate-800/80 flex items-center justify-between">
-                <div>
-                    <span class="text-[10px] text-slate-400 uppercase block font-semibold">Precio</span>
-                    <span class="text-lg font-black text-white font-display">S/. 48.00</span>
-                </div>
-                <button type="button" class="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-cyan-950 text-cyan-300 border border-cyan-500/30 hover:bg-cyan-900 transition">
-                    + Al Carrito
-                </button>
-            </div>
-        </div>
-
-        <div class="catalog-item bg-[#0C152E]/90 border border-slate-800 hover:border-cyan-500/40 rounded-3xl p-6 shadow-xl flex flex-col justify-between transition" data-categoria="accesorios">
-            <div>
-                <div class="w-full h-44 bg-[#070D1E] rounded-2xl flex items-center justify-center text-6xl mb-4 border border-slate-800">
-                    🦜
-                </div>
-                <span class="text-[10px] font-bold text-amber-400 uppercase tracking-widest block mb-1">Alimentación Limpia</span>
-                <h4 class="text-base font-bold text-white font-display mb-1.5">Comedero Tolva Anti-Desperdicio</h4>
-                <p class="text-xs text-slate-400 leading-relaxed mb-4">
-                    Tolva acrílica transparente con cajón recolector de cáscaras, mantiene el alimento limpio y libre de excrementos.
-                </p>
-            </div>
-            <div class="pt-4 border-t border-slate-800/80 flex items-center justify-between">
-                <div>
-                    <span class="text-[10px] text-slate-400 uppercase block font-semibold">Precio</span>
-                    <span class="text-lg font-black text-white font-display">S/. 19.00</span>
-                </div>
-                <button type="button" class="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-cyan-950 text-cyan-300 border border-cyan-500/30 hover:bg-cyan-900 transition">
-                    + Al Carrito
-                </button>
-            </div>
-        </div>
-
+<!-- NOTIFICACIÓN FLOTANTE DE AGREGADO AL CARRITO -->
+<div id="toast-cart" class="fixed bottom-6 right-6 bg-[#0B132B] border border-cyan-500/50 shadow-2xl rounded-2xl px-5 py-3.5 text-xs text-white flex items-center gap-3 transform translate-y-24 opacity-0 transition-all duration-300 z-50">
+    <span class="w-8 h-8 rounded-full bg-cyan-500/20 text-cyan-300 flex items-center justify-center text-base">✓</span>
+    <div>
+        <span class="font-bold text-cyan-300 block">Artículo Añadido</span>
+        <span id="toast-product-name" class="text-slate-300">Producto agregado a tu carrito</span>
     </div>
 </div>
 
 <script>
+    let categoriaActual = 'todos';
+    let filtroRapidoActivo = null;
+
+    function desplazarCarrusel(distancia) {
+        document.getElementById('carrusel-categorias').scrollBy({ left: distancia, behavior: 'smooth' });
+    }
+
     function filtrarCategoria(cat) {
-        // Actualizar pestañas activas
-        document.querySelectorAll('.cat-tab').forEach(btn => {
-            if (btn.getAttribute('data-tab') === cat) {
-                btn.className = 'cat-tab px-4 py-2 rounded-xl text-xs font-bold transition flex items-center gap-2 bg-cyan-500/20 text-cyan-300 border border-cyan-400/40';
+        categoriaActual = cat;
+
+        // Actualizar apariencia de burbujas circulares
+        document.querySelectorAll('.circle-cat-btn').forEach(btn => {
+            const circleDiv = btn.querySelector('div');
+            if (btn.getAttribute('data-circle') === cat) {
+                circleDiv.classList.add('ring-4', 'ring-cyan-400', 'glow-cyan-sm');
+                btn.querySelector('span').classList.add('text-cyan-300');
             } else {
-                btn.className = 'cat-tab px-4 py-2 rounded-xl text-xs font-bold text-slate-400 hover:text-white transition flex items-center gap-2 border border-transparent';
+                circleDiv.classList.remove('ring-4', 'ring-cyan-400', 'glow-cyan-sm');
+                btn.querySelector('span').classList.remove('text-cyan-300');
             }
         });
 
-        // Ocultar / Mostrar caja de filtros específicos de aves
-        const filtrosBox = document.getElementById('filtros-aves-box');
-        if (cat === 'todos' || cat === 'aves') {
-            filtrosBox.classList.remove('hidden');
-        } else {
-            filtrosBox.classList.add('hidden');
-        }
+        aplicarFiltros();
+    }
 
-        // Filtrar elementos de la cuadrícula
-        let visibles = 0;
-        document.querySelectorAll('.catalog-item').forEach(item => {
-            const itemCat = item.getAttribute('data-categoria');
-            if (cat === 'todos' || itemCat === cat) {
-                item.classList.remove('hidden');
-                visibles++;
+    function toggleFiltroRapido(tipo) {
+        const btn = document.getElementById('badge-' + tipo);
+        if (filtroRapidoActivo === tipo) {
+            filtroRapidoActivo = null;
+            btn.classList.remove('bg-cyan-500/20', 'border-cyan-400');
+        } else {
+            filtroRapidoActivo = tipo;
+            document.querySelectorAll('.quick-badge').forEach(b => b.classList.remove('bg-cyan-500/20', 'border-cyan-400'));
+            btn.classList.add('bg-cyan-500/20', 'border-cyan-400');
+        }
+        aplicarFiltros();
+    }
+
+    function filtrarListaMutaciones() {
+        const query = document.getElementById('buscar-mutacion').value.toLowerCase();
+        document.querySelectorAll('.mutation-item').forEach(item => {
+            const text = item.innerText.toLowerCase();
+            if (text.includes(query)) {
+                item.style.display = 'flex';
             } else {
-                item.classList.add('hidden');
+                item.style.display = 'none';
+            }
+        });
+    }
+
+    function aplicarFiltros() {
+        const especiesSeleccionadas = Array.from(document.querySelectorAll('.filter-especie:checked')).map(cb => cb.value.toLowerCase());
+        const sexosSeleccionados = Array.from(document.querySelectorAll('.filter-sexo:checked')).map(cb => cb.value);
+        const mutacionesSeleccionadas = Array.from(document.querySelectorAll('.filter-mutation:checked')).map(cb => cb.value.toLowerCase());
+        const precioMin = parseFloat(document.getElementById('precio-min').value) || 0;
+        const precioMax = parseFloat(document.getElementById('precio-max').value) || Infinity;
+
+        const switchReserva = document.getElementById('switch-reserva').checked;
+
+        let totalVisibles = 0;
+
+        document.querySelectorAll('.card-item').forEach(card => {
+            const cardCat = card.getAttribute('data-categoria');
+            const cardEspecie = (card.getAttribute('data-especie') || '').toLowerCase();
+            const cardSexo = card.getAttribute('data-sexo');
+            const cardMutaciones = (card.getAttribute('data-mutaciones') || '').toLowerCase();
+            const cardPrecio = parseFloat(card.getAttribute('data-precio') || 0);
+
+            let visible = true;
+
+            // Filtro por categoría de burbujas circulares
+            if (categoriaActual !== 'todos' && cardCat !== categoriaActual) {
+                visible = false;
+            }
+
+            // Filtro por checkboxes de especies/insumos
+            if (visible && especiesSeleccionadas.length > 0) {
+                const matchEspecie = especiesSeleccionadas.some(esp => cardEspecie.includes(esp) || cardCat.includes(esp));
+                if (!matchEspecie) visible = false;
+            }
+
+            // Filtro por sexo
+            if (visible && sexosSeleccionados.length > 0) {
+                if (!cardSexo || !sexosSeleccionados.includes(cardSexo)) {
+                    visible = false;
+                }
+            }
+
+            // Filtro por mutaciones
+            if (visible && mutacionesSeleccionadas.length > 0) {
+                const matchMut = mutacionesSeleccionadas.some(m => cardMutaciones.includes(m));
+                if (!matchMut) visible = false;
+            }
+
+            // Filtro por rango de precio
+            if (visible) {
+                if (cardPrecio < precioMin || cardPrecio > precioMax) {
+                    visible = false;
+                }
+            }
+
+            // Filtro rápido de reserva
+            if (visible && (switchReserva || filtroRapidoActivo === 'reserva')) {
+                if (cardCat !== 'aves') visible = false;
+            }
+
+            if (visible) {
+                card.classList.remove('hidden');
+                totalVisibles++;
+            } else {
+                card.classList.add('hidden');
             }
         });
 
         // Actualizar contador
-        const counter = document.getElementById('items-counter');
-        if (counter) {
-            counter.innerText = visibles;
+        const counter = document.getElementById('catalogo-total-count');
+        if (counter) counter.innerText = totalVisibles;
+
+        // Mostrar u ocultar mensaje vacío
+        const noResults = document.getElementById('no-results-msg');
+        if (noResults) {
+            if (totalVisibles === 0) {
+                noResults.classList.remove('hidden');
+            } else {
+                noResults.classList.add('hidden');
+            }
         }
     }
 
-    // Activar pestaña según parámetro URL al cargar
+    function ordenarProductos(criterio) {
+        const grid = document.getElementById('product-grid');
+        const cards = Array.from(grid.querySelectorAll('.card-item'));
+
+        cards.sort((a, b) => {
+            const precioA = parseFloat(a.getAttribute('data-precio') || 0);
+            const precioB = parseFloat(b.getAttribute('data-precio') || 0);
+
+            if (criterio === 'precio-asc') return precioA - precioB;
+            if (criterio === 'precio-desc') return precioB - precioA;
+            return 0; // Recomendados / default
+        });
+
+        cards.forEach(card => grid.appendChild(card));
+    }
+
+    function limpiarTodosFiltros() {
+        document.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false);
+        document.getElementById('precio-min').value = '';
+        document.getElementById('precio-max').value = '';
+        document.getElementById('buscar-mutacion').value = '';
+        filtrarListaMutaciones();
+        filtroRapidoActivo = null;
+        document.querySelectorAll('.quick-badge').forEach(b => b.classList.remove('bg-cyan-500/20', 'border-cyan-400'));
+        filtrarCategoria('todos');
+    }
+
+    function agregarItemCarrito(nombreProducto) {
+        const toast = document.getElementById('toast-cart');
+        const nameSpan = document.getElementById('toast-product-name');
+        nameSpan.innerText = nombreProducto + ' se añadió al carrito.';
+        toast.classList.remove('translate-y-24', 'opacity-0');
+        toast.classList.add('translate-y-0', 'opacity-100');
+
+        setTimeout(() => {
+            toast.classList.remove('translate-y-0', 'opacity-100');
+            toast.classList.add('translate-y-24', 'opacity-0');
+        }, 3000);
+    }
+
+    // Al cargar la página, revisar parámetro URL
     document.addEventListener('DOMContentLoaded', () => {
         const urlParams = new URLSearchParams(window.location.search);
-        const catParam = urlParams.get('categoria');
-        if (catParam) {
-            filtrarCategoria(catParam);
+        const cat = urlParams.get('categoria');
+        if (cat) {
+            filtrarCategoria(cat);
+        } else {
+            filtrarCategoria('todos');
         }
     });
 </script>

@@ -14,9 +14,16 @@ class ShopController {
             };
 
             const aves = await aveService.listarAves(filters);
-            const especies = await db.query('SELECT * FROM especies WHERE activo = true');
+            const especies = await db.query('SELECT * FROM especies WHERE activo = true ORDER BY nombre');
+            const mutaciones = await db.query('SELECT * FROM mutaciones WHERE activo = true ORDER BY nombre');
             
-            res.render('shop/catalogo', { title: 'Catálogo', aves, especies: especies.rows, query: req.query });
+            res.render('shop/catalogo', { 
+                title: 'Catálogo Comercial de Élite - AviPerú', 
+                aves, 
+                especies: especies.rows, 
+                mutaciones: mutaciones.rows || [], 
+                query: req.query 
+            });
         } catch (err) {
             next(err);
         }
@@ -47,7 +54,11 @@ class ShopController {
                 return res.status(404).render('error', { title: 'No Encontrada', message: 'El ave no está disponible para visualización pública en el catálogo.', statusCode: 404 });
             }
 
-            res.render('shop/detalle', { title: ave.anilla || `Ave #${ave.id}`, ave });
+            // Obtener aves similares para carrusel inferior
+            const todasAves = await aveService.listarAves({ catalogo_publico: true });
+            const similares = todasAves.filter(a => parseInt(a.id) !== parseInt(ave.id));
+
+            res.render('shop/detalle', { title: ave.anilla || `Ave #${ave.id}`, ave, similares });
         } catch (err) {
             next(err);
         }

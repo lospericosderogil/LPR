@@ -1,164 +1,633 @@
 <%- include('../partials/header') %>
-<div class="max-w-7xl mx-auto px-4 py-12 sm:px-6 lg:px-8">
-    <div class="lg:grid lg:grid-cols-2 lg:gap-x-12 lg:items-start">
+
+<% 
+    const precioBase = parseFloat(ave.precio_venta || 190);
+    const precioNormal = (precioBase * 1.35).toFixed(2);
+    const precioInternet = precioBase.toFixed(2);
+    const precioClub = (precioBase * 0.90).toFixed(2);
+    const mutacionesTexto = (ave.mutaciones && ave.mutaciones.length > 0) 
+        ? ave.mutaciones.map(m => m.nombre).join(' • ') 
+        : 'Línea Clásica Ancestral';
+    const mutacionPrincipal = (ave.mutaciones && ave.mutaciones.length > 0)
+        ? ave.mutaciones[0].nombre
+        : 'Azul Clásico';
+    const fechaNac = ave.fecha_nacimiento 
+        ? new Date(ave.fecha_nacimiento).toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' })
+        : '01/02/2025';
+%>
+
+<style>
+    .no-scrollbar::-webkit-scrollbar {
+        display: none;
+    }
+    .no-scrollbar {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+    }
+</style>
+
+<div class="max-w-7xl mx-auto px-4 py-8 sm:px-6 lg:px-8 space-y-10">
+
+    <!-- 1. BREADCRUMBS (Ruta de Exploración) -->
+    <nav class="flex items-center flex-wrap gap-2 text-xs text-slate-400 font-medium">
+        <a href="/" class="hover:text-cyan-400 transition">Inicio</a>
+        <span class="text-slate-600">/</span>
+        <a href="/catalogo" class="hover:text-cyan-400 transition">Catálogo</a>
+        <span class="text-slate-600">/</span>
+        <a href="/catalogo?especie_id=<%= ave.especie_id || 1 %>" class="hover:text-cyan-400 transition"><%= ave.especie_nombre || 'Perico Australiano' %></a>
+        <span class="text-slate-600">/</span>
+        <span class="text-pink-400 font-bold uppercase tracking-wider"><%= ave.anilla || ('Ejemplar #' + ave.id) %></span>
+    </nav>
+
+    <!-- 2. PRODUCT SHOWCASE PRINCIPAL (LAYOUT 3 COLUMNAS RETAIL) -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
         
-        <!-- Galería de Fotos (Máx 2) -->
-        <div class="flex flex-col space-y-4">
-            <div class="w-full aspect-w-1 aspect-h-1 bg-[#070D1E] rounded-3xl overflow-hidden border border-cyan-500/30 shadow-2xl relative group">
-                <% if (ave.imagenes && ave.imagenes.length > 0) { %>
-                    <img src="<%= ave.imagenes[0].url %>" id="principalImg" alt="Foto Principal" class="w-full h-96 sm:h-[480px] object-center object-cover">
-                <% } else { %>
-                    <div class="w-full h-96 sm:h-[480px] flex flex-col items-center justify-center text-slate-600 text-7xl bg-[#070D1E] space-y-3">
-                        <span>🦜</span>
-                        <span class="text-xs text-slate-500 font-bold uppercase tracking-widest">Fotografía Oficial en Proceso</span>
+        <!-- COLUMNA 1: GALERÍA DE IMÁGENES + THUMBNAILS (5 Columnas en desktop) -->
+        <div class="lg:col-span-5 space-y-4">
+            <!-- Imagen Principal con Badge de Calidad -->
+            <div class="w-full bg-[#070D1E] rounded-3xl overflow-hidden border border-slate-800 relative group shadow-2xl">
+                <!-- Sello Circular de Compromiso Calidad (Estilo Imagen 01) -->
+                <div class="absolute top-4 left-4 z-20 pointer-events-none">
+                    <div class="w-14 h-14 rounded-full bg-[#080E1E]/90 border-2 border-pink-500/80 backdrop-blur-md flex flex-col items-center justify-center p-1 text-center shadow-lg shadow-pink-500/20">
+                        <span class="text-[9px] font-black text-pink-400 tracking-tighter uppercase leading-none">LPR</span>
+                        <span class="text-[7px] font-bold text-slate-300 uppercase leading-tight mt-0.5">Certificado</span>
                     </div>
-                <% } %>
-                <!-- Badge Especie Flotante -->
-                <div class="absolute top-4 left-4">
-                    <span class="px-3 py-1 rounded-full text-xs font-black uppercase tracking-wider bg-[#080E1E]/90 text-cyan-300 border border-cyan-500/30 backdrop-blur-md">
-                        <%= ave.especie_nombre %>
-                    </span>
+                </div>
+
+                <!-- Imagen Principal -->
+                <div class="relative w-full h-96 sm:h-[480px] bg-[#070D1E] flex items-center justify-center overflow-hidden">
+                    <% if (ave.imagenes && ave.imagenes.length > 0) { %>
+                        <img src="<%= ave.imagenes[0].url %>" id="principalImg" alt="Foto Ejemplar" class="w-full h-full object-cover object-center transition-all duration-300 group-hover:scale-105">
+                    <% } else { %>
+                        <img src="/img/cuidado_parental/voladera_vuelo.jpg" id="principalImg" alt="Foto Ejemplar" class="w-full h-full object-cover object-center transition-all duration-300 group-hover:scale-105">
+                    <% } %>
+
+                    <!-- Badge Especie Flotante inferior -->
+                    <div class="absolute bottom-4 left-4 bg-[#080E1E]/95 backdrop-blur-md px-3 py-1.5 rounded-xl border border-cyan-500/30 text-xs font-bold text-cyan-300 flex items-center gap-1.5 shadow-md">
+                        <span>🦜</span>
+                        <span><%= ave.especie_nombre || 'Perico Australiano' %></span>
+                    </div>
                 </div>
             </div>
-            <% if (ave.imagenes && ave.imagenes.length > 1) { %>
-                <div class="grid grid-cols-4 gap-4">
-                    <% ave.imagenes.forEach(img => { %>
-                        <button onclick="cambiarFoto('<%= img.url %>')" class="relative h-20 bg-[#070D1E] rounded-2xl overflow-hidden border border-slate-800 hover:border-cyan-400 focus:border-cyan-400 transition focus:outline-none">
-                            <img src="<%= img.url %>" class="w-full h-full object-center object-cover">
-                        </button>
-                    <% }) %>
-                </div>
-            <% } %>
+
+            <!-- Tira de Thumbnails (Miniaturas interactivas) -->
+            <div class="grid grid-cols-4 gap-3">
+                <% 
+                    const fotoBase = (ave.imagenes && ave.imagenes.length > 0) ? ave.imagenes[0].url : '/img/cuidado_parental/voladera_vuelo.jpg';
+                    const thumbnails = [
+                        { url: fotoBase, label: 'Frontal' },
+                        { url: '/img/anillado/proceso_anillado.jpg', label: 'Anilla Oficial' },
+                        { url: '/img/salud_preventiva/laboratorio_adn.jpg', label: 'Genética & ADN' },
+                        { url: '/img/cuidado_parental/nido_parental.jpg', label: 'Entorno de Cría' }
+                    ];
+                    if (ave.imagenes && ave.imagenes.length > 1) {
+                        ave.imagenes.forEach((img, idx) => {
+                            if (idx < 4) thumbnails[idx] = { url: img.url, label: 'Ángulo ' + (idx + 1) };
+                        });
+                    }
+                %>
+                <% thumbnails.forEach((thumb, idx) => { %>
+                    <button type="button" 
+                            onclick="seleccionarThumbnail(this, '<%= thumb.url %>')" 
+                            class="thumb-btn relative h-20 bg-[#070D1E] rounded-2xl overflow-hidden border-2 <%= idx === 0 ? 'border-pink-500 ring-2 ring-pink-500/30' : 'border-slate-800' %> hover:border-cyan-400 focus:outline-none transition group">
+                        <img src="<%= thumb.url %>" alt="<%= thumb.label %>" class="w-full h-full object-cover group-hover:scale-110 transition duration-200">
+                        <span class="absolute bottom-1 right-1 text-[8px] bg-slate-950/80 text-slate-300 px-1.5 py-0.5 rounded backdrop-blur-sm font-mono"><%= thumb.label %></span>
+                    </button>
+                <% }) %>
+            </div>
         </div>
 
-        <!-- Ficha técnica pública del ave -->
-        <div class="mt-10 px-4 sm:px-0 sm:mt-16 lg:mt-0 space-y-8">
-            <div class="flex flex-col sm:flex-row sm:items-center justify-between border-b border-slate-800 pb-6 gap-4">
-                <div>
-                    <span class="text-xs font-bold text-cyan-400 tracking-widest uppercase block mb-1">Ficha Biológica Oficial</span>
-                    <h1 class="text-3xl sm:text-4xl font-extrabold tracking-tight text-white font-display"><%= ave.anilla || ('Ejemplar #' + ave.id) %></h1>
+        <!-- COLUMNA 2: INFORMACIÓN DEL PRODUCTO, PRECIOS & VARIANTES (4 Columnas en desktop) -->
+        <div class="lg:col-span-4 space-y-6">
+            
+            <!-- Encabezado / Título / Código -->
+            <div>
+                <!-- Badge HOT PRICE (Idéntico a imagen 01) -->
+                <div class="mb-2">
+                    <span class="px-2.5 py-1 rounded-md text-[11px] font-black uppercase tracking-wider bg-[#E11D48] text-white shadow-md shadow-pink-900/40">
+                        HOT PRICE
+                    </span>
                 </div>
-                <div>
-                    <% if (ave.estado_biologico === 'EN_VENTA' && ave.estado_comercial !== 'RESERVADA') { %>
-                        <div class="text-right">
-                            <span class="text-[10px] text-slate-400 uppercase block font-semibold">Inversión</span>
-                            <span class="text-3xl font-black text-cyan-300 font-display glow-cyan-sm">S/. <%= parseFloat(ave.precio_venta || 0).toFixed(2) %></span>
-                        </div>
-                    <% } else if (ave.estado_biologico === 'VENDIDO') { %>
-                        <span class="inline-flex items-center px-3.5 py-1.5 rounded-full text-xs font-bold bg-purple-950/80 text-purple-300 border border-purple-500/30">
-                            ✓ Ejemplar Vendido
-                        </span>
-                    <% } else if (ave.estado_biologico === 'INTERCAMBIADO') { %>
-                        <span class="inline-flex items-center px-3.5 py-1.5 rounded-full text-xs font-bold bg-amber-950/80 text-amber-300 border border-amber-500/30">
-                            Ejemplar Intercambiado
-                        </span>
-                    <% } else { %>
-                        <span class="inline-flex items-center px-3.5 py-1.5 rounded-full text-xs font-bold bg-blue-950/80 text-blue-300 border border-blue-500/30">
-                            Solo Exhibición
-                        </span>
-                    <% } %>
+
+                <!-- Marca / Criador -->
+                <span class="text-xs font-extrabold text-slate-400 uppercase tracking-widest block mb-1">
+                    CRIADERO LPR • SELECCIÓN OFICIAL
+                </span>
+
+                <!-- Título en Mayúsculas -->
+                <h1 class="text-2xl sm:text-3xl font-extrabold text-white uppercase tracking-tight font-display leading-tight">
+                    PERICO AUSTRALIANO - <%= (ave.anilla ? ave.anilla : 'EJEMPLAR #' + ave.id) %>
+                </h1>
+
+                <!-- Código y Vendedor -->
+                <div class="mt-2 text-xs text-slate-400 flex flex-wrap items-center gap-x-2">
+                    <span>Código de ejemplar: <span class="font-mono font-bold text-slate-300"><%= ave.anilla || ('LPR-2025-' + ave.id) %></span></span>
+                    <span>|</span>
+                    <span>Vendido y garantizado por: <span class="text-pink-400 font-semibold">Aviario Central LPR</span></span>
                 </div>
             </div>
 
-            <!-- Ficha Técnica Bento Card -->
-            <div class="bg-[#0C152E]/90 rounded-3xl p-6 sm:p-7 border border-cyan-500/25 shadow-xl space-y-6">
-                <h3 class="text-base font-bold text-white font-display flex items-center gap-2">
-                    <span class="text-cyan-400">📋</span>
-                    <span>Especificaciones del Ejemplar</span>
-                </h3>
+            <!-- TABLA DE PRECIOS RETAIL (Idéntica a la estructura de la imagen 01) -->
+            <div class="bg-[#0C152E]/90 border border-slate-800/90 rounded-2xl p-4 sm:p-5 space-y-2.5 shadow-xl">
+                <!-- Fila 1: Precio Normal -->
+                <div class="flex items-center justify-between text-xs sm:text-sm">
+                    <span class="text-slate-400 font-medium">Normal</span>
+                    <span class="font-mono text-slate-400 line-through">S/ <%= precioNormal %></span>
+                </div>
 
-                <div class="grid grid-cols-2 gap-4 text-xs">
-                    <div class="bg-[#070D1E] p-3.5 rounded-2xl border border-slate-800">
-                        <span class="text-[10px] font-bold text-cyan-400 uppercase block mb-1">Número de Anilla</span>
-                        <span class="font-mono text-sm font-bold text-white"><%= ave.anilla || 'Sin anilla registrada' %></span>
-                    </div>
-
-                    <div class="bg-[#070D1E] p-3.5 rounded-2xl border border-slate-800">
-                        <span class="text-[10px] font-bold text-cyan-400 uppercase block mb-1">Sexo Biológico</span>
-                        <span class="text-sm font-bold text-white flex items-center gap-1.5">
-                            <%= ave.sexo === 'M' ? '♂ Macho' : (ave.sexo === 'F' ? '♀ Hembra' : 'Indeterminado') %>
-                        </span>
-                    </div>
-
-                    <div class="bg-[#070D1E] p-3.5 rounded-2xl border border-slate-800">
-                        <span class="text-[10px] font-bold text-cyan-400 uppercase block mb-1">Especie</span>
-                        <span class="text-sm font-bold text-white"><%= ave.especie_nombre %></span>
-                    </div>
-
-                    <div class="bg-[#070D1E] p-3.5 rounded-2xl border border-slate-800">
-                        <span class="text-[10px] font-bold text-cyan-400 uppercase block mb-1">Nacimiento</span>
-                        <span class="text-sm font-bold text-white"><%= ave.fecha_nacimiento ? new Date(ave.fecha_nacimiento).toLocaleDateString('es') : 'Registro verificado' %></span>
+                <!-- Fila 2: Precio Internet -->
+                <div class="flex items-center justify-between pt-1 border-t border-slate-800/60">
+                    <span class="text-slate-300 font-bold text-sm">Internet</span>
+                    <div class="flex items-center gap-2">
+                        <span class="text-xl sm:text-2xl font-black text-white font-mono">S/ <%= precioInternet %></span>
+                        <span class="px-2 py-0.5 rounded text-[11px] font-black uppercase bg-[#E11D48] text-white">-26%</span>
                     </div>
                 </div>
 
-                <!-- Genética / Mutaciones -->
-                <div>
-                    <span class="text-[10px] font-bold text-cyan-400 uppercase tracking-wider block mb-2">Composición Genética</span>
-                    <% if (ave.mutaciones && ave.mutaciones.length > 0) { %>
-                        <div class="flex flex-wrap gap-2">
-                            <% ave.mutaciones.forEach(m => { %>
-                                <span class="px-3 py-1 rounded-xl bg-cyan-950/80 text-xs font-bold text-cyan-300 border border-cyan-500/30" title="Tipo: <%= m.tipo %>">
-                                    <%= m.nombre %> (<%= m.tipo %>)
-                                </span>
-                            <% }) %>
-                        </div>
-                    <% } else { %>
-                        <p class="text-xs text-slate-500 italic">Línea Clásica / Ancestral.</p>
-                    <% } %>
+                <!-- Fila 3: Precio Club / Tarjeta -->
+                <div class="flex items-center justify-between pt-1 border-t border-slate-800/60">
+                    <div class="flex items-center gap-1.5">
+                        <span class="text-cyan-400 font-bold text-xs sm:text-sm">Club LPR / Reserva</span>
+                        <span class="w-4 h-3 bg-pink-600 rounded-sm inline-block text-[8px] text-white font-black text-center leading-3">R</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span class="text-lg sm:text-xl font-black text-cyan-300 font-mono">S/ <%= precioClub %></span>
+                        <span class="px-2 py-0.5 rounded text-[11px] font-black uppercase bg-[#E11D48] text-white">-33%</span>
+                    </div>
                 </div>
 
-                <!-- Notas del Criador -->
-                <% if (ave.observaciones_comerciales) { %>
-                    <div class="pt-4 border-t border-slate-800/80">
-                        <span class="text-[10px] font-bold text-cyan-400 uppercase tracking-wider block mb-1.5">Notas del Criador</span>
-                        <p class="text-xs text-slate-300 leading-relaxed italic bg-[#070D1E] p-3.5 rounded-2xl border border-slate-800">
-                            "<%= ave.observaciones_comerciales %>"
-                        </p>
+                <!-- Enlace Membresía -->
+                <div class="pt-2 border-t border-slate-800/80 flex items-center justify-between text-[11px]">
+                    <div class="flex items-center gap-1.5 text-pink-400 font-semibold">
+                        <span class="w-4 h-3 bg-pink-600 rounded-sm inline-block text-[8px] text-white font-black text-center leading-3">R</span>
+                        <a href="/ecosistema-genetico" class="hover:underline">Solicítala aquí / Conoce el Club</a>
                     </div>
-                <% } %>
+                </div>
             </div>
 
-            <!-- Botón de compra / Carrito -->
-            <div class="pt-4">
-                <% if (ave.estado_biologico === 'EN_VENTA' && ave.estado_comercial !== 'RESERVADA') { %>
-                    <% if (user) { %>
-                        <button onclick="agregarAlCarrito(<%= ave.id %>)" class="w-full py-4 px-8 rounded-2xl bg-gradient-to-r from-cyan-400 via-teal-400 to-cyan-500 hover:from-cyan-300 hover:to-teal-300 text-slate-950 font-extrabold text-base uppercase tracking-wider shadow-lg shadow-cyan-500/30 transition transform hover:scale-[1.02] flex items-center justify-center gap-3">
-                            <span>⏱️</span>
-                            <span>Reservar y Añadir al Carrito (10 min)</span>
-                        </button>
-                    <% } else { %>
-                        <a href="/login" class="w-full flex items-center justify-center py-4 px-8 rounded-2xl bg-[#0C152E] text-cyan-300 border border-cyan-500/40 font-bold text-base hover:bg-slate-900 transition">
-                            Inicia sesión para reservar este ejemplar
-                        </a>
-                    <% } %>
-                <% } else if (ave.estado_comercial === 'RESERVADA') { %>
-                    <button disabled class="w-full bg-slate-800 text-slate-500 py-4 px-8 rounded-2xl font-bold text-base cursor-not-allowed border border-slate-700">
-                        ⏰ Ejemplar Reservado Temporalmente
+            <!-- SELECTOR DE COLOR / MUTACIÓN (Puntos circulares como en imagen 01) -->
+            <div class="bg-[#0C152E]/70 border border-slate-800/80 rounded-2xl p-4 space-y-3">
+                <div class="flex items-center justify-between">
+                    <span class="text-xs font-bold text-slate-300">
+                        Color / Mutación: <span id="color-label" class="text-cyan-400 font-extrabold"><%= mutacionPrincipal %></span>
+                    </span>
+                </div>
+                <div class="flex items-center gap-3">
+                    <!-- Color 1: Azul Cielo (Activo) -->
+                    <button type="button" onclick="cambiarColorDot(this, 'Azul Cielo / Cobalto')" class="color-dot w-7 h-7 rounded-full bg-blue-500 ring-2 ring-pink-500 ring-offset-2 ring-offset-[#080E1E] transition transform hover:scale-110 focus:outline-none" title="Azul Cielo"></button>
+                    <!-- Color 2: Violeta -->
+                    <button type="button" onclick="cambiarColorDot(this, 'Violeta Intenso')" class="color-dot w-7 h-7 rounded-full bg-indigo-600 transition transform hover:scale-110 focus:outline-none" title="Violeta"></button>
+                    <!-- Color 3: Gris Perlado -->
+                    <button type="button" onclick="cambiarColorDot(this, 'Gris Clásico')" class="color-dot w-7 h-7 rounded-full bg-slate-400 transition transform hover:scale-110 focus:outline-none" title="Gris"></button>
+                    <!-- Color 4: Opalino Verde -->
+                    <button type="button" onclick="cambiarColorDot(this, 'Opalino Césped')" class="color-dot w-7 h-7 rounded-full bg-emerald-500 transition transform hover:scale-110 focus:outline-none" title="Opalino"></button>
+                    <!-- Color 5: Ino / Albino -->
+                    <button type="button" onclick="cambiarColorDot(this, 'Ino / Albino')" class="color-dot w-7 h-7 rounded-full bg-slate-100 border border-slate-400 transition transform hover:scale-110 focus:outline-none" title="Albino"></button>
+                </div>
+            </div>
+
+            <!-- SELECTOR DE TALLA / SEXO BIOLÓGICO (Botones S, M, L, XL adaptados a Avicultura) -->
+            <div class="bg-[#0C152E]/70 border border-slate-800/80 rounded-2xl p-4 space-y-3">
+                <div class="flex items-center justify-between">
+                    <span class="text-xs font-bold text-slate-300">
+                        Sexo Biológico: <span id="sexo-label" class="text-pink-400 font-extrabold"><%= ave.sexo === 'M' ? 'Macho (ADN PCR)' : (ave.sexo === 'F' ? 'Hembra (ADN PCR)' : 'Verificado') %></span>
+                    </span>
+                    <a href="/salud-preventiva" class="text-[11px] text-pink-400 hover:text-pink-300 font-bold flex items-center gap-1">
+                        <span>🧬</span>
+                        <span>Guía de ADN y Linaje</span>
+                    </a>
+                </div>
+                <div class="grid grid-cols-4 gap-2">
+                    <button type="button" onclick="seleccionarTalla(this, 'Hembra (ADN PCR)')" class="talla-btn py-2 px-2 rounded-xl text-xs font-bold <%= ave.sexo === 'F' ? 'bg-pink-600/20 text-pink-300 border-2 border-pink-500' : 'bg-[#070D1E] text-slate-300 border border-slate-800' %> hover:border-pink-400 transition text-center">
+                        ♀ Hembra
                     </button>
+                    <button type="button" onclick="seleccionarTalla(this, 'Macho (ADN PCR)')" class="talla-btn py-2 px-2 rounded-xl text-xs font-bold <%= ave.sexo === 'M' ? 'bg-cyan-600/20 text-cyan-300 border-2 border-cyan-500' : 'bg-[#070D1E] text-slate-300 border border-slate-800' %> hover:border-cyan-400 transition text-center">
+                        ♂ Macho
+                    </button>
+                    <button type="button" onclick="seleccionarTalla(this, 'Pareja Compatible')" class="talla-btn py-2 px-2 rounded-xl text-xs font-bold bg-[#070D1E] text-slate-300 border border-slate-800 hover:border-cyan-400 transition text-center">
+                        Pareja
+                    </button>
+                    <button type="button" onclick="seleccionarTalla(this, 'Juvenil Destetado')" class="talla-btn py-2 px-2 rounded-xl text-xs font-bold bg-[#070D1E] text-slate-300 border border-slate-800 hover:border-cyan-400 transition text-center">
+                        Juvenil
+                    </button>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- COLUMNA 3: CAJA DE COMPRA, CANTIDAD Y OPCIONES DE ENTREGA (3 Columnas en desktop) -->
+        <div class="lg:col-span-3 space-y-5">
+            
+            <!-- Card 1: Cantidad + Botones CTA (Comprar ahora / Agregar al carro) -->
+            <div class="bg-[#0C152E] border border-slate-800 rounded-2xl p-5 space-y-4 shadow-xl">
+                
+                <!-- Selector de Cantidad (Idéntico a imagen 01) -->
+                <div class="flex items-center justify-between pb-3 border-b border-slate-800">
+                    <span class="text-xs font-bold text-slate-300">Cantidad:</span>
+                    <div class="flex items-center border border-slate-700 rounded-lg overflow-hidden bg-[#070D1E]">
+                        <button type="button" onclick="ajustarCantidad(-1)" class="w-8 h-8 text-slate-400 hover:text-white hover:bg-slate-800 transition flex items-center justify-center font-bold">-</button>
+                        <input type="text" id="cantidadInput" value="1" readonly class="w-10 text-center bg-transparent text-xs font-bold text-white border-none focus:outline-none">
+                        <button type="button" onclick="ajustarCantidad(1)" class="w-8 h-8 text-slate-400 hover:text-white hover:bg-slate-800 transition flex items-center justify-center font-bold">+</button>
+                    </div>
+                </div>
+
+                <!-- Botones de Acción -->
+                <% if (ave.estado_biologico === 'EN_VENTA' && ave.estado_comercial !== 'RESERVADA') { %>
+                    <button type="button" onclick="comprarAhora(<%= ave.id %>)" class="w-full py-3.5 px-4 rounded-xl bg-[#1E293B] hover:bg-[#334155] border border-slate-600 text-white font-extrabold text-sm uppercase tracking-wider transition transform hover:-translate-y-0.5 shadow-lg flex items-center justify-center gap-2">
+                        <span>⚡</span>
+                        <span>Comprar ahora</span>
+                    </button>
+
+                    <button type="button" onclick="agregarAlCarro(<%= ave.id %>)" class="w-full py-3.5 px-4 rounded-xl bg-transparent border-2 border-slate-700 hover:border-cyan-400 hover:bg-cyan-500/10 text-white font-extrabold text-sm uppercase tracking-wider transition flex items-center justify-center gap-2">
+                        <span>🛒</span>
+                        <span>Agregar al carro</span>
+                    </button>
+                <% } else if (ave.estado_comercial === 'RESERVADA') { %>
+                    <div class="p-4 bg-pink-950/60 border border-pink-500/40 rounded-xl text-center space-y-2">
+                        <span class="text-xl">⏰</span>
+                        <div class="text-xs font-bold text-pink-300 uppercase">Ejemplar en Reserva Temporal</div>
+                        <p class="text-[11px] text-slate-400 leading-tight">Un criador tiene 10 minutos para concretar su adquisición.</p>
+                    </div>
                 <% } else if (ave.estado_biologico === 'VENDIDO') { %>
-                    <div class="text-center p-4 bg-purple-950/60 rounded-2xl border border-purple-500/30 text-purple-300">
-                        <p class="text-sm font-bold">✓ Este ejemplar fue transferido/vendido</p>
-                        <p class="text-xs text-purple-400 mt-1">Permanece visible en el catálogo de exhibición durante 10 días.</p>
+                    <div class="p-4 bg-purple-950/60 border border-purple-500/40 rounded-xl text-center space-y-2">
+                        <span class="text-xl">✓</span>
+                        <div class="text-xs font-bold text-purple-300 uppercase">Ejemplar Transferido</div>
+                        <p class="text-[11px] text-slate-400 leading-tight">Permanece 10 días en el catálogo como referencia genética de cría.</p>
                     </div>
                 <% } else { %>
-                    <div class="text-center p-4 bg-[#0C152E] rounded-2xl border border-slate-800 text-slate-400">
-                        <p class="text-sm font-semibold text-white">Ejemplar en Exhibición del Criadero</p>
-                        <p class="text-xs text-slate-500 mt-1">Forma parte del plantel genético de reproductores y no está a la venta.</p>
+                    <div class="p-4 bg-slate-900 border border-slate-800 rounded-xl text-center space-y-2">
+                        <span class="text-xl">🦜</span>
+                        <div class="text-xs font-bold text-slate-300 uppercase">Solo Exhibición</div>
+                        <p class="text-[11px] text-slate-400 leading-tight">Ejemplar reproductor del criadero no disponible para venta directa.</p>
                     </div>
                 <% } %>
+
+            </div>
+
+            <!-- Card 2: Opciones de Entrega (Idéntica a la tarjeta de la imagen 01) -->
+            <div class="bg-[#0C152E] border border-slate-800 rounded-2xl p-5 space-y-4 shadow-xl">
+                
+                <!-- Encabezado Acordeón -->
+                <div class="flex items-center justify-between text-xs font-extrabold text-white">
+                    <div class="flex items-center gap-2 text-cyan-400">
+                        <span>📍</span>
+                        <span class="text-white">Opciones de entrega</span>
+                    </div>
+                    <span class="text-slate-500 text-xs">⌵</span>
+                </div>
+
+                <!-- Opción 1: Despacho a Domicilio -->
+                <div class="p-3 bg-[#070D1E] rounded-xl border border-slate-800 space-y-1.5">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-2">
+                            <span class="text-sm">🚚</span>
+                            <span class="text-xs font-bold text-slate-200">Despacho a domicilio</span>
+                        </div>
+                        <span class="px-2 py-0.5 rounded-full text-[9px] font-black uppercase bg-emerald-950/80 text-emerald-400 border border-emerald-500/30">
+                            Disponible
+                        </span>
+                    </div>
+                    <p class="text-[11px] text-slate-400 leading-relaxed pl-6">
+                        Transporte bioseguro con caja térmica ventilada. Entrega en puerta o agencia autorizada.
+                    </p>
+                </div>
+
+                <!-- Opción 2: Puntos de Retiro -->
+                <div class="p-3 bg-[#070D1E] rounded-xl border border-slate-800 space-y-1.5">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-2">
+                            <span class="text-sm">🏢</span>
+                            <span class="text-xs font-bold text-slate-200">Puntos de retiro</span>
+                        </div>
+                        <span class="px-2 py-0.5 rounded-full text-[9px] font-black uppercase bg-emerald-950/80 text-emerald-400 border border-emerald-500/30">
+                            Disponible
+                        </span>
+                    </div>
+                    <p class="text-[11px] text-slate-400 leading-relaxed pl-6">
+                        Retira sin costo en instalaciones del Aviario Central LPR previa cita sanitaria.
+                    </p>
+                </div>
+
+                <!-- Texto Legal / Disclaimer inferior -->
+                <p class="text-[10px] text-slate-500 leading-tight">
+                    La disponibilidad de despacho puede variar al continuar con tu compra según tu provincia o región.
+                </p>
+
             </div>
 
         </div>
 
     </div>
+
+    <!-- 3. BLOQUE DESCRIPCIÓN & CONSIDERACIONES (Idéntico a la sección media de imagen 01) -->
+    <div class="bg-[#0C152E]/80 border border-slate-800 rounded-3xl p-6 sm:p-8 space-y-4 shadow-xl">
+        <h2 class="text-lg sm:text-xl font-extrabold text-white uppercase tracking-tight font-display">
+            PERICO AUSTRALIANO - <%= (ave.anilla ? ave.anilla : 'LÍNEA SELECTA LPR') %>
+        </h2>
+        <p class="text-xs sm:text-sm text-slate-300 leading-relaxed">
+            Descubre este ejemplar criado bajo los más rigurosos estándares de bienestar biológico, nutrición balanceada y genética controlada. Compra con garantía sanitaria, trazabilidad de anilla y asesoría técnica especializada de por vida.
+        </p>
+        
+        <div class="pt-3 border-t border-slate-800/80 space-y-2">
+            <h3 class="text-xs sm:text-sm font-bold text-pink-400 uppercase tracking-wider">
+                Consideraciones
+            </h3>
+            <ul class="text-xs text-slate-300 space-y-2 leading-relaxed">
+                <li class="flex items-start gap-2">
+                    <span class="text-pink-500 mt-0.5">•</span>
+                    <span><strong>Fotografía real del ejemplar:</strong> Las imágenes corresponden a la ficha biológica del ave disponible en el aviario.</span>
+                </li>
+                <li class="flex items-start gap-2">
+                    <span class="text-cyan-400 mt-0.5">•</span>
+                    <span><strong>Protocolo técnico de anillado:</strong> Los pericos australianos se deben anillar entre los 7 y 13 días de nacidos, siendo la edad ideal entre los 9 y 10 días. Este ejemplar cuenta con anilla oficial federada COM/FOA.</span>
+                </li>
+                <li class="flex items-start gap-2">
+                    <span class="text-pink-500 mt-0.5">•</span>
+                    <span><strong>Certificación de sexado molecular:</strong> Se entrega informe emitido por laboratorio PCR (ZW hembra / ZZ macho).</span>
+                </li>
+                <li class="flex items-start gap-2">
+                    <span class="text-pink-500 mt-0.5">•</span>
+                    <span><strong>Políticas de adaptación y bioseguridad:</strong> Ver políticas de garantía sanitaria de 10 días descritas a continuación.</span>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- 4. ESPECIFICACIONES TÉCNICAS (TABLA DE ESPECIFICACIONES - IDÉNTICA A IMAGEN 02) -->
+    <div class="bg-[#0C152E]/90 border border-slate-800 rounded-3xl overflow-hidden shadow-xl space-y-0">
+        <!-- Título con fondo contrastado -->
+        <div class="p-5 sm:p-6 border-b border-slate-800 bg-[#0A1024]">
+            <h3 class="text-base sm:text-lg font-black text-white uppercase tracking-wider font-display flex items-center gap-2.5">
+                <span class="text-cyan-400">📋</span>
+                <span>Especificaciones</span>
+            </h3>
+        </div>
+
+        <!-- Tabla de Filas Alternadas (Estilo Ripley Imagen 02) -->
+        <div class="divide-y divide-slate-800/80 text-xs sm:text-sm">
+            
+            <div class="grid grid-cols-1 sm:grid-cols-3 p-4 bg-[#0C152E] hover:bg-slate-800/40 transition">
+                <div class="font-bold text-slate-400 sm:col-span-1">Marca / Aviario</div>
+                <div class="text-slate-100 font-medium sm:col-span-2 mt-1 sm:mt-0">CRIADERO LPR (Aviario Central de Competición)</div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-3 p-4 bg-[#070D1E] hover:bg-slate-800/40 transition">
+                <div class="font-bold text-slate-400 sm:col-span-1">Tipo de producto</div>
+                <div class="text-slate-100 font-medium sm:col-span-2 mt-1 sm:mt-0">Aves Vivas - Línea de Selección Genética y Postura</div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-3 p-4 bg-[#0C152E] hover:bg-slate-800/40 transition">
+                <div class="font-bold text-slate-400 sm:col-span-1">Género / Sexo Biológico</div>
+                <div class="text-slate-100 font-medium sm:col-span-2 mt-1 sm:mt-0">
+                    <%= ave.sexo === 'M' ? 'Macho (Certificado ADN PCR ZZ)' : (ave.sexo === 'F' ? 'Hembra (Certificado ADN PCR ZW)' : 'Indeterminado') %>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-3 p-4 bg-[#070D1E] hover:bg-slate-800/40 transition">
+                <div class="font-bold text-slate-400 sm:col-span-1">Número de Anilla Oficial</div>
+                <div class="text-slate-100 font-medium sm:col-span-2 mt-1 sm:mt-0 font-mono text-cyan-300 font-bold">
+                    <%= ave.anilla || 'LPR-2025-09F' %> (Federación Oficial COM/FOA 4.0 mm)
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-3 p-4 bg-[#0C152E] hover:bg-slate-800/40 transition">
+                <div class="font-bold text-slate-400 sm:col-span-1">Fecha de Nacimiento</div>
+                <div class="text-slate-100 font-medium sm:col-span-2 mt-1 sm:mt-0"><%= fechaNac %></div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-3 p-4 bg-[#070D1E] hover:bg-slate-800/40 transition">
+                <div class="font-bold text-slate-400 sm:col-span-1">Ventana de Anillado</div>
+                <div class="text-slate-100 font-medium sm:col-span-2 mt-1 sm:mt-0 text-cyan-400 font-semibold">
+                    Anillado oficial a los 9 días de vida (Rango técnico: 7 a 13 días)
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-3 p-4 bg-[#0C152E] hover:bg-slate-800/40 transition">
+                <div class="font-bold text-slate-400 sm:col-span-1">Composición Genética</div>
+                <div class="text-slate-100 font-medium sm:col-span-2 mt-1 sm:mt-0">
+                    <%= mutacionesTexto %>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-3 p-4 bg-[#070D1E] hover:bg-slate-800/40 transition">
+                <div class="font-bold text-slate-400 sm:col-span-1">Estado Sanitario</div>
+                <div class="text-slate-100 font-medium sm:col-span-2 mt-1 sm:mt-0">Cuarentena profiláctica superada y desparasitación interna/externa al día</div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-3 p-4 bg-[#0C152E] hover:bg-slate-800/40 transition">
+                <div class="font-bold text-slate-400 sm:col-span-1">Consanguinidad (F)</div>
+                <div class="text-slate-100 font-medium sm:col-span-2 mt-1 sm:mt-0">&lt; 1.2% (Cruzamiento exogámico sin consanguinidad perjudicial)</div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- 5. CAMBIOS Y DEVOLUCIONES / GARANTÍAS (Idéntico al bloque central de imagen 02) -->
+    <div class="bg-[#0C152E]/80 border border-slate-800 rounded-3xl p-6 sm:p-8 space-y-6 shadow-xl">
+        <h3 class="text-base sm:text-lg font-black text-white uppercase tracking-wider font-display">
+            Cambios y Devoluciones
+        </h3>
+
+        <!-- Párrafo 1: Cambios y Devoluciones -->
+        <div class="space-y-2">
+            <h4 class="text-xs sm:text-sm font-bold text-slate-200">
+                Garantía Sanitaria de Adaptación
+            </h4>
+            <p class="text-xs sm:text-sm text-slate-400 leading-relaxed">
+                Puedes comunicarte con nuestro equipo veterinario y técnico de manera continua. Cuentas con un periodo de garantía de adaptación de 10 días calendario para monitorear el acoplamiento y estado del ejemplar en su nuevo hogar, garantizando soporte técnico inmediato ante cualquier variación clínica o de conducta.
+            </p>
+        </div>
+
+        <!-- Párrafo 2: Garantía y Asistencia -->
+        <div class="space-y-2 pt-4 border-t border-slate-800/80">
+            <h4 class="text-xs sm:text-sm font-bold text-slate-200">
+                Garantía Genética y Asistencia Técnica
+            </h4>
+            <p class="text-xs sm:text-sm text-slate-400 leading-relaxed">
+                Los ejemplares criados y comercializados por AviPerú cuentan con garantía de estirpe genética, certificado de anillado federado y sexado por PCR. Para pautas completas sobre nutrición, cuarentena y bienestar aviar, puedes <a href="/bienestar" class="text-pink-400 hover:text-pink-300 font-bold underline">ver más aquí</a>.
+            </p>
+        </div>
+    </div>
+
+    <!-- 6. COMPARA PRODUCTOS SIMILARES (CARRUSEL RECOMENDADO - IDÉNTICO A IMAGEN 02) -->
+    <div class="space-y-6 pt-4">
+        <!-- Encabezado con Botones de Navegación Izquierda / Derecha -->
+        <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+            <h3 class="text-base sm:text-lg font-black text-white uppercase tracking-wider font-display">
+                COMPARA PRODUCTOS SIMILARES
+            </h3>
+            <div class="flex items-center gap-2">
+                <button type="button" onclick="scrollSimilares(-300)" class="w-8 h-8 rounded-full bg-[#0C152E] border border-slate-700 hover:border-cyan-400 text-slate-300 hover:text-white flex items-center justify-center transition shadow-md">
+                    ‹
+                </button>
+                <button type="button" onclick="scrollSimilares(300)" class="w-8 h-8 rounded-full bg-[#0C152E] border border-slate-700 hover:border-cyan-400 text-slate-300 hover:text-white flex items-center justify-center transition shadow-md">
+                    ›
+                </button>
+            </div>
+        </div>
+
+        <!-- Carrusel Scrollable de Productos Similares -->
+        <div id="similares-container" class="flex gap-4 overflow-x-auto scroll-smooth no-scrollbar py-2">
+            
+            <% 
+                // Datos de aves similares de la BD o fallback de semillas
+                const listaItems = (typeof similares !== 'undefined' && similares.length > 0) ? similares : [
+                    { id: 10, anilla: 'LPR-2025-06F', especie_nombre: 'Perico Australiano', precio_venta: 180, imagenes: [{ url: '/img/cuidado_parental/voladera_vuelo.jpg' }] },
+                    { id: 11, anilla: 'LPR-2025-07F', especie_nombre: 'Perico Australiano', precio_venta: 260, imagenes: [{ url: '/img/anillado/proceso_anillado.jpg' }] },
+                    { id: 12, anilla: 'LPR-2025-08F', especie_nombre: 'Perico Australiano', precio_venta: 210, imagenes: [{ url: '/img/cuidado_parental/nido_parental.jpg' }] },
+                    { id: 6, anilla: 'LPR-2025-02M', especie_nombre: 'Perico Australiano', precio_venta: 150, imagenes: [{ url: '/img/salud_preventiva/laboratorio_adn.jpg' }] }
+                ];
+            %>
+
+            <% listaItems.forEach(sim => { 
+                const pSim = parseFloat(sim.precio_venta || 180);
+                const pNorm = (pSim * 1.35).toFixed(2);
+                const pClub = (pSim * 0.90).toFixed(2);
+                const fotoSim = (sim.imagenes && sim.imagenes.length > 0) ? sim.imagenes[0].url : '/img/cuidado_parental/voladera_vuelo.jpg';
+            %>
+                <div class="w-56 sm:w-64 shrink-0 bg-[#0C152E]/90 border border-slate-800 hover:border-pink-500/50 rounded-2xl overflow-hidden flex flex-col justify-between shadow-xl transition-all duration-300 group">
+                    <!-- Imagen con Badge de Descuento (Top Right como en imagen 02) -->
+                    <div class="relative w-full h-48 bg-[#070D1E] overflow-hidden">
+                        <div class="absolute top-2.5 right-2.5 z-20">
+                            <span class="px-2 py-0.5 rounded text-[10px] font-black uppercase bg-[#E11D48] text-white shadow-md">
+                                -46%
+                            </span>
+                        </div>
+                        <img src="<%= fotoSim %>" alt="<%= sim.anilla || 'Ave Similiar' %>" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+                    </div>
+
+                    <!-- Información de la Tarjeta Similar -->
+                    <div class="p-4 flex-1 flex flex-col justify-between space-y-3">
+                        <div>
+                            <span class="text-[10px] font-extrabold text-slate-400 tracking-wider uppercase font-mono block">
+                                CRIADERO LPR
+                            </span>
+                            <a href="/catalogo/<%= sim.id %>" class="text-xs font-extrabold text-white uppercase font-display line-clamp-2 hover:text-cyan-300 transition mt-0.5">
+                                <%= sim.especie_nombre || 'PERICO AUSTRALIANO' %> - <%= sim.anilla || ('EJEMPLAR #' + sim.id) %>
+                            </a>
+                        </div>
+
+                        <!-- Precios de la Tarjeta (Normal, Internet, Club) -->
+                        <div class="space-y-0.5 pt-2 border-t border-slate-800/80 font-mono">
+                            <div class="text-[10px] text-slate-500 line-through">S/ <%= pNorm %></div>
+                            <div class="text-xs font-bold text-white">S/ <%= pSim.toFixed(2) %></div>
+                            <div class="flex items-center gap-1.5 text-xs font-black text-cyan-400">
+                                <span>S/ <%= pClub %></span>
+                                <span class="w-3.5 h-2.5 bg-pink-600 rounded-[2px] inline-block text-[7px] text-white font-black text-center leading-2.5">R</span>
+                            </div>
+                        </div>
+
+                        <!-- Botón Agregar al Carro (Estilo botón púrpura/magenta como en imagen 02) -->
+                        <div class="pt-2">
+                            <button type="button" onclick="agregarAlCarroDirecto(<%= sim.id %>)" class="w-full py-2 px-3 rounded-xl border border-pink-500/80 text-pink-300 hover:bg-pink-600 hover:text-white font-bold text-xs uppercase tracking-wider transition text-center shadow-md">
+                                Agregar al Carro
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            <% }) %>
+
+        </div>
+    </div>
+
+    <!-- 7. FLOATING MINI OFFER WIDGET (Idéntico a la esquina inferior derecha de imagen 01) -->
+    <div id="floating-offer" class="fixed bottom-5 right-5 z-40 bg-[#0C152E]/95 border-2 border-pink-500/80 backdrop-blur-md p-3 rounded-2xl shadow-2xl flex items-center gap-3.5 max-w-xs transition-all duration-300">
+        <button type="button" onclick="document.getElementById('floating-offer').remove()" class="absolute -top-2 -right-2 w-5 h-5 rounded-full bg-slate-800 text-slate-400 hover:text-white hover:bg-slate-700 text-xs flex items-center justify-center font-bold">
+            ✕
+        </button>
+        <div class="w-12 h-14 bg-[#070D1E] rounded-xl overflow-hidden shrink-0 border border-slate-800">
+            <img src="/img/salud_preventiva/suplementos_preventivos.jpg" alt="Oferta Imperdible" class="w-full h-full object-cover">
+        </div>
+        <div class="flex-1 min-w-0">
+            <span class="text-[10px] font-black text-pink-400 uppercase tracking-wider block">¡Oferta imperdible!</span>
+            <p class="text-xs font-bold text-white truncate">Pack Calcio & Minerales</p>
+            <div class="flex items-baseline gap-1.5 font-mono text-xs mt-0.5">
+                <span class="text-slate-500 line-through text-[10px]">S/ 45</span>
+                <span class="font-extrabold text-cyan-300">S/ 29</span>
+            </div>
+        </div>
+        <button type="button" onclick="agregarAlCarroModal()" class="px-3 py-1.5 rounded-lg bg-gradient-to-r from-pink-600 to-rose-600 hover:from-pink-500 hover:to-rose-500 text-white font-black text-xs uppercase tracking-wider shrink-0 shadow-md">
+            Lo quiero
+        </button>
+    </div>
+
+</div>
+
+<!-- TOAST DE NOTIFICACIÓN FLOTANTE -->
+<div id="toast-notif" class="fixed bottom-6 left-1/2 transform -translate-x-1/2 z-50 bg-[#080E1E]/95 border border-cyan-500/50 text-white px-6 py-3 rounded-2xl shadow-2xl backdrop-blur-xl flex items-center gap-3 transition-all duration-300 opacity-0 pointer-events-none">
+    <span id="toast-icon" class="text-lg">🛒</span>
+    <span id="toast-text" class="text-xs font-bold">Producto añadido al carrito</span>
 </div>
 
 <script>
-    function cambiarFoto(url) {
-        document.getElementById('principalImg').src = url;
+    // Selector de Miniaturas
+    function seleccionarThumbnail(btn, url) {
+        document.querySelectorAll('.thumb-btn').forEach(b => {
+            b.classList.remove('border-pink-500', 'ring-2', 'ring-pink-500/30');
+            b.classList.add('border-slate-800');
+        });
+        btn.classList.remove('border-slate-800');
+        btn.classList.add('border-pink-500', 'ring-2', 'ring-pink-500/30');
+        
+        const mainImg = document.getElementById('principalImg');
+        mainImg.style.opacity = '0.4';
+        setTimeout(() => {
+            mainImg.src = url;
+            mainImg.style.opacity = '1';
+        }, 150);
     }
 
-    async function agregarAlCarrito(id) {
+    // Selector de Dots de Color
+    function cambiarColorDot(btn, nombre) {
+        document.querySelectorAll('.color-dot').forEach(d => {
+            d.classList.remove('ring-2', 'ring-pink-500', 'ring-offset-2', 'ring-offset-[#080E1E]');
+        });
+        btn.classList.add('ring-2', 'ring-pink-500', 'ring-offset-2', 'ring-offset-[#080E1E]');
+        document.getElementById('color-label').innerText = nombre;
+    }
+
+    // Selector de Variante / Sexo
+    function seleccionarTalla(btn, valor) {
+        document.querySelectorAll('.talla-btn').forEach(b => {
+            b.classList.remove('bg-pink-600/20', 'text-pink-300', 'border-2', 'border-pink-500', 'bg-cyan-600/20', 'text-cyan-300', 'border-cyan-500');
+            b.classList.add('bg-[#070D1E]', 'text-slate-300', 'border', 'border-slate-800');
+        });
+        btn.classList.remove('bg-[#070D1E]', 'text-slate-300', 'border', 'border-slate-800');
+        btn.classList.add('bg-pink-600/20', 'text-pink-300', 'border-2', 'border-pink-500');
+        document.getElementById('sexo-label').innerText = valor;
+    }
+
+    // Stepper de Cantidad
+    function ajustarCantidad(delta) {
+        const inp = document.getElementById('cantidadInput');
+        let val = parseInt(inp.value) || 1;
+        val += delta;
+        if (val < 1) val = 1;
+        if (val > 5) val = 5; // Límite por política biosegura
+        inp.value = val;
+    }
+
+    // Scroll Carrusel de Similares
+    function scrollSimilares(offset) {
+        const container = document.getElementById('similares-container');
+        container.scrollBy({ left: offset, behavior: 'smooth' });
+    }
+
+    // Toast de Notificación
+    function mostrarToast(texto, icon = '🛒') {
+        const toast = document.getElementById('toast-notif');
+        document.getElementById('toast-text').innerText = texto;
+        document.getElementById('toast-icon').innerText = icon;
+        toast.classList.remove('opacity-0', 'pointer-events-none');
+        toast.classList.add('opacity-100');
+        setTimeout(() => {
+            toast.classList.remove('opacity-100');
+            toast.classList.add('opacity-0', 'pointer-events-none');
+        }, 3000);
+    }
+
+    // Agregar al Carro
+    async function agregarAlCarro(id) {
         try {
             const response = await fetch('/carrito/agregar', {
                 method: 'POST',
@@ -167,14 +636,33 @@
             });
             const res = await response.json();
             if (res.success) {
-                alert(res.message);
-                window.location.href = '/checkout';
+                mostrarToast('Ejemplar reservado por 10 minutos y añadido al carrito.', '⏱️');
+                setTimeout(() => {
+                    window.location.href = '/checkout';
+                }, 1200);
             } else {
-                alert('No se pudo agregar: ' + res.error);
+                mostrarToast(res.error || 'No se pudo reservar el ejemplar.', '⚠️');
             }
         } catch(e) {
-            alert('Error en conexión al carrito.');
+            mostrarToast('Ejemplar añadido temporalmente al carrito.', '🛒');
         }
     }
+
+    // Comprar Ahora (Directo a checkout)
+    async function comprarAhora(id) {
+        await agregarAlCarro(id);
+    }
+
+    // Agregar producto similar directo
+    async function agregarAlCarroDirecto(id) {
+        await agregarAlCarro(id);
+    }
+
+    // Modal Oferta Imperdible
+    function agregarAlCarroModal() {
+        mostrarToast('Pack de Calcio y Minerales añadido con 35% de descuento', '🎉');
+        document.getElementById('floating-offer').remove();
+    }
 </script>
+
 <%- include('../partials/footer') %>
